@@ -1,0 +1,567 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<meta name="referrer" content="no-referrer">
+<title>1478 Board Entry</title>
+<!--
+  ============================================================
+  STORE 1478 BOARD ENTRY  (open on your phone)
+  ============================================================
+  - Prefills with the current data.json, so you only change
+    the numbers that moved. Blank = shows a dash on the board.
+  - Tap PUBLISH to commit data.json to the GitHub repo.
+    Needs a fine-grained GitHub token saved once in Settings.
+  - No token? Tap "Copy JSON" and paste it into data.json on
+    github.com instead.
+  ============================================================
+-->
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@600;700;800&family=Archivo:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#061137; --card:#0D1D4C; --edge:rgba(159,178,230,.16);
+    --ink:#F2F6FF; --muted:#93A5D6; --faint:#5E6FA3;
+    --teal:#2FE0B0; --amber:#FFB84D; --coral:#FF6B70; --sky:#6FA8FF;
+    --field:#091540;
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  body{
+    background:var(--bg);color:var(--ink);
+    font-family:'Archivo',system-ui,-apple-system,sans-serif;
+    padding:20px 16px 120px;max-width:560px;margin:0 auto;
+  }
+  h1{font-family:'Sora',sans-serif;font-weight:800;font-size:26px;}
+  .top{display:flex;align-items:flex-end;justify-content:space-between;gap:12px;margin-bottom:6px;}
+  .top a{color:var(--sky);font-size:14px;text-decoration:none;font-weight:600;}
+  #lastUpdated{color:var(--muted);font-size:14px;margin-bottom:16px;}
+
+  section{
+    background:var(--card);border:1px solid var(--edge);border-radius:18px;
+    padding:16px;margin-bottom:14px;
+  }
+  section h2{
+    font-family:'Sora',sans-serif;font-weight:700;font-size:16px;
+    letter-spacing:.04em;margin-bottom:12px;color:var(--ink);
+  }
+  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+  .field{display:flex;flex-direction:column;gap:5px;}
+  .field.wide{grid-column:1 / -1;}
+  label{font-size:12.5px;font-weight:600;color:var(--muted);letter-spacing:.03em;}
+  label small{color:var(--faint);font-weight:500;}
+  input,textarea,select{
+    background:var(--field);border:1px solid var(--edge);border-radius:12px;
+    color:var(--ink);font-family:'Archivo',sans-serif;font-size:18px;
+    padding:12px;width:100%;outline:none;
+  }
+  input:focus,textarea:focus,select:focus{border-color:var(--sky);}
+  select{font-weight:600;}
+  .pwrow{display:flex;gap:8px;align-items:stretch;}
+  .pwrow input{flex:1;min-width:0;}
+  .eyebtn{background:rgba(147,165,214,.15);border:1px solid var(--edge);border-radius:12px;
+    color:var(--muted);font-family:'Archivo',sans-serif;font-weight:600;font-size:14px;
+    padding:0 14px;cursor:pointer;}
+  textarea{min-height:74px;resize:vertical;font-size:16px;line-height:1.4;}
+  .cnt{font-size:12px;color:var(--faint);text-align:right;margin-top:3px;}
+  .cnt.over{color:var(--amber);font-weight:600;}
+  input.num{font-family:'Sora',sans-serif;font-weight:600;font-variant-numeric:tabular-nums;}
+
+  details{
+    background:var(--card);border:1px solid var(--edge);border-radius:18px;
+    padding:0;margin-bottom:14px;overflow:hidden;
+  }
+  details summary{
+    list-style:none;cursor:pointer;padding:16px;
+    font-family:'Sora',sans-serif;font-weight:700;font-size:16px;
+    display:flex;justify-content:space-between;align-items:center;
+  }
+  details summary::-webkit-details-marker{display:none;}
+  details summary:after{content:'+';color:var(--muted);font-size:20px;}
+  details[open] summary:after{content:'–';}
+  details .inner{padding:0 16px 16px;}
+  .hint{font-size:13px;color:var(--faint);line-height:1.5;margin-top:10px;}
+  .hint a{color:var(--sky);}
+  .hint code{background:var(--field);padding:1px 6px;border-radius:6px;font-size:12px;}
+
+  .btn{
+    display:block;width:100%;border:none;border-radius:14px;cursor:pointer;
+    font-family:'Sora',sans-serif;font-weight:700;font-size:17px;padding:15px;
+    color:#04122E;background:linear-gradient(90deg,#1F8FFF,var(--teal));
+  }
+  .btn.secondary{background:rgba(147,165,214,.15);color:var(--ink);font-weight:600;margin-top:10px;}
+  .btn:disabled{opacity:.55;}
+
+  #publishBar{
+    position:fixed;left:0;right:0;bottom:0;
+    background:rgba(6,17,55,.92);backdrop-filter:blur(6px);
+    border-top:1px solid var(--edge);padding:12px 16px 22px;
+  }
+  #publishBar .wrap{max-width:560px;margin:0 auto;}
+  #status{
+    text-align:center;font-size:14px;font-weight:600;min-height:18px;margin-bottom:8px;
+    color:var(--muted);
+  }
+  #status.ok{color:var(--teal);}
+  #status.err{color:var(--coral);}
+  #status.busy{color:var(--amber);}
+</style>
+</head>
+<body>
+
+<div class="top">
+  <h1>1478 Daily Board <small style="font-size:13px;color:var(--faint);font-weight:600;">v3.2</small></h1>
+  <a id="boardLink" href="daily.html" target="_blank">View board →</a>
+</div>
+<div id="lastUpdated">Loading current figures…</div>
+
+<section>
+  <h2>Retail &amp; items · figures</h2>
+  <div class="field wide" style="margin-bottom:10px;"><label>These figures are for</label>
+    <select id="period">
+      <option value="wtd">Week to date</option>
+      <option value="lastweek">Last week (final)</option>
+    </select>
+  </div>
+  <div class="grid2">
+    <div class="field"><label>Retail sales <small>£</small></label><input class="num" id="r_wtd" inputmode="decimal"></div>
+    <div class="field"><label>Total items</label><input class="num" id="i_wtd" inputmode="numeric"></div>
+    <div class="field"><label>Core items</label><input class="num" id="i_core" inputmode="numeric"></div>
+    <div class="field"><label>Total services <small>exc BOD</small></label><input class="num" id="s_totalExBod" inputmode="numeric"></div>
+  </div>
+</section>
+
+<section>
+  <h2>Services · figures</h2>
+  <div class="grid2">
+    <div class="field"><label>Pharmacy First total</label><input class="num" id="s_pf" inputmode="numeric"></div>
+    <div class="field"><label>PF clinical pathways</label><input class="num" id="s_pfcp" inputmode="numeric"></div>
+    <div class="field"><label>NMS sign-ups</label><input class="num" id="s_nmsSu" inputmode="numeric"></div>
+    <div class="field"><label>NMS follow-ups</label><input class="num" id="s_nmsFu" inputmode="numeric"></div>
+    <div class="field"><label>BP checks</label><input class="num" id="s_bp" inputmode="numeric"></div>
+    <div class="field"><label>ABPM</label><input class="num" id="s_abpm" inputmode="numeric"></div>
+    <div class="field"><label>Contraception</label><input class="num" id="s_contra" inputmode="numeric"></div>
+    <div class="field"><label>EHC</label><input class="num" id="s_ehc" inputmode="numeric"></div>
+    <div class="field"><label>BOP</label><input class="num" id="s_bop" inputmode="numeric"></div>
+    <div class="field"><label>EPS noms</label><input class="num" id="s_eps" inputmode="numeric"></div>
+    <div class="field"><label>Welcome texts</label><input class="num" id="s_welcome" inputmode="numeric"></div>
+  </div>
+</section>
+
+<section>
+  <h2>Daily KPIs</h2>
+  <div class="grid2">
+    <div class="field"><label>MPS <small>%</small></label><input class="num" id="k_mps" inputmode="decimal"></div>
+    <div class="field"><label>MPS accuracy <small>%</small></label><input class="num" id="k_mpsAcc" inputmode="decimal"></div>
+    <div class="field"><label>ATV vs LY <small>£, minus if down</small></label><input class="num" id="k_atv" inputmode="decimal"></div>
+    <div class="field"><label>No7 vs LY <small>£, minus if down</small></label><input class="num" id="k_no7" inputmode="decimal"></div>
+    <div class="field"><label>Adcard linked <small>%</small></label><input class="num" id="k_adcard" inputmode="decimal"></div>
+    <div class="field"><label>NPS overall <small>%</small></label><input class="num" id="k_nps" inputmode="decimal"></div>
+    <div class="field"><label>Digital pick <small>%, target 96</small></label><input class="num" id="k_digipick" inputmode="decimal"></div>
+    <div class="field"><label>Retail loss vs budget <small>£, minus = under</small></label><input class="num" id="k_loss" inputmode="decimal"></div>
+  </div>
+</section>
+
+<section>
+  <h2>NHS services · 6 greens</h2>
+  <div class="grid2">
+    <div class="field"><label>NMS sign up</label><div class="pwrow"><input class="num" id="n6_su_v" inputmode="numeric" placeholder="no."><select id="n6_su_c" style="max-width:110px;"><option value="">–</option><option value="g">Green</option><option value="r">Red</option></select></div></div>
+    <div class="field"><label>NMS comp</label><div class="pwrow"><input class="num" id="n6_comp_v" inputmode="numeric" placeholder="no."><select id="n6_comp_c" style="max-width:110px;"><option value="">–</option><option value="g">Green</option><option value="r">Red</option></select></div></div>
+    <div class="field"><label>HT CC</label><div class="pwrow"><input class="num" id="n6_htcc_v" inputmode="numeric" placeholder="no."><select id="n6_htcc_c" style="max-width:110px;"><option value="">–</option><option value="g">Green</option><option value="r">Red</option></select></div></div>
+    <div class="field"><label>ABPM</label><div class="pwrow"><input class="num" id="n6_abpm_v" inputmode="numeric" placeholder="no."><select id="n6_abpm_c" style="max-width:110px;"><option value="">–</option><option value="g">Green</option><option value="r">Red</option></select></div></div>
+    <div class="field"><label>Contraception</label><div class="pwrow"><input class="num" id="n6_cont_v" inputmode="numeric" placeholder="no."><select id="n6_cont_c" style="max-width:110px;"><option value="">–</option><option value="g">Green</option><option value="r">Red</option></select></div></div>
+    <div class="field"><label>PF CP</label><div class="pwrow"><input class="num" id="n6_pfcp_v" inputmode="numeric" placeholder="no."><select id="n6_pfcp_c" style="max-width:110px;"><option value="">–</option><option value="g">Green</option><option value="r">Red</option></select></div></div>
+  </div>
+  <p class="hint">Copy the numbers and colours for 1478 straight from the regional C4 table. The board counts the greens automatically.</p>
+</section>
+
+<section>
+  <h2>Work delivery</h2>
+  <div class="field wide"><label>Target delivery finish time</label><input id="d_target" type="time"></div>
+  <p class="hint">Shown big and bold on the board, exactly as entered. Clears each day so yesterday's time never lingers.</p>
+</section>
+
+<section>
+  <h2>Team notes</h2>
+  <div class="field wide"><label>Celebrate</label><textarea id="n_www"></textarea><div class="cnt" id="cnt_www">0/120</div></div>
+  <div class="field wide" style="margin-top:10px;"><label>Opportunities</label><textarea id="n_focus"></textarea><div class="cnt" id="cnt_focus">0/120</div></div>
+  <div class="field wide" style="margin-top:10px;"><label>Focuses &amp; notices <small>shown on the board</small></label><textarea id="n_notes"></textarea><div class="cnt" id="cnt_notes">0/120</div></div>
+</section>
+
+<details>
+  <summary>Weekly budgets (rarely change)</summary>
+  <div class="inner">
+    <div class="grid2">
+      <div class="field"><label>Retail sales budget <small>£/wk</small></label><input class="num" id="b_retail" inputmode="decimal"></div>
+      <div class="field"><label>Total items</label><input class="num" id="b_items" inputmode="numeric"></div>
+      <div class="field"><label>Core items</label><input class="num" id="b_core" inputmode="numeric"></div>
+      <div class="field"><label>Total services exc BOD</label><input class="num" id="b_totalExBod" inputmode="numeric"></div>
+      <div class="field"><label>Pharmacy First</label><input class="num" id="b_pf" inputmode="numeric"></div>
+      <div class="field"><label>PF clinical pathways</label><input class="num" id="b_pfcp" inputmode="numeric"></div>
+      <div class="field"><label>NMS sign-ups</label><input class="num" id="b_nmsSu" inputmode="numeric"></div>
+      <div class="field"><label>NMS follow-ups</label><input class="num" id="b_nmsFu" inputmode="numeric"></div>
+      <div class="field"><label>BP checks</label><input class="num" id="b_bp" inputmode="numeric"></div>
+      <div class="field"><label>ABPM</label><input class="num" id="b_abpm" inputmode="numeric"></div>
+      <div class="field"><label>Contraception</label><input class="num" id="b_contra" inputmode="numeric"></div>
+      <div class="field"><label>EHC</label><input class="num" id="b_ehc" inputmode="numeric"></div>
+      <div class="field"><label>BOP</label><input class="num" id="b_bop" inputmode="numeric"></div>
+      <div class="field"><label>EPS noms</label><input class="num" id="b_eps" inputmode="numeric"></div>
+      <div class="field"><label>Welcome texts</label><input class="num" id="b_welcome" inputmode="numeric"></div>
+    </div>
+  </div>
+</details>
+
+<details>
+  <summary>Birthdays &amp; work anniversaries (kept encrypted)</summary>
+  <div class="inner">
+    <div class="field wide"><label>One per line: Name DD-MM</label>
+      <textarea id="bd_list" style="min-height:150px;" placeholder="Michelle 14-02&#10;Sarah 03-09"></textarea></div>
+    <div class="field wide" style="margin-top:10px;"><label>Work anniversaries, one per line: Name DD-MM-YYYY</label>
+      <textarea id="an_list" style="min-height:120px;" placeholder="Alex 23-07-2019&#10;Sam 05-11-2021"></textarea></div>
+    <p class="hint">Both publish inside the encrypted data, so they never appear in the public page code. The board lists the next few of each, shows years of service from the start year, and puts a ribbon up on birthdays.</p>
+  </div>
+</details>
+
+<details id="settings">
+  <summary>Settings · GitHub connection</summary>
+  <div class="inner">
+    <div class="grid2">
+      <div class="field"><label>Owner</label><input id="gh_owner" autocapitalize="none"></div>
+      <div class="field"><label>Repo</label><input id="gh_repo" autocapitalize="none"></div>
+      <div class="field"><label>Branch</label><input id="gh_branch" autocapitalize="none"></div>
+      <div class="field"><label>File path</label><input id="gh_path" autocapitalize="none"></div>
+      <div class="field wide"><label>Fine-grained token <small>stays on this phone only</small></label>
+        <div class="pwrow"><input id="gh_token" type="password" autocapitalize="none" autocomplete="off" placeholder="github_pat_…"><button type="button" class="eyebtn" data-for="gh_token">Show</button></div></div>
+      <div class="field wide"><label>Data passphrase <small>encrypts everything you publish</small></label>
+        <div class="pwrow"><input id="gh_pass" type="password" autocapitalize="none" autocomplete="off" placeholder="long passphrase, no spaces"><button type="button" class="eyebtn" data-for="gh_pass">Show</button></div></div>
+    </div>
+    <button class="btn secondary" id="saveSettings" type="button">Save settings</button>
+    <p class="hint">Token: create at <a href="https://github.com/settings/personal-access-tokens/new" target="_blank">github.com → Settings → Developer settings → Fine-grained tokens</a>. Repository access: <b>only</b> this repo. Permissions: <b>Contents → Read and write</b>. Treat it like a password.</p>
+    <p class="hint">Passphrase: pick something long and memorable. The TV unlocks with the same passphrase added to the board URL after a hash, e.g. <code>…/daily.html#k=YourPassphrase</code>. The part after # is never sent over the internet. Change it any time, then republish and update the YoDeck URL.</p>
+    <p class="hint"><b>Important:</b> Safari and a Home Screen icon keep separate storage on iPhone. Enter and save these settings inside whichever one you actually use each day. If saving fails, check iPhone Settings → Apps → Safari → Block All Cookies is OFF, and avoid Private Browsing.</p>
+  </div>
+</details>
+
+<div id="publishBar"><div class="wrap">
+  <div id="status"></div>
+  <button class="btn" id="publishBtn" type="button">Publish to board</button>
+  <button class="btn secondary" id="copyBtn" type="button">Copy JSON (manual fallback)</button>
+</div></div>
+
+<script>
+/* Defaults from the Store 1478 weekly budget */
+var DEFAULT_BUDGETS = {
+  retail:null, items:1797, core:1784, totalExBod:895,
+  pf:13, pfcp:8, nmsSu:11, nmsFu:8, bp:8, abpm:1,
+  contra:4, ehc:13, bop:10, eps:2, welcome:12
+};
+var SVC_KEYS = ['totalExBod','pf','pfcp','nmsSu','nmsFu','bp','abpm','contra','ehc','bop','eps','welcome'];
+var KPI_KEYS = ['mps','mpsAcc','atv','no7','adcard','nps','digipick','loss'];
+
+function $(id){ return document.getElementById(id); }
+function num(id){
+  var s=String($(id).value).replace(/[^0-9.\-]/g,'');
+  if(s===''||s==='-'||s==='.')return null;
+  var n=parseFloat(s);
+  return isNaN(n)?null:n;
+}
+function put(id,v){ $(id).value=(v===null||v===undefined)?'':v; }
+function setStatus(cls,msg){ var s=$('status'); s.className=cls; s.textContent=msg; }
+
+/* ---------- settings ---------- */
+var LS={owner:'gh_owner_1478b',repo:'gh_repo_1478b',branch:'gh_branch_1478b',path:'gh_path_1478b',token:'gh_token_1478b',pass:'board_pass_1478b'};
+function lsGet(k){ try{return localStorage.getItem(k);}catch(e){return null;} }
+function lsSet(k,v){ try{localStorage.setItem(k,v);return true;}catch(e){return false;} }
+var encPkg=null; /* last fetched encrypted data.json, used to test the passphrase */
+
+function loadSettings(){
+  put('gh_owner', lsGet(LS.owner) || 'bdb786');
+  put('gh_repo',  lsGet(LS.repo)  || '1478-board');
+  put('gh_branch',lsGet(LS.branch)|| 'main');
+  put('gh_path',  lsGet(LS.path)  || 'data.json');
+  put('gh_token', lsGet(LS.token) || '');
+  put('gh_pass',  lsGet(LS.pass)  || '');
+  if(!lsGet(LS.token)) $('settings').open=true;
+}
+function persistSettings(){
+  var ok=true;
+  ok=lsSet(LS.owner,$('gh_owner').value.trim())&&ok;
+  ok=lsSet(LS.repo,$('gh_repo').value.trim())&&ok;
+  ok=lsSet(LS.branch,$('gh_branch').value.trim())&&ok;
+  ok=lsSet(LS.path,$('gh_path').value.trim())&&ok;
+  ok=lsSet(LS.token,$('gh_token').value.trim())&&ok;
+  ok=lsSet(LS.pass,$('gh_pass').value.trim())&&ok;
+  return ok;
+}
+$('saveSettings').addEventListener('click',function(){
+  if(!persistSettings()){
+    setStatus('err','Browser is blocking storage. Turn OFF Block All Cookies in Safari settings and avoid Private Browsing.');
+    return;
+  }
+  var pass=$('gh_pass').value.trim();
+  if(encPkg&&pass&&window.crypto&&crypto.subtle){
+    decryptJson(encPkg,pass).then(function(data){
+      fill(data);
+      setStatus('ok','Saved. Passphrase matches the published board data.');
+    }).catch(function(){
+      setStatus('err','Saved, but this passphrase does NOT match the published data. Fix it, or enter fresh figures and Publish to start over with this passphrase.');
+    });
+  } else {
+    setStatus('ok','Settings saved on this phone.');
+  }
+});
+(function(){
+  var eyes=document.getElementsByClassName('eyebtn');
+  for(var e=0;e<eyes.length;e++){
+    eyes[e].addEventListener('click',function(){
+      var inp=$(this.getAttribute('data-for'));
+      var show=inp.type==='password';
+      inp.type=show?'text':'password';
+      this.textContent=show?'Hide':'Show';
+    });
+  }
+})();
+
+/* ---------- prefill ---------- */
+function fill(d){
+  d=d||{};
+  $('period').value=(d.period==='lastweek')?'lastweek':'wtd';
+  var r=d.retail||{},it=d.items||{},sv=d.services||{},kp=d.kpis||{},nt=d.notes||{};
+  put('r_wtd',r.wtd); put('i_wtd',it.wtd); put('i_core',it.coreWtd);
+  for(var i=0;i<SVC_KEYS.length;i++){
+    var k=SVC_KEYS[i],o=sv[k]||{};
+    put('s_'+k,o.a);
+    var bDef=DEFAULT_BUDGETS[k];
+    put('b_'+k,(o.b===null||o.b===undefined)?bDef:o.b);
+  }
+  put('b_retail',(r.budget===null||r.budget===undefined)?DEFAULT_BUDGETS.retail:r.budget);
+  put('b_items',(it.budget===null||it.budget===undefined)?DEFAULT_BUDGETS.items:it.budget);
+  put('b_core',(it.coreBudget===null||it.coreBudget===undefined)?DEFAULT_BUDGETS.core:it.coreBudget);
+  for(i=0;i<KPI_KEYS.length;i++) put('k_'+KPI_KEYS[i],kp[KPI_KEYS[i]]);
+  var n6=d.nhs6||{},N6K=['su','comp','htcc','abpm','cont','pfcp'];
+  for(i=0;i<N6K.length;i++){
+    var o6=n6[N6K[i]]||{};
+    put('n6_'+N6K[i]+'_v',o6.v);
+    $('n6_'+N6K[i]+'_c').value=o6.c||'';
+  }
+  $('n_www').value=nt.www||''; $('n_focus').value=nt.focus||''; $('n_notes').value=nt.notes||'';
+  var dl=d.delivery||{};
+  var isToday=false;
+  if(d.updated){
+    var u=new Date(d.updated),now=new Date();
+    if(!isNaN(u.getTime())&&u.getFullYear()===now.getFullYear()&&u.getMonth()===now.getMonth()&&u.getDate()===now.getDate())isToday=true;
+  }
+  $('d_target').value=(isToday&&dl.target)?dl.target:'';
+  $('bd_list').value=(d.birthdays||[]).map(function(b){return b.name+' '+b.date;}).join('\n');
+  updateCnts();
+  $('an_list').value=(d.anniversaries||[]).map(function(a){return a.name+' '+a.date+(a.year?'-'+a.year:'');}).join('\n');
+  if(d.updated){
+    var u=new Date(d.updated);
+    if(!isNaN(u.getTime())) $('lastUpdated').textContent='Board last updated '+
+      u.toLocaleDateString('en-GB',{weekday:'short',day:'numeric',month:'short'})+' at '+
+      ('0'+u.getHours()).slice(-2)+':'+('0'+u.getMinutes()).slice(-2);
+  }
+}
+/* ---------- encryption (AES-256-GCM) ---------- */
+function b64e(buf){var b='',u=new Uint8Array(buf);for(var i=0;i<u.length;i++)b+=String.fromCharCode(u[i]);return btoa(b);}
+function b64d(s){var b=atob(s),u=new Uint8Array(b.length);for(var i=0;i<b.length;i++)u[i]=b.charCodeAt(i);return u.buffer;}
+function deriveKey(pass,salt){
+  return crypto.subtle.importKey('raw',new TextEncoder().encode(pass),'PBKDF2',false,['deriveKey'])
+    .then(function(km){return crypto.subtle.deriveKey(
+      {name:'PBKDF2',salt:salt,iterations:150000,hash:'SHA-256'},
+      km,{name:'AES-GCM',length:256},false,['encrypt','decrypt']);});
+}
+function encryptJson(obj,pass){
+  var salt=crypto.getRandomValues(new Uint8Array(16));
+  var iv=crypto.getRandomValues(new Uint8Array(12));
+  return deriveKey(pass,salt).then(function(k){
+    return crypto.subtle.encrypt({name:'AES-GCM',iv:iv},k,new TextEncoder().encode(JSON.stringify(obj)));
+  }).then(function(ct){
+    return JSON.stringify({enc:'AES-GCM',v:1,salt:b64e(salt),iv:b64e(iv),ct:b64e(ct)},null,2);
+  });
+}
+function decryptJson(pkg,pass){
+  return deriveKey(pass,b64d(pkg.salt)).then(function(k){
+    return crypto.subtle.decrypt({name:'AES-GCM',iv:new Uint8Array(b64d(pkg.iv))},k,b64d(pkg.ct));
+  }).then(function(pt){ return JSON.parse(new TextDecoder().decode(pt)); });
+}
+function makeBody(){
+  var data=buildData();
+  var pass=lsGet(LS.pass)||$('gh_pass').value.trim();
+  if(pass){
+    if(!(window.crypto&&crypto.subtle)){
+      setStatus('err','Encryption needs the https page address, not a local file.');
+      return Promise.reject(new Error('nocrypto'));
+    }
+    return encryptJson(data,pass);
+  }
+  return Promise.resolve(JSON.stringify(data,null,2));
+}
+
+function prefill(){
+  fetch('data.json?cachebust='+Date.now())
+    .then(function(r){ if(!r.ok)throw 0; return r.json(); })
+    .then(function(d){
+      if(d&&d.enc){
+        encPkg=d;
+        var pass=lsGet(LS.pass)||'';
+        if(!pass||!(window.crypto&&crypto.subtle)){
+          fill({});
+          $('lastUpdated').textContent='Data is encrypted. Enter the passphrase in Settings, save, then reload.';
+          $('settings').open=true;
+          return;
+        }
+        return decryptJson(d,pass).then(fill).catch(function(){
+          fill({});
+          $('lastUpdated').textContent='Saved passphrase does not match the published data. Fix it in Settings (use Show to check typing), or enter fresh figures and Publish to overwrite with your new passphrase.';
+          $('settings').open=true;
+        });
+      }
+      fill(d);
+    })
+    .catch(function(){
+      fill({});
+      $('lastUpdated').textContent='No data.json yet, budgets prefilled. Publish to create it.';
+    });
+}
+
+/* ---------- build JSON ---------- */
+function parseBirthdays(){
+  var out=[],lines=$('bd_list').value.split('\n');
+  for(var i=0;i<lines.length;i++){
+    var m=lines[i].match(/^\s*(.+?)[\s,;]+(\d{1,2})[-\/.](\d{1,2})\s*$/);
+    if(m)out.push({name:m[1].replace(/[,;]+$/,'').trim(),date:('0'+m[2]).slice(-2)+'-'+('0'+m[3]).slice(-2)});
+  }
+  return out;
+}
+function parseAnniversaries(){
+  var out=[],lines=$('an_list').value.split('\n');
+  for(var i=0;i<lines.length;i++){
+    var m=lines[i].match(/^\s*(.+?)[\s,;]+(\d{1,2})[-\/.](\d{1,2})(?:[-\/.](\d{2,4}))?\s*$/);
+    if(m){
+      var y=m[4]?+m[4]:null; if(y&&y<100)y+=2000;
+      out.push({name:m[1].replace(/[,;]+$/,'').trim(),date:('0'+m[2]).slice(-2)+'-'+('0'+m[3]).slice(-2),year:y});
+    }
+  }
+  return out;
+}
+function buildData(){
+  var services={};
+  for(var i=0;i<SVC_KEYS.length;i++){
+    var k=SVC_KEYS[i];
+    services[k]={a:num('s_'+k),b:num('b_'+k)};
+  }
+  var kpis={};
+  for(i=0;i<KPI_KEYS.length;i++) kpis[KPI_KEYS[i]]=num('k_'+KPI_KEYS[i]);
+  var nhs6={},N6K=['su','comp','htcc','abpm','cont','pfcp'];
+  for(i=0;i<N6K.length;i++){
+    nhs6[N6K[i]]={v:num('n6_'+N6K[i]+'_v'),c:($('n6_'+N6K[i]+'_c').value||null)};
+  }
+  return {
+    updated:new Date().toISOString(),
+    period:($('period').value==='lastweek')?'lastweek':'wtd',
+    retail:{wtd:num('r_wtd'),budget:num('b_retail')},
+    items:{wtd:num('i_wtd'),budget:num('b_items'),coreWtd:num('i_core'),coreBudget:num('b_core')},
+    services:services,
+    kpis:kpis,
+    nhs6:nhs6,
+    delivery:{target:($('d_target').value||null)},
+    birthdays:parseBirthdays(),
+    anniversaries:parseAnniversaries(),
+    notes:{www:$('n_www').value.trim(),focus:$('n_focus').value.trim(),notes:$('n_notes').value.trim()}
+  };
+}
+function b64(str){ return btoa(unescape(encodeURIComponent(str))); }
+
+/* ---------- publish via GitHub API ---------- */
+function apiUrl(){
+  return 'https://api.github.com/repos/'+$('gh_owner').value.trim()+'/'+$('gh_repo').value.trim()+
+         '/contents/'+$('gh_path').value.trim();
+}
+function ghHeaders(){
+  return {
+    'Authorization':'Bearer '+(lsGet(LS.token)||$('gh_token').value.trim()),
+    'Accept':'application/vnd.github+json',
+    'X-GitHub-Api-Version':'2022-11-28'
+  };
+}
+function publish(retrying){
+  persistSettings(); /* auto-save whatever is in Settings so nothing relies on tapping Save */
+  var token=lsGet(LS.token)||$('gh_token').value.trim();
+  if(!token){ setStatus('err','Add your GitHub token in Settings first, or use Copy JSON.'); $('settings').open=true; return; }
+  var btn=$('publishBtn'); btn.disabled=true;
+  setStatus('busy','Publishing…');
+  var branch=$('gh_branch').value.trim()||'main';
+  var hasPass=!!(lsGet(LS.pass)||$('gh_pass').value.trim());
+
+  makeBody().then(function(body){
+    return fetch(apiUrl()+'?ref='+encodeURIComponent(branch),{headers:ghHeaders()})
+      .then(function(r){
+        if(r.status===404) return null;
+        if(!r.ok) throw new Error('get_'+r.status);
+        return r.json();
+      })
+      .then(function(existing){
+        var payload={
+          message:'Board update '+new Date().toLocaleString('en-GB'),
+          content:b64(body),
+          branch:branch
+        };
+        if(existing&&existing.sha) payload.sha=existing.sha;
+        return fetch(apiUrl(),{method:'PUT',headers:ghHeaders(),body:JSON.stringify(payload)});
+      });
+  })
+    .then(function(r){
+      if(r.status===409&&!retrying){ btn.disabled=false; return publish(true); }
+      if(!r.ok) throw new Error('put_'+r.status);
+      setStatus('ok', hasPass
+        ? 'Published encrypted. The board updates within a couple of minutes.'
+        : 'Published UNENCRYPTED. Set a passphrase in Settings to protect the data.');
+      btn.disabled=false;
+    })
+    .catch(function(e){
+      btn.disabled=false;
+      var m=String(e&&e.message||e);
+      if(m.indexOf('nocrypto')>-1) return;
+      if(m.indexOf('401')>-1) setStatus('err','Token rejected. Check it in Settings (Contents: read and write).');
+      else if(m.indexOf('404')>-1) setStatus('err','Repo or path not found. Check owner, repo and file path in Settings.');
+      else if(m.indexOf('403')>-1) setStatus('err','No permission. Token must cover this repo with Contents write.');
+      else setStatus('err','Could not publish. Check connection, or use Copy JSON.');
+    });
+}
+$('publishBtn').addEventListener('click',function(){ publish(false); });
+
+/* ---------- copy fallback ---------- */
+$('copyBtn').addEventListener('click',function(){
+  makeBody().then(function(txt){
+    function done(){ setStatus('ok','Copied. Paste into data.json on github.com and commit.'); }
+    if(navigator.clipboard&&navigator.clipboard.writeText){
+      navigator.clipboard.writeText(txt).then(done,function(){ fallback(); });
+    } else { fallback(); }
+    function fallback(){
+      var ta=document.createElement('textarea');
+      ta.value=txt;document.body.appendChild(ta);ta.select();
+      try{document.execCommand('copy');done();}catch(e){setStatus('err','Copy failed, long-press to select instead.');}
+      document.body.removeChild(ta);
+    }
+  }).catch(function(){});
+});
+
+function updateCnts(){
+  var m=[['n_www','cnt_www'],['n_focus','cnt_focus'],['n_notes','cnt_notes']];
+  for(var i=0;i<m.length;i++){
+    var n=$(m[i][0]).value.length,c=$(m[i][1]);
+    c.textContent=n+'/120';
+    c.className='cnt'+(n>120?' over':'');
+  }
+}
+(function(){
+  var t=['n_www','n_focus','n_notes'];
+  for(var i=0;i<t.length;i++) $(t[i]).addEventListener('input',updateCnts);
+})();
+
+loadSettings();
+prefill();
+</script>
+</body>
+</html>

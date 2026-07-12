@@ -311,7 +311,7 @@ var CONFIG = {
 };
 /* ===================  end of config block  ==================== */
 
-var VERSION='3.2';
+var VERSION='3.3';
 var state = { data:null, lastGood:null };
 
 function $(id){ return document.getElementById(id); }
@@ -618,6 +618,24 @@ function setStatus(kind,msg){
   $('statusDot').className='dot'+(kind==='ok'?'':' '+kind);
   $('statusText').textContent=msg;
 }
+var DBG=/[?#&]debug=1/.test(location.search+location.hash);
+var dbgEl=null;
+function dlog(m){
+  if(!DBG)return;
+  if(!dbgEl){
+    dbgEl=document.createElement('div');
+    dbgEl.style.cssText='position:fixed;left:8px;bottom:8px;z-index:99;background:rgba(2,8,30,.92);color:#8fe3c0;font:12px/1.5 monospace;padding:8px 10px;border-radius:8px;max-width:640px;pointer-events:none;white-space:pre-wrap;';
+    document.body.appendChild(dbgEl);
+    dbgEl.textContent='DEBUG v'+VERSION+' · '+window.innerWidth+'x'+window.innerHeight+' dpr'+(window.devicePixelRatio||1)+'\n'+String(navigator.userAgent).slice(0,80);
+  }
+  var t=new Date();
+  dbgEl.textContent+='\n'+pad(t.getMinutes())+':'+pad(t.getSeconds())+' '+m;
+  var lines=dbgEl.textContent.split('\n');
+  if(lines.length>14)dbgEl.textContent=lines.slice(lines.length-14).join('\n');
+}
+window.onerror=function(msg,src,line){
+  try{setStatus('bad','Script error: '+String(msg).slice(0,60));dlog('ERROR '+msg+' @'+line);}catch(e){}
+};
 function gotData(json){
   state.data=json;state.lastGood=json;
   render();
@@ -627,30 +645,54 @@ function gotData(json){
     ? 'Updated '+pad(up.getHours())+':'+pad(up.getMinutes())+' '+up.getDate()+' '+MON_S[up.getMonth()]
     : 'Updated');
 }
+var firstOk=false,retryTimer=null;
+function scheduleRetry(){
+  if(firstOk||retryTimer)return;
+  retryTimer=setTimeout(function(){retryTimer=null;loadData();},20000);
+  dlog('retry in 20s');
+}
+function fetchWithTimeout(url,ms){
+  return new Promise(function(res,rej){
+    var done=false;
+    var t=setTimeout(function(){ if(!done){done=true;rej(new Error('timeout'));} },ms);
+    fetch(url).then(function(r){ if(!done){done=true;clearTimeout(t);res(r);} },
+                    function(e){ if(!done){done=true;clearTimeout(t);rej(e);} });
+  });
+}
 function loadData(){
   var sep=CONFIG.DATA_URL.indexOf('?')>-1?'&':'?';
-  fetch(CONFIG.DATA_URL+sep+'cachebust='+Date.now())
-    .then(function(r){ if(!r.ok)throw new Error('HTTP '+r.status); return r.json(); })
+  dlog('fetch data.json…');
+  fetchWithTimeout(CONFIG.DATA_URL+sep+'cachebust='+Date.now(),12000)
+    .then(function(r){ dlog('HTTP '+r.status); if(!r.ok)throw new Error('HTTP '+r.status); return r.json(); })
     .then(function(json){
       if(json && json.enc){
+        dlog('encrypted payload');
         if(!(window.crypto&&crypto.subtle)){
-          state.data=null;render();setStatus('bad','This browser cannot decrypt, open via the https address');return;
+          state.data=null;render();setStatus('bad','This browser cannot decrypt, open via the https address');dlog('no WebCrypto');scheduleRetry();return;
         }
         var key=getKey();
+        dlog('key '+(key?'present':'MISSING'));
         if(!key){
-          state.data=null;render();setStatus('bad','Locked. Add #k=passphrase to this page\'s URL');return;
+          state.data=null;render();setStatus('bad','Locked. Add ?k=passphrase to this page\'s URL');scheduleRetry();return;
         }
-        return decryptJson(json,key).then(gotData).catch(function(){
-          state.data=null;render();setStatus('bad','Wrong passphrase in the URL');
+        var t0=Date.now();
+        return decryptJson(json,key).then(function(plain){
+          dlog('decrypted in '+(Date.now()-t0)+'ms');
+          firstOk=true;gotData(plain);
+        }).catch(function(){
+          state.data=null;render();setStatus('bad','Wrong passphrase in the URL');dlog('decrypt FAILED');scheduleRetry();
         });
       }
-      gotData(json);
+      dlog('plain payload');
+      firstOk=true;gotData(json);
     })
-    .catch(function(){
+    .catch(function(e){
+      dlog('fetch failed: '+(e&&e.message));
       if(state.lastGood){state.data=state.lastGood;render();
         setStatus('warn','Connection issue, showing last good data');}
       else{state.data=null;render();
-        setStatus('bad','No data yet, publish from the entry page');}
+        setStatus('bad','No data yet or blocked, retrying');}
+      scheduleRetry();
     });
 }
 

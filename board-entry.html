@@ -65,6 +65,11 @@
   textarea{min-height:74px;resize:vertical;font-size:16px;line-height:1.4;}
   .cnt{font-size:12px;color:var(--faint);text-align:right;margin-top:3px;}
   .cnt.over{color:var(--amber);font-weight:600;}
+  .gsec{display:block;font-size:13px;font-weight:700;color:var(--sky);letter-spacing:.08em;margin:16px 0 8px;text-transform:uppercase;}
+  .r8row{display:flex;gap:8px;margin-bottom:8px;}
+  .r8row input.lab{flex:1.4;}
+  .r8row input.val{flex:0 0 78px;}
+  .r8row select{flex:0 0 104px;width:auto;}
   input.num{font-family:'Sora',sans-serif;font-weight:600;font-variant-numeric:tabular-nums;}
 
   details{
@@ -110,7 +115,7 @@
 <body>
 
 <div class="top">
-  <h1>1478 Daily Board <small style="font-size:13px;color:var(--faint);font-weight:600;">v3.2</small></h1>
+  <h1>1478 Daily Board <small style="font-size:13px;color:var(--faint);font-weight:600;">v4.0</small></h1>
   <a id="boardLink" href="daily.html" target="_blank">View board →</a>
 </div>
 <div id="lastUpdated">Loading current figures…</div>
@@ -149,30 +154,39 @@
 </section>
 
 <section>
-  <h2>Daily KPIs</h2>
+  <h2>Regional scorecard · 24 greens</h2>
+  <span class="gsec" style="margin-top:4px;">NHS Services · /6</span>
   <div class="grid2">
-    <div class="field"><label>MPS <small>%</small></label><input class="num" id="k_mps" inputmode="decimal"></div>
-    <div class="field"><label>MPS accuracy <small>%</small></label><input class="num" id="k_mpsAcc" inputmode="decimal"></div>
-    <div class="field"><label>ATV vs LY <small>£, minus if down</small></label><input class="num" id="k_atv" inputmode="decimal"></div>
-    <div class="field"><label>No7 vs LY <small>£, minus if down</small></label><input class="num" id="k_no7" inputmode="decimal"></div>
-    <div class="field"><label>Adcard linked <small>%</small></label><input class="num" id="k_adcard" inputmode="decimal"></div>
-    <div class="field"><label>NPS overall <small>%</small></label><input class="num" id="k_nps" inputmode="decimal"></div>
-    <div class="field"><label>Digital pick <small>%, target 96</small></label><input class="num" id="k_digipick" inputmode="decimal"></div>
-    <div class="field"><label>Retail loss vs budget <small>£, minus = under</small></label><input class="num" id="k_loss" inputmode="decimal"></div>
+    <div class="field"><label>NMS sign up</label><div class="pwrow"><input class="num" id="n6_su_v" inputmode="decimal" placeholder="no."><select id="n6_su_c" style="max-width:104px;"><option value="">–</option><option value="g">Green</option><option value="r">Red</option></select></div></div>
+    <div class="field"><label>NMS comp</label><div class="pwrow"><input class="num" id="n6_comp_v" inputmode="decimal" placeholder="no."><select id="n6_comp_c" style="max-width:104px;"><option value="">–</option><option value="g">Green</option><option value="r">Red</option></select></div></div>
+    <div class="field"><label>HT CC</label><div class="pwrow"><input class="num" id="n6_htcc_v" inputmode="decimal" placeholder="no."><select id="n6_htcc_c" style="max-width:104px;"><option value="">–</option><option value="g">Green</option><option value="r">Red</option></select></div></div>
+    <div class="field"><label>ABPM</label><div class="pwrow"><input class="num" id="n6_abpm_v" inputmode="decimal" placeholder="no."><select id="n6_abpm_c" style="max-width:104px;"><option value="">–</option><option value="g">Green</option><option value="r">Red</option></select></div></div>
+    <div class="field"><label>Contraception</label><div class="pwrow"><input class="num" id="n6_cont_v" inputmode="decimal" placeholder="no."><select id="n6_cont_c" style="max-width:104px;"><option value="">–</option><option value="g">Green</option><option value="r">Red</option></select></div></div>
+    <div class="field"><label>PF CP</label><div class="pwrow"><input class="num" id="n6_pfcp_v" inputmode="decimal" placeholder="no."><select id="n6_pfcp_c" style="max-width:104px;"><option value="">–</option><option value="g">Green</option><option value="r">Red</option></select></div></div>
   </div>
-</section>
-
-<section>
-  <h2>NHS services · 6 greens</h2>
+  <span class="gsec">Pharmacy · Care · Payroll · /10</span>
   <div class="grid2">
-    <div class="field"><label>NMS sign up</label><div class="pwrow"><input class="num" id="n6_su_v" inputmode="numeric" placeholder="no."><select id="n6_su_c" style="max-width:110px;"><option value="">–</option><option value="g">Green</option><option value="r">Red</option></select></div></div>
-    <div class="field"><label>NMS comp</label><div class="pwrow"><input class="num" id="n6_comp_v" inputmode="numeric" placeholder="no."><select id="n6_comp_c" style="max-width:110px;"><option value="">–</option><option value="g">Green</option><option value="r">Red</option></select></div></div>
-    <div class="field"><label>HT CC</label><div class="pwrow"><input class="num" id="n6_htcc_v" inputmode="numeric" placeholder="no."><select id="n6_htcc_c" style="max-width:110px;"><option value="">–</option><option value="g">Green</option><option value="r">Red</option></select></div></div>
-    <div class="field"><label>ABPM</label><div class="pwrow"><input class="num" id="n6_abpm_v" inputmode="numeric" placeholder="no."><select id="n6_abpm_c" style="max-width:110px;"><option value="">–</option><option value="g">Green</option><option value="r">Red</option></select></div></div>
-    <div class="field"><label>Contraception</label><div class="pwrow"><input class="num" id="n6_cont_v" inputmode="numeric" placeholder="no."><select id="n6_cont_c" style="max-width:110px;"><option value="">–</option><option value="g">Green</option><option value="r">Red</option></select></div></div>
-    <div class="field"><label>PF CP</label><div class="pwrow"><input class="num" id="n6_pfcp_v" inputmode="numeric" placeholder="no."><select id="n6_pfcp_c" style="max-width:110px;"><option value="">–</option><option value="g">Green</option><option value="r">Red</option></select></div></div>
+    <div class="field"><label>Items</label><div class="pwrow"><input class="num" id="t10_items_v" inputmode="decimal" placeholder="no."><select id="t10_items_c" style="max-width:104px;"><option value="">–</option><option value="g">Green</option><option value="r">Red</option></select></div></div>
+    <div class="field"><label>EPS</label><div class="pwrow"><input class="num" id="t10_eps_v" inputmode="decimal" placeholder="no."><select id="t10_eps_c" style="max-width:104px;"><option value="">–</option><option value="g">Green</option><option value="r">Red</option></select></div></div>
+    <div class="field"><label>MPS <small>%</small></label><div class="pwrow"><input class="num" id="t10_mps_v" inputmode="decimal" placeholder="no."><select id="t10_mps_c" style="max-width:104px;"><option value="">–</option><option value="g">Green</option><option value="r">Red</option></select></div></div>
+    <div class="field"><label>Services</label><div class="pwrow"><input class="num" id="t10_services_v" inputmode="decimal" placeholder="no."><select id="t10_services_c" style="max-width:104px;"><option value="">–</option><option value="g">Green</option><option value="r">Red</option></select></div></div>
+    <div class="field"><label>PSAT <small>%</small></label><div class="pwrow"><input class="num" id="t10_psat_v" inputmode="decimal" placeholder="no."><select id="t10_psat_c" style="max-width:104px;"><option value="">–</option><option value="g">Green</option><option value="r">Red</option></select></div></div>
+    <div class="field"><label>OSAT <small>%</small></label><div class="pwrow"><input class="num" id="t10_osat_v" inputmode="decimal" placeholder="no."><select id="t10_osat_c" style="max-width:104px;"><option value="">–</option><option value="g">Green</option><option value="r">Red</option></select></div></div>
+    <div class="field"><label>RSAT <small>%</small></label><div class="pwrow"><input class="num" id="t10_rsat_v" inputmode="decimal" placeholder="no."><select id="t10_rsat_c" style="max-width:104px;"><option value="">–</option><option value="g">Green</option><option value="r">Red</option></select></div></div>
+    <div class="field"><label>NPS <small>%</small></label><div class="pwrow"><input class="num" id="t10_nps_v" inputmode="decimal" placeholder="no."><select id="t10_nps_c" style="max-width:104px;"><option value="">–</option><option value="g">Green</option><option value="r">Red</option></select></div></div>
+    <div class="field"><label>Responses</label><div class="pwrow"><input class="num" id="t10_resp_v" inputmode="decimal" placeholder="no."><select id="t10_resp_c" style="max-width:104px;"><option value="">–</option><option value="g">Green</option><option value="r">Red</option></select></div></div>
+    <div class="field"><label>Payroll <small>£</small></label><div class="pwrow"><input class="num" id="t10_payroll_v" inputmode="decimal" placeholder="no."><select id="t10_payroll_c" style="max-width:104px;"><option value="">–</option><option value="g">Green</option><option value="r">Red</option></select></div></div>
   </div>
-  <p class="hint">Copy the numbers and colours for 1478 straight from the regional C4 table. The board counts the greens automatically.</p>
+  <span class="gsec">Retail · Ops · /8 <small style="text-transform:none;color:var(--faint);font-weight:500;">edit names to match the deck</small></span>
+    <div class="r8row"><input class="lab" id="r8_1_label" placeholder="Metric 1"><input class="num val" id="r8_1_v" inputmode="decimal" placeholder="no."><select id="r8_1_c" style="max-width:104px;"><option value="">–</option><option value="g">Green</option><option value="r">Red</option></select></div>
+    <div class="r8row"><input class="lab" id="r8_2_label" placeholder="Metric 2"><input class="num val" id="r8_2_v" inputmode="decimal" placeholder="no."><select id="r8_2_c" style="max-width:104px;"><option value="">–</option><option value="g">Green</option><option value="r">Red</option></select></div>
+    <div class="r8row"><input class="lab" id="r8_3_label" placeholder="Metric 3"><input class="num val" id="r8_3_v" inputmode="decimal" placeholder="no."><select id="r8_3_c" style="max-width:104px;"><option value="">–</option><option value="g">Green</option><option value="r">Red</option></select></div>
+    <div class="r8row"><input class="lab" id="r8_4_label" placeholder="Metric 4"><input class="num val" id="r8_4_v" inputmode="decimal" placeholder="no."><select id="r8_4_c" style="max-width:104px;"><option value="">–</option><option value="g">Green</option><option value="r">Red</option></select></div>
+    <div class="r8row"><input class="lab" id="r8_5_label" placeholder="Metric 5"><input class="num val" id="r8_5_v" inputmode="decimal" placeholder="no."><select id="r8_5_c" style="max-width:104px;"><option value="">–</option><option value="g">Green</option><option value="r">Red</option></select></div>
+    <div class="r8row"><input class="lab" id="r8_6_label" placeholder="Metric 6"><input class="num val" id="r8_6_v" inputmode="decimal" placeholder="no."><select id="r8_6_c" style="max-width:104px;"><option value="">–</option><option value="g">Green</option><option value="r">Red</option></select></div>
+    <div class="r8row"><input class="lab" id="r8_7_label" placeholder="Metric 7"><input class="num val" id="r8_7_v" inputmode="decimal" placeholder="no."><select id="r8_7_c" style="max-width:104px;"><option value="">–</option><option value="g">Green</option><option value="r">Red</option></select></div>
+    <div class="r8row"><input class="lab" id="r8_8_label" placeholder="Metric 8"><input class="num val" id="r8_8_v" inputmode="decimal" placeholder="no."><select id="r8_8_c" style="max-width:104px;"><option value="">–</option><option value="g">Green</option><option value="r">Red</option></select></div>
+  <p class="hint">Copy the colours (and any numbers you want shown) for 1478 straight from the area deck's three tables. The board totals each row and the /24 automatically.</p>
 </section>
 
 <section>
@@ -256,7 +270,7 @@ var DEFAULT_BUDGETS = {
   contra:4, ehc:13, bop:10, eps:2, welcome:12
 };
 var SVC_KEYS = ['totalExBod','pf','pfcp','nmsSu','nmsFu','bp','abpm','contra','ehc','bop','eps','welcome'];
-var KPI_KEYS = ['mps','mpsAcc','atv','no7','adcard','nps','digipick','loss'];
+var DEF8=['Sales','ATV','No7','Adcard','Digital Pick','Loss','Ops 7','Ops 8'];
 
 function $(id){ return document.getElementById(id); }
 function num(id){
@@ -337,12 +351,27 @@ function fill(d){
   put('b_retail',(r.budget===null||r.budget===undefined)?DEFAULT_BUDGETS.retail:r.budget);
   put('b_items',(it.budget===null||it.budget===undefined)?DEFAULT_BUDGETS.items:it.budget);
   put('b_core',(it.coreBudget===null||it.coreBudget===undefined)?DEFAULT_BUDGETS.core:it.coreBudget);
-  for(i=0;i<KPI_KEYS.length;i++) put('k_'+KPI_KEYS[i],kp[KPI_KEYS[i]]);
-  var n6=d.nhs6||{},N6K=['su','comp','htcc','abpm','cont','pfcp'];
+  var gg=d.greens||{};
+  var gn=gg.nhs||d.nhs6||{};
+  var N6K=['su','comp','htcc','abpm','cont','pfcp'];
   for(i=0;i<N6K.length;i++){
-    var o6=n6[N6K[i]]||{};
+    var o6=gn[N6K[i]]||{};
     put('n6_'+N6K[i]+'_v',o6.v);
     $('n6_'+N6K[i]+'_c').value=o6.c||'';
+  }
+  var gt=gg.ten||{},T10K=['items','eps','mps','services','psat','osat','rsat','nps','resp','payroll'];
+  for(i=0;i<T10K.length;i++){
+    var ot=gt[T10K[i]]||{};
+    put('t10_'+T10K[i]+'_v',ot.v);
+    $('t10_'+T10K[i]+'_c').value=ot.c||'';
+  }
+  var ge=gg.eight||{};
+  var gl=(gg.eightLabels&&gg.eightLabels.length===8)?gg.eightLabels:DEF8;
+  for(i=1;i<=8;i++){
+    var oe=ge['r'+i]||{};
+    $('r8_'+i+'_label').value=gl[i-1]||('Ops '+i);
+    put('r8_'+i+'_v',oe.v);
+    $('r8_'+i+'_c').value=oe.c||'';
   }
   $('n_www').value=nt.www||''; $('n_focus').value=nt.focus||''; $('n_notes').value=nt.notes||'';
   var dl=d.delivery||{};
@@ -451,11 +480,15 @@ function buildData(){
     var k=SVC_KEYS[i];
     services[k]={a:num('s_'+k),b:num('b_'+k)};
   }
-  var kpis={};
-  for(i=0;i<KPI_KEYS.length;i++) kpis[KPI_KEYS[i]]=num('k_'+KPI_KEYS[i]);
-  var nhs6={},N6K=['su','comp','htcc','abpm','cont','pfcp'];
-  for(i=0;i<N6K.length;i++){
-    nhs6[N6K[i]]={v:num('n6_'+N6K[i]+'_v'),c:($('n6_'+N6K[i]+'_c').value||null)};
+  var greens={nhs:{},ten:{},eight:{},eightLabels:[]};
+  var N6K=['su','comp','htcc','abpm','cont','pfcp'];
+  for(i=0;i<N6K.length;i++) greens.nhs[N6K[i]]={v:num('n6_'+N6K[i]+'_v'),c:($('n6_'+N6K[i]+'_c').value||null)};
+  var T10K=['items','eps','mps','services','psat','osat','rsat','nps','resp','payroll'];
+  for(i=0;i<T10K.length;i++) greens.ten[T10K[i]]={v:num('t10_'+T10K[i]+'_v'),c:($('t10_'+T10K[i]+'_c').value||null)};
+  for(i=1;i<=8;i++){
+    greens.eight['r'+i]={v:num('r8_'+i+'_v'),c:($('r8_'+i+'_c').value||null)};
+    var lb=$('r8_'+i+'_label').value.trim();
+    greens.eightLabels.push(lb||DEF8[i-1]||('Ops '+i));
   }
   return {
     updated:new Date().toISOString(),
@@ -463,8 +496,7 @@ function buildData(){
     retail:{wtd:num('r_wtd'),budget:num('b_retail')},
     items:{wtd:num('i_wtd'),budget:num('b_items'),coreWtd:num('i_core'),coreBudget:num('b_core')},
     services:services,
-    kpis:kpis,
-    nhs6:nhs6,
+    greens:greens,
     delivery:{target:($('d_target').value||null)},
     birthdays:parseBirthdays(),
     anniversaries:parseAnniversaries(),

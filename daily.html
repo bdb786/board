@@ -121,31 +121,27 @@
   .minibar.warn i{background:var(--amber);}
   .minibar.bad i{background:var(--coral);}
 
-  /* ---------- Row 3: KPI strip ---------- */
-  .kpi-grid{display:grid;grid-template-columns:repeat(8,1fr);gap:10px;height:96px;flex:0 0 auto;}
-  .kpi{background:linear-gradient(180deg,rgba(255,255,255,.03),rgba(255,255,255,0) 40%),var(--card);
-    border:1px solid var(--card-edge);border-radius:12px;padding:9px 12px;
-    display:flex;flex-direction:column;justify-content:center;text-align:center;overflow:hidden;}
-  .kpi .k-name{font-size:12px;font-weight:600;letter-spacing:.07em;text-transform:uppercase;color:var(--muted);line-height:1.2;}
-  .kpi .k-val{font-family:'Sora',sans-serif;font-weight:700;font-size:28px;margin-top:2px;font-variant-numeric:tabular-nums;}
-  .kpi .k-val.good{color:var(--teal);}
-  .kpi .k-val.warn{color:var(--amber);}
-  .kpi .k-val.bad{color:var(--coral);}
-  .kpi .k-sub{font-size:11px;color:var(--faint);margin-top:1px;min-height:11px;}
-
-  /* ---------- Row 4: NHS 6 greens ---------- */
-  .row-nhs{height:88px;flex:0 0 auto;}
-  .nhs-card{flex-direction:row;align-items:center;gap:16px;padding:10px 20px;}
-  .nhs-title{flex:0 0 auto;line-height:1.5;}
-  .ntiles{display:grid;grid-template-columns:repeat(6,1fr);gap:10px;flex:1;min-width:0;}
-  .ntile{border-radius:12px;padding:8px 10px;text-align:center;background:var(--track);overflow:hidden;}
-  .ntile .n-name{display:block;font-size:11px;font-weight:600;letter-spacing:.05em;text-transform:uppercase;color:var(--muted);line-height:1.2;white-space:nowrap;}
-  .ntile .n-val{font-family:'Sora',sans-serif;font-weight:800;font-size:24px;line-height:1.2;font-variant-numeric:tabular-nums;}
-  .ntile.g{background:rgba(47,224,176,.18);} .ntile.g .n-val{color:var(--teal);}
-  .ntile.r{background:rgba(255,107,112,.18);} .ntile.r .n-val{color:var(--coral);}
-  .nscore{font-family:'Sora',sans-serif;font-weight:800;font-size:32px;min-width:86px;text-align:right;
-    font-variant-numeric:tabular-nums;color:var(--muted);flex:0 0 auto;}
-  .nscore.g{color:var(--teal);} .nscore.mid{color:var(--amber);} .nscore.low{color:var(--coral);}
+  /* ---------- Row 3: 24 greens scorecard ---------- */
+  .row-g24{height:204px;flex:0 0 auto;flex-direction:row;align-items:stretch;gap:16px;padding:12px 20px;}
+  .g24-rows{flex:1;display:flex;flex-direction:column;gap:8px;min-width:0;}
+  .g24-row{flex:1;display:flex;align-items:center;gap:10px;min-height:0;}
+  .g24-label{flex:0 0 150px;font-size:10.5px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:var(--muted);line-height:1.25;}
+  .g24-label b{color:var(--ink);font-family:'Sora',sans-serif;font-size:17px;letter-spacing:0;display:block;font-variant-numeric:tabular-nums;}
+  .g24-cells{flex:1;display:grid;gap:6px;min-width:0;}
+  .g24-cells.c6{grid-template-columns:repeat(6,1fr);}
+  .g24-cells.c10{grid-template-columns:repeat(10,1fr);}
+  .g24-cells.c8{grid-template-columns:repeat(8,1fr);}
+  .gcell{border-radius:9px;padding:4px 6px;text-align:center;background:var(--track);overflow:hidden;
+    display:flex;flex-direction:column;justify-content:center;min-width:0;}
+  .gcell .gc-name{font-size:10px;font-weight:600;letter-spacing:.03em;text-transform:uppercase;color:var(--muted);
+    line-height:1.15;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .gcell .gc-val{font-family:'Sora',sans-serif;font-weight:700;font-size:16px;line-height:1.2;font-variant-numeric:tabular-nums;min-height:19px;}
+  .gcell.g{background:rgba(47,224,176,.20);} .gcell.g .gc-val{color:var(--teal);}
+  .gcell.r{background:rgba(255,107,112,.20);} .gcell.r .gc-val{color:var(--coral);}
+  .g24-total{flex:0 0 148px;display:flex;flex-direction:column;justify-content:center;align-items:flex-end;text-align:right;}
+  .g24-total .t-big{font-family:'Sora',sans-serif;font-weight:800;font-size:46px;line-height:1;font-variant-numeric:tabular-nums;color:var(--muted);}
+  .g24-total .t-big.g{color:var(--teal);} .g24-total .t-big.mid{color:var(--amber);} .g24-total .t-big.low{color:var(--coral);}
+  .g24-total .t-sub{font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin-top:5px;}
 
   /* ---------- Row 5: Celebrate etc ---------- */
   .row-notes{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;height:190px;flex:0 0 auto;}
@@ -231,12 +227,22 @@
       <div class="svc-grid" id="svcGrid"></div>
     </section>
 
-    <div class="kpi-grid" id="kpiGrid"></div>
-
-    <section class="card nhs-card row-nhs">
-      <span class="eyebrow nhs-title">NHS Services<br>6 greens</span>
-      <div class="ntiles" id="nhsTiles"></div>
-      <div class="nscore num" id="nhsScore">–/6</div>
+    <section class="card row-g24">
+      <div class="g24-rows">
+        <div class="g24-row">
+          <div class="g24-label"><b id="gSubNhs">–/6</b>NHS Services</div>
+          <div class="g24-cells c6" id="gRowNhs"></div>
+        </div>
+        <div class="g24-row">
+          <div class="g24-label"><b id="gSubTen">–/10</b>Pharmacy · Care · Payroll</div>
+          <div class="g24-cells c10" id="gRowTen"></div>
+        </div>
+        <div class="g24-row">
+          <div class="g24-label"><b id="gSubEight">–/8</b>Retail · Ops</div>
+          <div class="g24-cells c8" id="gRowEight"></div>
+        </div>
+      </div>
+      <div class="g24-total"><div class="t-big num" id="g24Total">–/24</div><div class="t-sub">Area scorecard</div></div>
     </section>
 
     <div class="row-notes">
@@ -294,24 +300,15 @@ var CONFIG = {
     { key:'ehc',   label:'EHC' },
     { key:'bop',   label:'BOP' }
   ],
-  KPIS : [
-    { key:'mps',     label:'MPS',          kind:'pct'  },
-    { key:'mpsAcc',  label:'MPS Acc',      kind:'pct'  },
-    { key:'atv',     label:'ATV vs LY',    kind:'money', good:'high' },
-    { key:'no7',     label:'No7 vs LY',    kind:'money', good:'high' },
-    { key:'adcard',  label:'Adcard',       kind:'pct'  },
-    { key:'nps',     label:'NPS',          kind:'pct'  },
-    { key:'digipick',label:'Digital Pick', kind:'pct',  good:'high', target:96, sub:'target 96%' },
-    { key:'loss',    label:'Loss vs B',    kind:'money', good:'low' }
-  ],
-  NHS6 : [
-    ['su','NMS Sign Up'],['comp','NMS Comp'],['htcc','HT CC'],
-    ['abpm','ABPM'],['cont','Contraception'],['pfcp','PF CP']
-  ]
+  G24 : {
+    nhs : [['su','NMS Sign Up'],['comp','NMS Comp'],['htcc','HT CC'],['abpm','ABPM'],['cont','Contraception'],['pfcp','PF CP']],
+    ten : [['items','Items'],['eps','EPS'],['mps','MPS'],['services','Services'],['psat','PSAT'],['osat','OSAT'],['rsat','RSAT'],['nps','NPS'],['resp','Responses'],['payroll','Payroll']],
+    eightDefaults : ['Sales','ATV','No7','Adcard','Digital Pick','Loss','Ops 7','Ops 8']
+  }
 };
 /* ===================  end of config block  ==================== */
 
-var VERSION='3.3';
+var VERSION='4.0';
 var state = { data:null, lastGood:null };
 
 function $(id){ return document.getElementById(id); }
@@ -430,6 +427,7 @@ function renderPeople(){
 
 /* ---------- bars and hero cards ---------- */
 function setBar(barEl,fillEl,pct,pacePct,grace){
+  if(!barEl||!fillEl)return'';
   if(pct>100)pct=100; if(pct<0)pct=0;
   fillEl.style.width=pct+'%';
   var cls=pct>=pacePct*0.999?'':(pct>=pacePct*0.9?'warn':'bad');
@@ -464,9 +462,10 @@ function heroCard(pfx,wtd,budget,fmt,days,isFinal){
       chip.className='chip '+cls;
     }
   } else {
-    $(pfx+'Fill').style.width='0%';
-    $(pfx+'Bar').className=$(pfx+'Bar').className.replace(/\s?(warn|bad)/g,'');
-    mk.style.display='none';
+    var fe=$(pfx+'Fill'),be=$(pfx+'Bar');
+    if(fe)fe.style.width='0%';
+    if(be)be.className=be.className.replace(/\s?(warn|bad)/g,'');
+    if(mk)mk.style.display='none';
     if(!hasWtd&&!hasBudget){ $(pfx+'Pace').textContent="Waiting for this week's figures"; }
     else if(!hasWtd){ $(pfx+'Pace').textContent="Enter this week's "+(pfx==='retail'?'sales':'items')+" on the entry page"; }
     else { $(pfx+'Pace').textContent='Set the weekly budget · Budgets section on the entry page'; }
@@ -493,6 +492,38 @@ function renderDelivery(d){
 }
 
 /* ---------- main render ---------- */
+function gcells(el,defs,data){
+  var html='',greens=0,set=0;
+  for(var i=0;i<defs.length;i++){
+    var o=(data&&data[defs[i][0]])||{};
+    var cls=o.c==='g'?' g':(o.c==='r'?' r':'');
+    if(o.c==='g')greens++;
+    if(o.c)set++;
+    html+='<div class="gcell'+cls+'"><span class="gc-name">'+esc(defs[i][1])+'</span><span class="gc-val num">'+(isNum(o.v)?o.v:'')+'</span></div>';
+  }
+  if(el)el.innerHTML=html;
+  return {g:greens,set:set};
+}
+function renderGreens(d){
+  var g=d.greens||{};
+  if(!d.greens && d.nhs6) g={nhs:d.nhs6};   /* older published data still shows the /6 */
+  var labels=(g.eightLabels&&g.eightLabels.length===8)?g.eightLabels:CONFIG.G24.eightDefaults;
+  var eightDefs=[];
+  for(var i=0;i<8;i++) eightDefs.push(['r'+(i+1), labels[i]||('Ops '+(i+1))]);
+  var a=gcells($('gRowNhs'),CONFIG.G24.nhs,g.nhs);
+  var b=gcells($('gRowTen'),CONFIG.G24.ten,g.ten);
+  var c=gcells($('gRowEight'),eightDefs,g.eight);
+  $('gSubNhs').textContent=(a.set?a.g:'–')+'/6';
+  $('gSubTen').textContent=(b.set?b.g:'–')+'/10';
+  $('gSubEight').textContent=(c.set?c.g:'–')+'/8';
+  var tot=a.g+b.g+c.g, anySet=a.set+b.set+c.set;
+  var te=$('g24Total');
+  te.textContent=(anySet?tot:'–')+'/24';
+  te.className='t-big num '+(anySet?(tot>=16?'g':(tot>=10?'mid':'low')):'');
+}
+function safe(name,fn){
+  try{ fn(); }catch(e){ dlog('render:'+name+' failed '+(e&&e.message)); }
+}
 function render(){
   var d=state.data||{};
   var upD=d.updated?new Date(d.updated):null;
@@ -507,12 +538,15 @@ function render(){
   $('itemsEyebrow').textContent='Items · '+suffix;
   $('svcEyebrow').textContent='Pharmacy services · '+suffix;
 
+  safe('hero',function(){
   var retail=d.retail||{},items=d.items||{};
   heroCard('retail',retail.wtd,retail.budget,money,days,isFinal);
   heroCard('items',items.wtd,items.budget,function(v){return isNum(v)?String(Math.round(v)):'—';},days,isFinal);
   $('coreLine').textContent=(isNum(items.coreWtd)?items.coreWtd:'—')+' / '+(isNum(items.coreBudget)?items.coreBudget:'—');
+  });
 
   /* services */
+  safe('services',function(){
   var svcs=d.services||{},grid=$('svcGrid');grid.innerHTML='';
   var svcGrace=(!isFinal&&days<=1);
   var i;
@@ -540,54 +574,23 @@ function render(){
   var tot=svcs.totalExBod||{};
   function fr(o){o=o||{};return (isNum(o.a)?o.a:'—')+'/'+(isNum(o.b)?o.b:'—');}
   $('svcTotalLine').textContent='Total exc BOD '+fr(tot)+' · EPS '+fr(svcs.eps)+' · Welcome '+fr(svcs.welcome);
+  });
 
-  /* KPI strip */
-  var kp=d.kpis||{},kg=$('kpiGrid');kg.innerHTML='';
-  for(i=0;i<CONFIG.KPIS.length;i++){
-    var k=CONFIG.KPIS[i],v=kp[k.key];
-    var txt='—',cls='';
-    if(isNum(v)){
-      if(k.kind==='pct')txt=(Math.round(v*10)/10)+'%';
-      else if(k.kind==='money')txt=(v>0?'+':'')+money(v);
-      else txt=String(v);
-      if(k.good==='high'&&k.target!==undefined)cls=v>=k.target?'good':(v>=k.target-6?'warn':'bad');
-      else if(k.good==='high')cls=v>=0?'good':'bad';
-      else if(k.good==='low')cls=v<=0?'good':'bad';
-    }
-    var sub=k.sub||'';
-    if(k.subKey&&isNum(kp[k.subKey]))sub=kp[k.subKey]+' '+(k.subFmt||'');
-    var kel=document.createElement('div');kel.className='kpi';
-    kel.innerHTML='<div class="k-name">'+k.label+'</div>'+
-      '<div class="k-val num '+cls+'">'+txt+'</div>'+
-      (sub?'<div class="k-sub">'+sub+'</div>':'');
-    kg.appendChild(kel);
-  }
-
-  /* NHS 6 greens (manual RAG from the regional C4 table) */
-  var nh=d.nhs6||{},nHtml='',nGreens=0,nSet=0;
-  for(i=0;i<CONFIG.NHS6.length;i++){
-    var no=nh[CONFIG.NHS6[i][0]]||{};
-    var ncls=no.c==='g'?' g':(no.c==='r'?' r':'');
-    if(no.c==='g')nGreens++;
-    if(no.c)nSet++;
-    nHtml+='<div class="ntile'+ncls+'"><span class="n-name">'+CONFIG.NHS6[i][1]+'</span><span class="n-val num">'+(isNum(no.v)?no.v:'–')+'</span></div>';
-  }
-  $('nhsTiles').innerHTML=nHtml;
-  var nsc=$('nhsScore');
-  nsc.textContent=(nSet?nGreens:'–')+'/6';
-  nsc.className='nscore num '+(nSet?(nGreens>=5?'g':(nGreens>=3?'mid':'low')):'');
+  /* 24 greens scorecard (manual RAG mirroring the area deck) */
+  safe('greens',function(){ renderGreens(d); });
 
   /* notes */
+  safe('notes',function(){
   var nt=d.notes||{};
   var map=[['www','wwwText'],['focus','focusText'],['notes','notesText']];
   for(i=0;i<map.length;i++){
     var val=nt[map[i][0]],el2=$(map[i][1]);
     if(val&&String(val).trim()!==''){el2.textContent=val;el2.className='';}
   }
+  });
 
-  renderDelivery(d);
-  renderBirthdays();
-  renderPeople();
+  safe('delivery',function(){ renderDelivery(d); });
+  safe('people',function(){ renderBirthdays(); renderPeople(); });
 
   /* footer */
   var w=bootsWeek(new Date());
@@ -638,7 +641,7 @@ window.onerror=function(msg,src,line){
 };
 function gotData(json){
   state.data=json;state.lastGood=json;
-  render();
+  try{ render(); }catch(e){ dlog('render failed '+(e&&e.message)); }
   var up=json.updated?new Date(json.updated):null;
   var fresh=up&&!isNaN(up.getTime())&&dayKey(up)===dayKey(new Date());
   setStatus(fresh?'ok':'warn', up&&!isNaN(up.getTime())
@@ -697,16 +700,22 @@ function loadData(){
 }
 
 /* ---------- scale + boot ---------- */
+var fitTries=0;
 function fit(){
-  var s=Math.min(window.innerWidth/1920,window.innerHeight/1080),st=$('stage');
+  var w=window.innerWidth||document.documentElement.clientWidth||0;
+  var h=window.innerHeight||document.documentElement.clientHeight||0;
+  if((!w||!h)&&fitTries<50){ fitTries++; setTimeout(fit,200); return; }
+  if(!w||!h){ w=1920;h=1080; }
+  var s=Math.min(w/1920,h/1080),st=$('stage');
   st.style.transform='scale('+s+')';
-  st.style.left=Math.max(0,(window.innerWidth-1920*s)/2)+'px';
-  st.style.top=Math.max(0,(window.innerHeight-1080*s)/2)+'px';
+  st.style.left=Math.max(0,(w-1920*s)/2)+'px';
+  st.style.top=Math.max(0,(h-1080*s)/2)+'px';
+  dlog('fit '+w+'x'+h+' scale '+s.toFixed(3));
 }
 $('storeName').textContent=CONFIG.STORE_NAME;
 $('footLeft').textContent='Boots UK · Store 1478 · v'+VERSION;
 $('storeSub').textContent=CONFIG.STORE_SUB;
-fit();window.addEventListener('resize',fit);
+fit();window.addEventListener('resize',fit);setTimeout(fit,1000);setTimeout(fit,3000);
 tickClock();setInterval(tickClock,1000);
 render();
 loadWeather();setInterval(loadWeather,CONFIG.WEATHER_REFRESH_MIN*60*1000);

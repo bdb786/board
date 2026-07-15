@@ -57,6 +57,7 @@
   }
   input:focus,textarea:focus,select:focus{border-color:var(--sky);}
   select{font-weight:600;}
+  .psel{max-width:104px;font-size:15px;padding:10px 8px;flex:0 0 104px;}
   .pwrow{display:flex;gap:8px;align-items:stretch;}
   .pwrow input{flex:1;min-width:0;}
   .eyebtn{background:rgba(147,165,214,.15);border:1px solid var(--edge);border-radius:12px;
@@ -115,46 +116,41 @@
 <body>
 
 <div class="top">
-  <h1>1478 Daily Board <small style="font-size:13px;color:var(--faint);font-weight:600;">v4.0</small></h1>
+  <h1>1478 Daily Board <small style="font-size:13px;color:var(--faint);font-weight:600;">v4.5</small></h1>
   <a id="boardLink" href="daily.html" target="_blank">View board →</a>
 </div>
 <div id="lastUpdated">Loading current figures…</div>
 
 <section>
   <h2>Retail &amp; items · figures</h2>
-  <div class="field wide" style="margin-bottom:10px;"><label>These figures are for</label>
-    <select id="period">
-      <option value="wtd">Week to date</option>
-      <option value="lastweek">Last week (final)</option>
-    </select>
-  </div>
   <div class="grid2">
-    <div class="field"><label>Retail sales <small>£</small></label><input class="num" id="r_wtd" inputmode="decimal"></div>
-    <div class="field"><label>Total items</label><input class="num" id="i_wtd" inputmode="numeric"></div>
-    <div class="field"><label>Core items</label><input class="num" id="i_core" inputmode="numeric"></div>
-    <div class="field"><label>Total services <small>exc BOD</small></label><input class="num" id="s_totalExBod" inputmode="numeric"></div>
+    <div class="field"><label>Retail sales <small>£</small></label><div class="pwrow"><input class="num" id="r_wtd" inputmode="decimal"><select id="pp_retail" class="psel"><option value="wtd">WTD</option><option value="lastweek">Last wk</option></select></div></div>
+    <div class="field"><label>Total items</label><div class="pwrow"><input class="num" id="i_wtd" inputmode="numeric"><select id="pp_items" class="psel"><option value="wtd">WTD</option><option value="lastweek">Last wk</option></select></div></div>
+    <div class="field"><label>Core items <small>follows Items dropdown</small></label><input class="num" id="i_core" inputmode="numeric"></div>
+    <div class="field"><label>Total services <small>exc BOD</small></label><div class="pwrow"><input class="num" id="s_totalExBod" inputmode="numeric"><select id="pp_totalExBod" class="psel"><option value="wtd">WTD</option><option value="lastweek">Last wk</option></select></div></div>
   </div>
 </section>
 
 <section>
   <h2>Services · figures</h2>
   <div class="grid2">
-    <div class="field"><label>Pharmacy First total</label><input class="num" id="s_pf" inputmode="numeric"></div>
-    <div class="field"><label>PF clinical pathways</label><input class="num" id="s_pfcp" inputmode="numeric"></div>
-    <div class="field"><label>NMS sign-ups</label><input class="num" id="s_nmsSu" inputmode="numeric"></div>
-    <div class="field"><label>NMS follow-ups</label><input class="num" id="s_nmsFu" inputmode="numeric"></div>
-    <div class="field"><label>BP checks</label><input class="num" id="s_bp" inputmode="numeric"></div>
-    <div class="field"><label>ABPM</label><input class="num" id="s_abpm" inputmode="numeric"></div>
-    <div class="field"><label>Contraception</label><input class="num" id="s_contra" inputmode="numeric"></div>
-    <div class="field"><label>EHC</label><input class="num" id="s_ehc" inputmode="numeric"></div>
-    <div class="field"><label>BOP</label><input class="num" id="s_bop" inputmode="numeric"></div>
-    <div class="field"><label>EPS noms</label><input class="num" id="s_eps" inputmode="numeric"></div>
-    <div class="field"><label>Welcome texts</label><input class="num" id="s_welcome" inputmode="numeric"></div>
+    <div class="field"><label>Pharmacy First total</label><div class="pwrow"><input class="num" id="s_pf" inputmode="numeric"><select id="pp_pf" class="psel"><option value="wtd">WTD</option><option value="lastweek">Last wk</option></select></div></div>
+    <div class="field"><label>PF clinical pathways</label><div class="pwrow"><input class="num" id="s_pfcp" inputmode="numeric"><select id="pp_pfcp" class="psel"><option value="wtd">WTD</option><option value="lastweek">Last wk</option></select></div></div>
+    <div class="field"><label>NMS sign-ups</label><div class="pwrow"><input class="num" id="s_nmsSu" inputmode="numeric"><select id="pp_nmsSu" class="psel"><option value="wtd">WTD</option><option value="lastweek">Last wk</option></select></div></div>
+    <div class="field"><label>NMS follow-ups</label><div class="pwrow"><input class="num" id="s_nmsFu" inputmode="numeric"><select id="pp_nmsFu" class="psel"><option value="wtd">WTD</option><option value="lastweek">Last wk</option></select></div></div>
+    <div class="field"><label>BP checks</label><div class="pwrow"><input class="num" id="s_bp" inputmode="numeric"><select id="pp_bp" class="psel"><option value="wtd">WTD</option><option value="lastweek">Last wk</option></select></div></div>
+    <div class="field"><label>ABPM</label><div class="pwrow"><input class="num" id="s_abpm" inputmode="numeric"><select id="pp_abpm" class="psel"><option value="wtd">WTD</option><option value="lastweek">Last wk</option></select></div></div>
+    <div class="field"><label>Contraception</label><div class="pwrow"><input class="num" id="s_contra" inputmode="numeric"><select id="pp_contra" class="psel"><option value="wtd">WTD</option><option value="lastweek">Last wk</option></select></div></div>
+    <div class="field"><label>EHC</label><div class="pwrow"><input class="num" id="s_ehc" inputmode="numeric"><select id="pp_ehc" class="psel"><option value="wtd">WTD</option><option value="lastweek">Last wk</option></select></div></div>
+    <div class="field"><label>BOP</label><div class="pwrow"><input class="num" id="s_bop" inputmode="numeric"><select id="pp_bop" class="psel"><option value="wtd">WTD</option><option value="lastweek">Last wk</option></select></div></div>
+    <div class="field"><label>EPS noms</label><div class="pwrow"><input class="num" id="s_eps" inputmode="numeric"><select id="pp_eps" class="psel"><option value="wtd">WTD</option><option value="lastweek">Last wk</option></select></div></div>
+    <div class="field"><label>Welcome texts</label><div class="pwrow"><input class="num" id="s_welcome" inputmode="numeric"><select id="pp_welcome" class="psel"><option value="wtd">WTD</option><option value="lastweek">Last wk</option></select></div></div>
   </div>
 </section>
 
-<section>
-  <h2>Regional scorecard · 24 greens</h2>
+<details>
+  <summary>Regional scorecard · 24 greens (open when the deck lands)</summary>
+  <div class="inner">
   <span class="gsec" style="margin-top:4px;">NHS Services · /6</span>
   <div class="grid2">
     <div class="field"><label>NMS sign up</label><div class="pwrow"><input class="num" id="n6_su_v" inputmode="decimal" placeholder="no."><select id="n6_su_c" style="max-width:104px;"><option value="">–</option><option value="g">Green</option><option value="r">Red</option></select></div></div>
@@ -187,7 +183,8 @@
     <div class="r8row"><input class="lab" id="r8_7_label" placeholder="Metric 7"><input class="num val" id="r8_7_v" inputmode="decimal" placeholder="no."><select id="r8_7_c" style="max-width:104px;"><option value="">–</option><option value="g">Green</option><option value="r">Red</option></select></div>
     <div class="r8row"><input class="lab" id="r8_8_label" placeholder="Metric 8"><input class="num val" id="r8_8_v" inputmode="decimal" placeholder="no."><select id="r8_8_c" style="max-width:104px;"><option value="">–</option><option value="g">Green</option><option value="r">Red</option></select></div>
   <p class="hint">Copy the colours (and any numbers you want shown) for 1478 straight from the area deck's three tables. The board totals each row and the /24 automatically.</p>
-</section>
+  </div>
+</details>
 
 <section>
   <h2>Work delivery</h2>
@@ -208,7 +205,7 @@
     <div class="grid2">
       <div class="field"><label>Retail sales budget <small>£/wk</small></label><input class="num" id="b_retail" inputmode="decimal"></div>
       <div class="field"><label>Total items</label><input class="num" id="b_items" inputmode="numeric"></div>
-      <div class="field"><label>Core items</label><input class="num" id="b_core" inputmode="numeric"></div>
+      <div class="field"><label>Core items <small>follows Items dropdown</small></label><input class="num" id="b_core" inputmode="numeric"></div>
       <div class="field"><label>Total services exc BOD</label><input class="num" id="b_totalExBod" inputmode="numeric"></div>
       <div class="field"><label>Pharmacy First</label><input class="num" id="b_pf" inputmode="numeric"></div>
       <div class="field"><label>PF clinical pathways</label><input class="num" id="b_pfcp" inputmode="numeric"></div>
@@ -271,6 +268,14 @@ var DEFAULT_BUDGETS = {
 };
 var SVC_KEYS = ['totalExBod','pf','pfcp','nmsSu','nmsFu','bp','abpm','contra','ehc','bop','eps','welcome'];
 var DEF8=['Sales','ATV','No7','Adcard','Digital Pick','Loss','Ops 7','Ops 8'];
+var LOADED_HISTORY=[];
+var WEEK_START_DAY=0; /* 0=Sunday, must match the board */
+function weekKey(){
+  var d=new Date(),x=new Date(d.getFullYear(),d.getMonth(),d.getDate());
+  x.setDate(x.getDate()-((x.getDay()-WEEK_START_DAY+7)%7));
+  var p=function(n){return (n<10?'0':'')+n;};
+  return x.getFullYear()+'-'+p(x.getMonth()+1)+'-'+p(x.getDate());
+}
 
 function $(id){ return document.getElementById(id); }
 function num(id){
@@ -339,7 +344,11 @@ $('saveSettings').addEventListener('click',function(){
 /* ---------- prefill ---------- */
 function fill(d){
   d=d||{};
-  $('period').value=(d.period==='lastweek')?'lastweek':'wtd';
+  var Pd=d.periods||{};
+  function pv(k,fam){var v=Pd[k]||Pd[fam]||d.period||'wtd';return v==='lastweek'?'lastweek':'wtd';}
+  $('pp_retail').value=pv('retail','retail');
+  $('pp_items').value=pv('items','items');
+  for(i=0;i<SVC_KEYS.length;i++) $('pp_'+SVC_KEYS[i]).value=pv(SVC_KEYS[i],'services');
   var r=d.retail||{},it=d.items||{},sv=d.services||{},kp=d.kpis||{},nt=d.notes||{};
   put('r_wtd',r.wtd); put('i_wtd',it.wtd); put('i_core',it.coreWtd);
   for(var i=0;i<SVC_KEYS.length;i++){
@@ -351,6 +360,7 @@ function fill(d){
   put('b_retail',(r.budget===null||r.budget===undefined)?DEFAULT_BUDGETS.retail:r.budget);
   put('b_items',(it.budget===null||it.budget===undefined)?DEFAULT_BUDGETS.items:it.budget);
   put('b_core',(it.coreBudget===null||it.coreBudget===undefined)?DEFAULT_BUDGETS.core:it.coreBudget);
+  LOADED_HISTORY=(d.history&&d.history.slice)?d.history.slice():[];
   var gg=d.greens||{};
   var gn=gg.nhs||d.nhs6||{};
   var N6K=['su','comp','htcc','abpm','cont','pfcp'];
@@ -474,6 +484,12 @@ function parseAnniversaries(){
   }
   return out;
 }
+function weekKeyOffset(off){
+  var d=new Date(),x=new Date(d.getFullYear(),d.getMonth(),d.getDate());
+  x.setDate(x.getDate()-((x.getDay()-WEEK_START_DAY+7)%7)-off*7);
+  var p=function(n){return (n<10?'0':'')+n;};
+  return x.getFullYear()+'-'+p(x.getMonth()+1)+'-'+p(x.getDate());
+}
 function buildData(){
   var services={};
   for(var i=0;i<SVC_KEYS.length;i++){
@@ -490,13 +506,38 @@ function buildData(){
     var lb=$('r8_'+i+'_label').value.trim();
     greens.eightLabels.push(lb||DEF8[i-1]||('Ops '+i));
   }
+  var gCount=0,gSet=0,grp=[greens.nhs,greens.ten,greens.eight];
+  for(i=0;i<grp.length;i++){
+    for(var gk in grp[i]){
+      if(grp[i][gk]&&grp[i][gk].c){gSet++;if(grp[i][gk].c==='g')gCount++;}
+    }
+  }
+  function pv2(id){return ($(id).value==='lastweek')?'lastweek':'wtd';}
+  var periods={retail:pv2('pp_retail'),items:pv2('pp_items')};
+  for(i=0;i<SVC_KEYS.length;i++) periods[SVC_KEYS[i]]=pv2('pp_'+SVC_KEYS[i]);
+  var pR=periods.retail,pI=periods.items,pS=periods.totalExBod;
+  var wkNow=weekKeyOffset(0),wkPrev=weekKeyOffset(1),nowIso=new Date().toISOString();
+  var hist=LOADED_HISTORY.slice();
+  function histEntry(wk){
+    for(var h=0;h<hist.length;h++){ if(hist[h]&&hist[h].wk===wk)return hist[h]; }
+    var e={wk:wk};hist.push(e);return e;
+  }
+  var eR=histEntry(pR==='lastweek'?wkPrev:wkNow); eR.retail=num('r_wtd'); eR.updated=nowIso;
+  var eI=histEntry(pI==='lastweek'?wkPrev:wkNow); eI.items=num('i_wtd'); eI.updated=nowIso;
+  var eS=histEntry(pS==='lastweek'?wkPrev:wkNow); eS.services=num('s_totalExBod'); eS.updated=nowIso;
+  var eG=histEntry(wkNow); eG.g24=(gSet?gCount:null); eG.updated=nowIso;
+  hist.sort(function(a,b){return (a.wk<b.wk)?-1:1;});
+  if(hist.length>12)hist=hist.slice(hist.length-12);
   return {
     updated:new Date().toISOString(),
-    period:($('period').value==='lastweek')?'lastweek':'wtd',
+    period:(function(){for(var pk in periods){if(periods[pk]!=='lastweek')return 'wtd';}return 'lastweek';})(),
+    periods:periods,
     retail:{wtd:num('r_wtd'),budget:num('b_retail')},
     items:{wtd:num('i_wtd'),budget:num('b_items'),coreWtd:num('i_core'),coreBudget:num('b_core')},
     services:services,
     greens:greens,
+    history:hist,
+
     delivery:{target:($('d_target').value||null)},
     birthdays:parseBirthdays(),
     anniversaries:parseAnniversaries(),

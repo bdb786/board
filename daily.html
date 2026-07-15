@@ -34,7 +34,7 @@
       var(--bg);
     display:flex;flex-direction:column;padding:24px 40px 16px;
   }
-  .eyebrow{font-size:13px;font-weight:600;letter-spacing:.16em;text-transform:uppercase;color:var(--muted);}
+  .eyebrow{font-size:14px;font-weight:600;letter-spacing:.16em;text-transform:uppercase;color:var(--muted);}
   .num{font-family:'Sora',sans-serif;font-variant-numeric:tabular-nums;}
 
   /* ---------- Header ---------- */
@@ -77,7 +77,7 @@
   .row-hero{display:grid;grid-template-columns:1fr 1fr 0.72fr;gap:14px;height:208px;flex:0 0 auto;}
   .bignum{font-family:'Sora',sans-serif;font-weight:800;font-size:54px;line-height:1.05;letter-spacing:-.02em;
     margin-top:4px;font-variant-numeric:tabular-nums;}
-  .ofline{color:var(--muted);font-size:16px;margin-top:2px;}
+  .ofline{color:var(--muted);font-size:17px;margin-top:2px;}
   .ofline b{color:var(--ink);font-weight:600;}
   .barrow{display:flex;align-items:center;gap:12px;margin-top:24px;}
   .barpct{font-family:'Sora',sans-serif;font-weight:700;font-size:20px;color:var(--muted);
@@ -88,12 +88,12 @@
   .bar.warn i{background:linear-gradient(90deg,#FF9F3E,var(--amber));}
   .bar.bad i{background:linear-gradient(90deg,#FF5A60,var(--coral));}
   .bar .tmark{position:absolute;top:-22px;transform:translateX(-50%);
-    font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);}
+    font-size:12px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);}
   .bar .tmark:after{content:'';position:absolute;left:50%;top:16px;transform:translateX(-50%);
     width:3px;height:28px;background:rgba(242,246,255,.9);border-radius:2px;}
   .chips{display:flex;gap:10px;margin-top:12px;flex-wrap:wrap;}
   .chip{display:inline-flex;align-items:center;gap:8px;border-radius:999px;padding:6px 14px;
-    font-size:15px;font-weight:600;background:rgba(147,165,214,.12);color:var(--ink);white-space:nowrap;}
+    font-size:16px;font-weight:600;background:rgba(147,165,214,.12);color:var(--ink);white-space:nowrap;}
   .chip.good{background:rgba(47,224,176,.14);color:var(--teal);}
   .chip.warn{background:rgba(255,184,77,.14);color:var(--amber);}
   .chip.bad{background:rgba(255,107,112,.16);color:var(--coral);}
@@ -101,20 +101,22 @@
 
   .pcol{display:flex;flex-direction:column;gap:12px;min-height:0;}
   .pcard{flex:1;padding:12px 16px;}
-  .plist{margin-top:6px;font-size:16px;line-height:1.55;overflow:hidden;}
+  .plist{margin-top:6px;font-size:18px;line-height:1.55;overflow:hidden;}
   .plist b{font-family:'Sora',sans-serif;font-weight:700;}
   .plist .none{color:var(--faint);}
 
   /* ---------- Row 2: services ---------- */
-  .row-svc{height:238px;flex:0 0 auto;}
+  .row-svc{height:246px;flex:0 0 auto;}
   .svc-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:10px;flex:1;min-height:0;}
   .tile{background:rgba(147,165,214,.07);border:1px solid rgba(159,178,230,.10);
     border-radius:12px;padding:9px 12px;display:flex;flex-direction:column;justify-content:space-between;min-height:0;}
-  .tile .t-name{font-size:15px;font-weight:600;color:var(--muted);line-height:1.2;}
-  .tile .t-val{font-family:'Sora',sans-serif;font-weight:700;font-size:30px;line-height:1.1;margin-top:2px;font-variant-numeric:tabular-nums;}
+  .tile .t-name{font-size:17px;font-weight:600;color:var(--muted);line-height:1.2;}
+  .tile .t-val{font-family:'Sora',sans-serif;font-weight:700;font-size:34px;line-height:1.1;margin-top:2px;font-variant-numeric:tabular-nums;}
   .tile .t-val span{font-size:16px;font-weight:600;color:var(--muted);}
-  .tile .t-sub{font-size:12px;color:var(--faint);margin-top:1px;min-height:12px;}
+  .tile .t-sub{font-size:13px;color:var(--faint);margin-top:1px;min-height:12px;}
   .tile.lag{border-color:rgba(255,107,112,.45);}
+  .ptag{display:inline-block;background:rgba(255,184,77,.18);color:var(--amber);border-radius:6px;
+    font-size:10px;font-weight:700;padding:1px 6px;margin-left:6px;vertical-align:2px;letter-spacing:.05em;}
   .minibar{position:relative;height:9px;border-radius:999px;background:var(--track);margin-top:6px;overflow:hidden;}
   .minibar i{display:block;height:100%;border-radius:999px;width:0%;background:var(--teal);
     transition:width 1.1s cubic-bezier(.2,.7,.2,1);min-width:5px;}
@@ -122,47 +124,49 @@
   .minibar.bad i{background:var(--coral);}
 
   /* ---------- Row 3: 24 greens scorecard ---------- */
-  .row-g24{height:204px;flex:0 0 auto;flex-direction:row;align-items:stretch;gap:16px;padding:12px 20px;}
+  .row-g24{height:218px;flex:0 0 auto;flex-direction:row;align-items:stretch;gap:16px;padding:12px 20px;}
   .g24-rows{flex:1;display:flex;flex-direction:column;gap:8px;min-width:0;}
   .g24-row{flex:1;display:flex;align-items:center;gap:10px;min-height:0;}
-  .g24-label{flex:0 0 150px;font-size:10.5px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:var(--muted);line-height:1.25;}
-  .g24-label b{color:var(--ink);font-family:'Sora',sans-serif;font-size:17px;letter-spacing:0;display:block;font-variant-numeric:tabular-nums;}
+  .g24-label{flex:0 0 150px;font-size:12px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:var(--muted);line-height:1.25;}
+  .g24-label b{color:var(--ink);font-family:'Sora',sans-serif;font-size:20px;letter-spacing:0;display:block;font-variant-numeric:tabular-nums;}
   .g24-cells{flex:1;display:grid;gap:6px;min-width:0;}
   .g24-cells.c6{grid-template-columns:repeat(6,1fr);}
   .g24-cells.c10{grid-template-columns:repeat(10,1fr);}
   .g24-cells.c8{grid-template-columns:repeat(8,1fr);}
   .gcell{border-radius:9px;padding:4px 6px;text-align:center;background:var(--track);overflow:hidden;
     display:flex;flex-direction:column;justify-content:center;min-width:0;}
-  .gcell .gc-name{font-size:10px;font-weight:600;letter-spacing:.03em;text-transform:uppercase;color:var(--muted);
+  .gcell .gc-name{font-size:12px;font-weight:600;letter-spacing:.03em;text-transform:uppercase;color:var(--muted);
     line-height:1.15;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
-  .gcell .gc-val{font-family:'Sora',sans-serif;font-weight:700;font-size:16px;line-height:1.2;font-variant-numeric:tabular-nums;min-height:19px;}
+  .gcell .gc-val{font-family:'Sora',sans-serif;font-weight:700;font-size:20px;line-height:1.2;font-variant-numeric:tabular-nums;min-height:24px;}
   .gcell.g{background:rgba(47,224,176,.20);} .gcell.g .gc-val{color:var(--teal);}
   .gcell.r{background:rgba(255,107,112,.20);} .gcell.r .gc-val{color:var(--coral);}
   .g24-total{flex:0 0 148px;display:flex;flex-direction:column;justify-content:center;align-items:flex-end;text-align:right;}
-  .g24-total .t-big{font-family:'Sora',sans-serif;font-weight:800;font-size:46px;line-height:1;font-variant-numeric:tabular-nums;color:var(--muted);}
+  .g24-total .t-big{font-family:'Sora',sans-serif;font-weight:800;font-size:48px;line-height:1;font-variant-numeric:tabular-nums;color:var(--muted);}
   .g24-total .t-big.g{color:var(--teal);} .g24-total .t-big.mid{color:var(--amber);} .g24-total .t-big.low{color:var(--coral);}
-  .g24-total .t-sub{font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin-top:5px;}
+  .g24-total .t-sub{font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin-top:5px;}
+  .g24-total .t-trend{font-size:14px;font-weight:600;color:var(--muted);margin-top:4px;}
 
   /* ---------- Row 5: Celebrate etc ---------- */
-  .row-notes{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;height:190px;flex:0 0 auto;}
-  #stage.hasRibbon .row-notes{height:134px;}
+  .row-notes{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;height:172px;flex:0 0 auto;}
+  #stage.hasRibbon .row-notes{height:126px;}
+  #stage.hasRibbon .row-g24{height:206px;}
   .tcard{padding:14px 18px;}
   .tcard .head{align-items:center;justify-content:flex-start;gap:10px;}
   .tcard .emo{font-size:20px;}
-  .tcard p{margin-top:8px;font-size:18px;line-height:1.4;font-weight:500;
+  .tcard p{margin-top:8px;font-size:19px;line-height:1.4;font-weight:500;
     display:-webkit-box;-webkit-line-clamp:4;-webkit-box-orient:vertical;overflow:hidden;}
   #stage.hasRibbon .tcard p{-webkit-line-clamp:2;}
   .tcard p.empty{color:var(--faint);font-weight:400;}
   .tcard.t-teal{border-top:4px solid var(--teal);}
   .tcard.t-sky{border-top:4px solid var(--sky);}
   .tcard.t-amber{border-top:4px solid var(--amber);}
-  .dlv-target{font-family:'Sora',sans-serif;font-weight:800;font-size:42px;line-height:1.05;
+  .dlv-target{font-family:'Sora',sans-serif;font-weight:800;font-size:44px;line-height:1.05;
     letter-spacing:-.01em;margin-top:6px;font-variant-numeric:tabular-nums;}
-  .dlv-sub{color:var(--muted);font-size:13px;margin-top:4px;font-weight:500;}
+  .dlv-sub{color:var(--muted);font-size:14px;margin-top:4px;font-weight:500;}
 
   /* ---------- Footer ---------- */
   footer{display:flex;align-items:center;justify-content:space-between;gap:24px;margin-top:12px;
-    color:var(--muted);font-size:15px;height:26px;flex:0 0 auto;}
+    color:var(--muted);font-size:16px;height:26px;flex:0 0 auto;}
   footer .status{display:flex;align-items:center;gap:8px;}
   footer .dot{width:10px;height:10px;border-radius:50%;background:var(--teal);}
   footer .dot.warn{background:var(--amber);}
@@ -242,7 +246,7 @@
           <div class="g24-cells c8" id="gRowEight"></div>
         </div>
       </div>
-      <div class="g24-total"><div class="t-big num" id="g24Total">–/24</div><div class="t-sub">Area scorecard</div></div>
+      <div class="g24-total"><div class="t-big num" id="g24Total">–/24</div><div class="t-sub">Store scorecard</div><div class="t-trend num" id="g24Trend"></div></div>
     </section>
 
     <div class="row-notes">
@@ -308,7 +312,7 @@ var CONFIG = {
 };
 /* ===================  end of config block  ==================== */
 
-var VERSION='4.0';
+var VERSION='4.6';
 var state = { data:null, lastGood:null };
 
 function $(id){ return document.getElementById(id); }
@@ -499,7 +503,8 @@ function gcells(el,defs,data){
     var cls=o.c==='g'?' g':(o.c==='r'?' r':'');
     if(o.c==='g')greens++;
     if(o.c)set++;
-    html+='<div class="gcell'+cls+'"><span class="gc-name">'+esc(defs[i][1])+'</span><span class="gc-val num">'+(isNum(o.v)?o.v:'')+'</span></div>';
+    var mark=o.c==='g'?'\u2713':(o.c==='r'?'\u2715':'');
+    html+='<div class="gcell'+cls+'"><span class="gc-name">'+esc(defs[i][1])+'</span><span class="gc-val num">'+mark+(isNum(o.v)?' '+o.v:'')+'</span></div>';
   }
   if(el)el.innerHTML=html;
   return {g:greens,set:set};
@@ -520,6 +525,15 @@ function renderGreens(d){
   var te=$('g24Total');
   te.textContent=(anySet?tot:'–')+'/24';
   te.className='t-big num '+(anySet?(tot>=16?'g':(tot>=10?'mid':'low')):'');
+  var tr=$('g24Trend');
+  var hist=d.history||[],curWk=dayKey(startOfWeek(new Date())),prev=null;
+  for(var h=0;h<hist.length;h++){
+    if(hist[h]&&hist[h].wk&&hist[h].wk<curWk&&isNum(hist[h].g24)) prev=hist[h];
+  }
+  if(prev&&anySet){
+    var arrow=tot>prev.g24?'\u25B2':(tot<prev.g24?'\u25BC':'\u25B6');
+    tr.textContent='was '+prev.g24+'/24 last wk '+arrow;
+  } else tr.textContent='';
 }
 function safe(name,fn){
   try{ fn(); }catch(e){ dlog('render:'+name+' failed '+(e&&e.message)); }
@@ -530,50 +544,65 @@ function render(){
   if(upD&&isNaN(upD.getTime()))upD=null;
   var prevWeek=!!(upD&&upD<startOfWeek(new Date()));
   var stale=!!(upD&&dayKey(upD)!==dayKey(new Date()));
-  var isFinal=(d.period==='lastweek')||prevWeek;
-  var days=isFinal?7:daysIntoWeek(),pacePct=100*days/7;
-  var suffix=isFinal?'last week (final)':('week to date'+((stale&&upD)?' · as at '+DAYS[upD.getDay()].slice(0,3):''));
+  var P=d.periods||{};
+  function pm(k,fam){
+    var v=P[k]||P[fam]||d.period||'wtd';   /* per-metric, then family, then legacy */
+    return prevWeek || v==='lastweek';
+  }
+  function secSuffix(fin){
+    return fin?'last week (final)':('week to date'+((stale&&upD)?' · as at '+DAYS[upD.getDay()].slice(0,3):''));
+  }
+  var fR=pm('retail','retail'),fI=pm('items','items');
+  var dR=fR?7:daysIntoWeek(),dI=fI?7:daysIntoWeek();
+  var daysWtd=daysIntoWeek(),paceWtd=100*daysWtd/7;
 
-  $('retailEyebrow').textContent='Retail sales · '+suffix;
-  $('itemsEyebrow').textContent='Items · '+suffix;
-  $('svcEyebrow').textContent='Pharmacy services · '+suffix;
+  $('retailEyebrow').textContent='Retail sales · '+secSuffix(fR);
+  $('itemsEyebrow').textContent='Items · '+secSuffix(fI);
 
   safe('hero',function(){
   var retail=d.retail||{},items=d.items||{};
-  heroCard('retail',retail.wtd,retail.budget,money,days,isFinal);
-  heroCard('items',items.wtd,items.budget,function(v){return isNum(v)?String(Math.round(v)):'—';},days,isFinal);
+  heroCard('retail',retail.wtd,retail.budget,money,dR,fR);
+  heroCard('items',items.wtd,items.budget,function(v){return isNum(v)?String(Math.round(v)):'—';},dI,fI);
   $('coreLine').textContent=(isNum(items.coreWtd)?items.coreWtd:'—')+' / '+(isNum(items.coreBudget)?items.coreBudget:'—');
   });
 
   /* services */
   safe('services',function(){
   var svcs=d.services||{},grid=$('svcGrid');grid.innerHTML='';
-  var svcGrace=(!isFinal&&days<=1);
-  var i;
+  var i,allF=true,allW=true;
   for(i=0;i<CONFIG.SERVICES.length;i++){
     var cfg=CONFIG.SERVICES[i],sv=svcs[cfg.key]||{};
+    var fT=pm(cfg.key,'services');
+    if(fT)allW=false; else allF=false;
+    var tDays=fT?7:daysWtd, tPace=100*tDays/7, tGrace=(!fT&&tDays<=1);
     var a=isNum(sv.a)?sv.a:null,b=isNum(sv.b)?sv.b:null;
     var sub='';
     if(cfg.subKey && svcs[cfg.subKey]){
       var s2=svcs[cfg.subKey];
-      sub=cfg.subLabel+' '+(isNum(s2.a)?s2.a:'—')+'/'+(isNum(s2.b)?s2.b:'—');
+      sub=cfg.subLabel+' '+(isNum(s2.a)?s2.a:'—')+'/'+(isNum(s2.b)?s2.b:'—')+(pm(cfg.subKey,'services')?' LW':'');
     } else if(cfg.convOf && svcs[cfg.convOf] && isNum(svcs[cfg.convOf].a) && svcs[cfg.convOf].a>0 && isNum(a)){
       sub='conv. '+Math.round(100*a/svcs[cfg.convOf].a)+'% (target 75%)';
     }
     var el=document.createElement('div');el.className='tile';
-    el.innerHTML='<div><div class="t-name">'+cfg.label+'</div>'+
+    el.innerHTML='<div><div class="t-name">'+cfg.label+(fT?'<span class="ptag">LW</span>':'')+'</div>'+
       '<div class="t-val num">'+(a!==null?a:'—')+' <span>/ '+(b!==null?b:'—')+'</span></div>'+
       '<div class="t-sub">'+sub+'</div></div>'+
       '<div class="minibar"><i></i></div>';
     grid.appendChild(el);
     var mb=el.getElementsByClassName('minibar')[0];
     var tp=(b&&a!==null)?100*a/b:0;
-    setBar(mb,mb.getElementsByTagName('i')[0],tp,pacePct,svcGrace);
-    if(b&&a!==null&&tp<pacePct*0.9&&!svcGrace) el.className='tile lag';
+    setBar(mb,mb.getElementsByTagName('i')[0],tp,tPace,tGrace);
+    if(b&&a!==null&&tp<tPace*0.9&&!tGrace) el.className='tile lag';
   }
+  var fTot=pm('totalExBod','services'),fEps=pm('eps','services'),fWel=pm('welcome','services');
+  if(fTot)allW=false; else allF=false;
+  if(fEps)allW=false; else allF=false;
+  if(fWel)allW=false; else allF=false;
+  $('svcEyebrow').textContent='Pharmacy services'+(allF?' · '+secSuffix(true):(allW?' · '+secSuffix(false):' · mixed periods'));
   var tot=svcs.totalExBod||{};
   function fr(o){o=o||{};return (isNum(o.a)?o.a:'—')+'/'+(isNum(o.b)?o.b:'—');}
-  $('svcTotalLine').textContent='Total exc BOD '+fr(tot)+' · EPS '+fr(svcs.eps)+' · Welcome '+fr(svcs.welcome);
+  function tg(f){return f?' (LW)':'';}
+  $('svcTotalLine').textContent='Total exc BOD '+fr(tot)+tg(fTot)+' · EPS '+fr(svcs.eps)+tg(fEps)+' · Welcome '+fr(svcs.welcome)+tg(fWel);
   });
 
   /* 24 greens scorecard (manual RAG mirroring the area deck) */
@@ -716,6 +745,17 @@ $('storeName').textContent=CONFIG.STORE_NAME;
 $('footLeft').textContent='Boots UK · Store 1478 · v'+VERSION;
 $('storeSub').textContent=CONFIG.STORE_SUB;
 fit();window.addEventListener('resize',fit);setTimeout(fit,1000);setTimeout(fit,3000);
+function keepAwake(){
+  try{
+    if(navigator.wakeLock&&navigator.wakeLock.request){
+      navigator.wakeLock.request('screen').then(function(wl){
+        dlog('wake lock on');
+      }).catch(function(e){ dlog('wake lock refused '+(e&&e.message)); });
+    }
+  }catch(e){}
+}
+document.addEventListener('visibilitychange',function(){ if(!document.hidden) keepAwake(); });
+keepAwake();
 tickClock();setInterval(tickClock,1000);
 render();
 loadWeather();setInterval(loadWeather,CONFIG.WEATHER_REFRESH_MIN*60*1000);

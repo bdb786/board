@@ -82,6 +82,11 @@
   .ofline{color:var(--muted);font-size:18px;margin-top:6px;}
   .ofline b{color:var(--ink);font-weight:700;}
   .ofline b.vg{color:var(--teal);} .ofline b.vr{color:var(--coral);}
+  .ofline .dvg{color:var(--teal);font-weight:700;} .ofline .dvr{color:var(--coral);font-weight:700;}
+  .chip.m{background:rgba(111,168,255,.14);color:var(--sky);}
+  .ptag.m{background:rgba(111,168,255,.18);color:var(--sky);}
+  .gc-name i{font-style:normal;font-size:9px;font-weight:700;margin-left:3px;color:var(--amber);}
+  .gc-name i.m{color:var(--sky);}
   .tags{display:flex;gap:10px;margin-top:12px;flex-wrap:wrap;}
   .chip{display:inline-flex;align-items:center;gap:8px;border-radius:999px;padding:6px 14px;
     font-size:16px;font-weight:600;background:rgba(147,165,214,.12);color:var(--ink);white-space:nowrap;}
@@ -111,8 +116,8 @@
   .totline b.vg{color:var(--teal);} .totline b.vr{color:var(--coral);}
 
   /* Row 3: store scorecard /21 */
-  .row-g21{height:232px;flex:0 0 auto;flex-direction:row;align-items:stretch;gap:16px;padding:12px 20px;}
-  #stage.hasRibbon .row-g21{height:216px;}
+  .row-g21{height:246px;flex:0 0 auto;flex-direction:row;align-items:stretch;gap:16px;padding:12px 20px;}
+  #stage.hasRibbon .row-g21{height:228px;}
   .g21-rows{flex:1;display:flex;flex-direction:column;gap:8px;min-width:0;}
   .g21-row{flex:1;display:flex;align-items:center;gap:10px;min-height:0;}
   .g21-label{flex:0 0 156px;font-size:12px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:var(--muted);line-height:1.25;}
@@ -126,8 +131,10 @@
   .gcell .gc-name{font-size:12px;font-weight:600;letter-spacing:.03em;text-transform:uppercase;color:var(--muted);
     line-height:1.15;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
   .gcell .gc-val{font-family:'Sora',sans-serif;font-weight:700;font-size:21px;line-height:1.2;font-variant-numeric:tabular-nums;min-height:25px;}
-  .gcell.g{background:rgba(47,224,176,.20);} .gcell.g .gc-val{color:var(--teal);}
-  .gcell.r{background:rgba(255,107,112,.20);} .gcell.r .gc-val{color:var(--coral);}
+  .gcell .gc-delta{font-size:13px;font-weight:600;line-height:1.15;color:var(--muted);font-variant-numeric:tabular-nums;
+    white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .gcell.g{background:rgba(47,224,176,.20);} .gcell.g .gc-val,.gcell.g .gc-delta{color:var(--teal);}
+  .gcell.r{background:rgba(255,107,112,.20);} .gcell.r .gc-val,.gcell.r .gc-delta{color:var(--coral);}
   .g21-total{flex:0 0 148px;display:flex;flex-direction:column;justify-content:center;align-items:flex-end;text-align:right;}
   .g21-total .t-big{font-family:'Sora',sans-serif;font-weight:800;font-size:48px;line-height:1;font-variant-numeric:tabular-nums;color:var(--muted);}
   .g21-total .t-big.g{color:var(--teal);} .g21-total .t-big.mid{color:var(--amber);} .g21-total .t-big.low{color:var(--coral);}
@@ -186,12 +193,13 @@
       <section class="card hero" id="retailCard">
         <div class="head"><span class="eyebrow" id="retailEyebrow">Retail sales · week to date</span></div>
         <div class="bignum num" id="retailVal">—</div>
+        <div class="ofline" id="retailDelta"></div>
         <div class="tags" id="retailTags"></div>
       </section>
       <section class="card hero" id="itemsCard">
         <div class="head"><span class="eyebrow" id="itemsEyebrow">Items · week to date</span></div>
         <div class="bignum num" id="itemsVal">—</div>
-        <div class="ofline">Core <b class="num" id="coreVal">—</b><span id="coreTag"></span></div>
+        <div class="ofline"><span id="itemsDelta"></span> · Core <b class="num" id="coreVal">—</b><span id="coreTag"></span></div>
         <div class="tags" id="itemsTags"></div>
       </section>
       <div class="pcol">
@@ -266,7 +274,7 @@
 
 <script>
 /* =====================  CONFIG (edit me)  ===================== */
-var VERSION='5.0';
+var VERSION='5.2';
 var CONFIG = {
   STORE_NAME : 'Didsbury',
   STORE_SUB  : 'Store 1478 · 736–740 Wilmslow Road',
@@ -279,15 +287,16 @@ var CONFIG = {
   NIGHTLY_RELOAD_HOUR : 3,
   BIRTHDAYS : [],
   SERVICES : [
-    { key:'pf',    label:'Pharmacy First', subKey:'pfcp', subLabel:'incl. CP' },
-    { key:'nmsSu', label:'NMS sign-ups' },
-    { key:'nmsFu', label:'NMS follow-ups', convOf:'nmsSu' },
-    { key:'bp',    label:'BP checks' },
-    { key:'abpm',  label:'ABPM' },
-    { key:'contra',label:'Contraception' },
-    { key:'ehc',   label:'EHC' },
-    { key:'bop',   label:'BOP' }
+    { grp:'extras', key:'pf',   label:'Pharmacy First', subGrp:'nhs', subKey:'pfcp', subLabel:'incl. CP' },
+    { grp:'nhs',    key:'su',   label:'NMS sign-ups' },
+    { grp:'nhs',    key:'comp', label:'NMS follow-ups', convGrp:'nhs', convOf:'su' },
+    { grp:'nhs',    key:'htcc', label:'BP checks' },
+    { grp:'nhs',    key:'abpm', label:'ABPM' },
+    { grp:'nhs',    key:'cont', label:'Contraception' },
+    { grp:'extras', key:'ehc',  label:'EHC' },
+    { grp:'extras', key:'bop',  label:'BOP' }
   ],
+  EXTRAS : [['core','Core items'],['pf','Pharmacy First'],['ehc','EHC'],['bop','BOP'],['eps','EPS noms'],['welcome','Welcome texts']],
   G21 : {
     nhs   : [['su','Sign Up'],['comp','NMS Comp'],['htcc','HT CC'],['abpm','ABPM'],['cont','Cont/EHC'],['pfcp','PF CP']],
     seven : [['items','Items'],['services','Services'],['psat','PSAT'],['osat','OSAT'],['rsat','RSAT'],['nps','NPS'],['resp','Responses']],
@@ -321,14 +330,60 @@ function bootsWeek(d){
   return w>0?w:null;
 }
 function dayKey(d){ return d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate()); }
-/* Normalise a figure: new {v,c,basis} shape, with legacy {wtd}/{a} fallback */
-function fig(o){
+/* Normalise any generation of cell into {v,d,c,basis,per} */
+function cellN(o){
   o=o||{};
   var v=isNum(o.v)?o.v:(isNum(o.wtd)?o.wtd:(isNum(o.a)?o.a:null));
-  var c=(o.c==='g'||o.c==='r')?o.c:null;
-  var basis=(o.basis==='ly')?'ly':'bud';
-  return {v:v,c:c,basis:basis};
+  return {
+    v:v,
+    d:(o.d!==undefined&&o.d!==null&&String(o.d).trim()!=='')?String(o.d).trim():null,
+    c:(o.c==='g'||o.c==='r')?o.c:null,
+    basis:(o.basis==='ly')?'ly':'bud',
+    per:(o.per==='lastweek'||o.per==='mtd'||o.per==='wtd')?o.per:null
+  };
 }
+/* Build one unified model from v5.2, v5.x or v4 data */
+function unify(d){
+  var g=d.greens||{};
+  var M={nhs:{},seven:{},eight:{},extras:{}};
+  var i,defs;
+  defs=CONFIG.G21.nhs;   for(i=0;i<defs.length;i++) M.nhs[defs[i][0]]  =cellN((g.nhs||{})[defs[i][0]]);
+  defs=CONFIG.G21.seven; for(i=0;i<defs.length;i++) M.seven[defs[i][0]]=cellN((g.seven||g.ten||{})[defs[i][0]]);
+  defs=CONFIG.G21.eight; for(i=0;i<defs.length;i++) M.eight[defs[i][0]]=cellN((g.eight||{})[defs[i][0]]);
+  defs=CONFIG.EXTRAS;    for(i=0;i<defs.length;i++) M.extras[defs[i][0]]=cellN((d.extras||{})[defs[i][0]]);
+  /* overlay legacy figure objects where the unified cell is empty */
+  var P=d.periods||{};
+  function lay(dst,src,pk,fam){
+    if(!src||!dst)return;
+    var c=cellN(src);
+    if(dst.v===null&&c.v!==null)dst.v=c.v;
+    if(!dst.d&&c.d)dst.d=c.d;
+    if(!dst.c&&c.c)dst.c=c.c;
+    if(c.basis==='ly')dst.basis='ly';
+    if(!dst.per){
+      var p=(src.per)||P[pk]||P[fam]||d.period;
+      if(p==='lastweek')dst.per='lastweek';
+    }
+  }
+  var sv=d.services||{};
+  lay(M.eight.sales,d.retail,'retail','retail');
+  lay(M.seven.items,d.items,'items','items');
+  lay(M.seven.services,sv.totalExBod,'totalExBod','services');
+  lay(M.nhs.su,sv.nmsSu,'nmsSu','services');
+  lay(M.nhs.comp,sv.nmsFu,'nmsFu','services');
+  lay(M.nhs.htcc,sv.bp,'bp','services');
+  lay(M.nhs.abpm,sv.abpm,'abpm','services');
+  lay(M.nhs.cont,sv.contra,'contra','services');
+  lay(M.nhs.pfcp,sv.pfcp,'pfcp','services');
+  lay(M.extras.core,d.core||((d.items&&isNum(d.items.coreWtd))?{v:d.items.coreWtd}:null),'core','items');
+  lay(M.extras.pf,sv.pf,'pf','services');
+  lay(M.extras.ehc,sv.ehc,'ehc','services');
+  lay(M.extras.bop,sv.bop,'bop','services');
+  lay(M.extras.eps,sv.eps,'eps','services');
+  lay(M.extras.welcome,sv.welcome,'welcome','services');
+  return M;
+}
+var PER_LABEL={wtd:'this week',lastweek:'last week (final)',mtd:'month to date'};
 
 /* ---------- clock ---------- */
 var DAYS=['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
@@ -435,7 +490,7 @@ function renderDelivery(d){
 }
 
 /* ---------- scorecard /21 ---------- */
-function gcells(el,defs,data){
+function gcells(el,defs,data,prevWeek){
   var html='',greens=0,set=0;
   for(var i=0;i<defs.length;i++){
     var o=(data&&data[defs[i][0]])||{};
@@ -443,22 +498,19 @@ function gcells(el,defs,data){
     if(o.c==='g')greens++;
     if(o.c)set++;
     var mark=o.c==='g'?'\u2713':(o.c==='r'?'\u2715':'');
-    html+='<div class="gcell'+cls+'"><span class="gc-name">'+esc(defs[i][1])+'</span><span class="gc-val num">'+mark+(isNum(o.v)?' '+o.v:'')+'</span></div>';
+    var p=perOf(o,prevWeek);
+    var pm=p==='lastweek'?'<i>LW</i>':(p==='mtd'?'<i class="m">M</i>':'');
+    var dl=(o.d!==undefined&&o.d!==null&&String(o.d).trim()!=='')
+      ? '<span class="gc-delta num">'+esc(String(o.d).trim())+'</span>' : '';
+    html+='<div class="gcell'+cls+'"><span class="gc-name">'+esc(defs[i][1])+pm+'</span><span class="gc-val num">'+mark+(isNum(o.v)?' '+o.v:'')+'</span>'+dl+'</div>';
   }
   if(el)el.innerHTML=html;
   return {g:greens,set:set};
 }
-function renderGreens(d){
-  var g=d.greens||{};
-  var seven=g.seven;
-  if(!seven && g.ten){
-    seven={};
-    var map=['items','services','psat','osat','rsat','nps','resp'];
-    for(var i=0;i<map.length;i++) seven[map[i]]=g.ten[map[i]];
-  }
-  var a=gcells($('gRowNhs'),CONFIG.G21.nhs,g.nhs);
-  var b=gcells($('gRowSeven'),CONFIG.G21.seven,seven);
-  var c=gcells($('gRowEight'),CONFIG.G21.eight,g.eight);
+function renderGreens(d,M,prevWeek){
+  var a=gcells($('gRowNhs'),CONFIG.G21.nhs,M.nhs,prevWeek);
+  var b=gcells($('gRowSeven'),CONFIG.G21.seven,M.seven,prevWeek);
+  var c=gcells($('gRowEight'),CONFIG.G21.eight,M.eight,prevWeek);
   $('gSubNhs').textContent=(a.set?a.g:'–')+'/6';
   $('gSubSeven').textContent=(b.set?b.g:'–')+'/7';
   $('gSubEight').textContent=(c.set?c.g:'–')+'/8';
@@ -478,13 +530,20 @@ function renderGreens(d){
 }
 
 /* ---------- figures rendering ---------- */
-function pmFinal(P,k,fam,prevWeek,legacy){
-  var v=P[k]||P[fam]||legacy||'wtd';
-  return prevWeek || v==='lastweek';
+function perOf(cell,prevWeek){
+  var p=(cell&&cell.per)||'wtd';
+  if(prevWeek&&p==='wtd')p='lastweek';
+  return p;
 }
-function tagHtml(basis,fin){
+function tagHtml(basis,p){
+  var pc=p==='lastweek'?' lw':(p==='mtd'?' m':'');
   return '<span class="chip basis">'+(basis==='ly'?'vs LY':'vs Budget')+'</span>'+
-         '<span class="chip'+(fin?' lw':'')+'">'+(fin?'Last week (final)':'Week to date')+'</span>';
+         '<span class="chip'+pc+'">'+(p==='lastweek'?'Last week (final)':(p==='mtd'?'Month to date':'This week'))+'</span>';
+}
+function perTag(p){
+  if(p==='lastweek')return '<span class="ptag">LW</span>';
+  if(p==='mtd')return '<span class="ptag m">MTD</span>';
+  return '';
 }
 function render(){
   var d=state.data||{};
@@ -495,64 +554,61 @@ function render(){
   var st=$('staleTag');
   if(stale&&upD){st.style.display='inline-block';st.textContent='as at '+DAYS[upD.getDay()].slice(0,3)+' '+upD.getDate()+' '+MON_S[upD.getMonth()];}
   else st.style.display='none';
-  var P=d.periods||{};
-  function pm(k,fam){ return pmFinal(P,k,fam,prevWeek,d.period); }
-  function suffix(fin){ return fin?'last week (final)':'week to date'; }
+  var M=unify(d);
 
   safe('hero',function(){
-    var R=fig(d.retail),I=fig(d.items),C=fig(d.core||((d.items&&isNum(d.items.coreWtd))?{v:d.items.coreWtd}:{}));
-    var fR=pm('retail','retail'),fI=pm('items','items'),fC=pm('core','items');
-    $('retailEyebrow').textContent='Retail sales · '+suffix(fR);
-    $('itemsEyebrow').textContent='Items · '+suffix(fI);
+    var R=M.eight.sales,I=M.seven.items,C=M.extras.core;
+    var pR=perOf(R,prevWeek),pI=perOf(I,prevWeek),pC=perOf(C,prevWeek);
+    $('retailEyebrow').textContent='Retail sales · '+PER_LABEL[pR];
+    $('itemsEyebrow').textContent='Items · '+PER_LABEL[pI];
     var rv=$('retailVal');rv.textContent=money(R.v);rv.className='bignum num'+(R.c==='g'?' vg':(R.c==='r'?' vr':''));
     $('retailCard').className='card hero'+(R.c?' '+R.c:'');
-    $('retailTags').innerHTML=isNum(R.v)?tagHtml(R.basis,fR):'';
+    $('retailDelta').innerHTML=R.d?('<span class="'+(R.c==='g'?'dvg':(R.c==='r'?'dvr':''))+'">'+esc(R.d)+'</span> vs '+(R.basis==='ly'?'LY':'budget')):'';
+    $('retailTags').innerHTML=isNum(R.v)?tagHtml(R.basis,pR):'';
     var iv=$('itemsVal');iv.textContent=isNum(I.v)?String(Math.round(I.v)):'—';
     iv.className='bignum num'+(I.c==='g'?' vg':(I.c==='r'?' vr':''));
     $('itemsCard').className='card hero'+(I.c?' '+I.c:'');
-    $('itemsTags').innerHTML=isNum(I.v)?tagHtml(I.basis,fI):'';
+    $('itemsDelta').innerHTML=I.d?('<span class="'+(I.c==='g'?'dvg':(I.c==='r'?'dvr':''))+'">'+esc(I.d)+'</span>'):'<span>—</span>';
+    $('itemsTags').innerHTML=isNum(I.v)?tagHtml(I.basis,pI):'';
     var cv=$('coreVal');cv.textContent=isNum(C.v)?String(Math.round(C.v)):'—';
     cv.className='num'+(C.c==='g'?' vg':(C.c==='r'?' vr':''));
-    $('coreTag').innerHTML=(isNum(C.v)&&fC)?'<span class="ptag">LW</span>':'';
+    $('coreTag').innerHTML=perTag(pC);
   });
 
   safe('services',function(){
-    var svcs=d.services||{},grid=$('svcGrid');grid.innerHTML='';
-    var i,allF=true,allW=true;
+    var grid=$('svcGrid');grid.innerHTML='';
+    var i,pers=[];
     for(i=0;i<CONFIG.SERVICES.length;i++){
-      var cfg=CONFIG.SERVICES[i],o=fig(svcs[cfg.key]);
-      var fT=pm(cfg.key,'services');
-      if(fT)allW=false; else allF=false;
-      var sub=(o.basis==='ly'?'vs LY':'vs Bud');
-      if(cfg.subKey && svcs[cfg.subKey]){
-        var s2=fig(svcs[cfg.subKey]);
-        sub+=' · '+cfg.subLabel+' '+(isNum(s2.v)?s2.v:'—')+(pm(cfg.subKey,'services')?' LW':'');
-      } else if(cfg.convOf && svcs[cfg.convOf]){
-        var so=fig(svcs[cfg.convOf]);
+      var cfg=CONFIG.SERVICES[i],o=M[cfg.grp][cfg.key]||cellN(null);
+      var p=perOf(o,prevWeek);pers.push(p);
+      var sub=(o.d?esc(o.d)+' · ':'')+(o.basis==='ly'?'vs LY':'vs Bud');
+      if(cfg.subKey){
+        var s2=M[cfg.subGrp][cfg.subKey]||cellN(null);
+        sub+=' · '+cfg.subLabel+' '+(isNum(s2.v)?s2.v:'—');
+      } else if(cfg.convOf){
+        var so=M[cfg.convGrp][cfg.convOf]||cellN(null);
         if(isNum(so.v)&&so.v>0&&isNum(o.v)) sub+=' · conv. '+Math.round(100*o.v/so.v)+'%';
       }
       var el=document.createElement('div');
       el.className='tile'+(o.c?' '+o.c:'');
-      el.innerHTML='<div class="t-name">'+cfg.label+(fT?'<span class="ptag">LW</span>':'')+'</div>'+
+      el.innerHTML='<div class="t-name">'+cfg.label+perTag(p)+'</div>'+
         '<div class="t-val num">'+(isNum(o.v)?o.v:'—')+'</div>'+
         '<div class="t-sub">'+sub+'</div>';
       grid.appendChild(el);
     }
-    var kExtra=['totalExBod','eps','welcome'];
-    for(i=0;i<kExtra.length;i++){
-      var fx=pm(kExtra[i],'services');
-      if(fx)allW=false; else allF=false;
-    }
-    $('svcEyebrow').textContent='Pharmacy services'+(allF?' · '+suffix(true):(allW?' · '+suffix(false):' · mixed periods'));
-    function span(key,lbl){
-      var o=fig(svcs[key]);
+    var tot=M.seven.services,eps=M.extras.eps,wel=M.extras.welcome;
+    pers.push(perOf(tot,prevWeek));pers.push(perOf(eps,prevWeek));pers.push(perOf(wel,prevWeek));
+    var allSame=true;
+    for(i=1;i<pers.length;i++)if(pers[i]!==pers[0]){allSame=false;break;}
+    $('svcEyebrow').textContent='Pharmacy services · '+(allSame?PER_LABEL[pers[0]]:'mixed periods');
+    function span(o,lbl){
       var cls=o.c==='g'?'vg':(o.c==='r'?'vr':'');
-      return lbl+' <b class="num '+cls+'">'+(isNum(o.v)?o.v:'—')+'</b>'+(pm(key,'services')?' <span class="ptag">LW</span>':'');
+      return lbl+' <b class="num '+cls+'">'+(isNum(o.v)?o.v:'—')+'</b>'+(o.d?' <span class="num" style="opacity:.8;">'+esc(o.d)+'</span>':'')+perTag(perOf(o,prevWeek));
     }
-    $('svcTotalLine').innerHTML=span('totalExBod','Total exc BOD')+' · '+span('eps','EPS')+' · '+span('welcome','Welcome');
+    $('svcTotalLine').innerHTML=span(tot,'Total exc BOD')+' · '+span(eps,'EPS')+' · '+span(wel,'Welcome');
   });
 
-  safe('greens',function(){ renderGreens(d); });
+  safe('greens',function(){ renderGreens(d,M,prevWeek); });
 
   safe('notes',function(){
     var nt=d.notes||{};

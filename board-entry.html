@@ -53,11 +53,12 @@
   .frow{margin-bottom:10px;}
   .fctl{display:flex;gap:6px;margin-top:5px;}
   .fctl input{flex:1;min-width:0;}
-  .csel{flex:0 0 74px;max-width:74px;font-size:14px;padding:11px 4px;}
+  .csel{flex:0 0 70px;max-width:70px;font-size:13.5px;padding:11px 3px;}
   .legend{font-size:12px;color:var(--faint);line-height:1.5;margin-bottom:12px;}
   .gsec{display:block;font-size:13px;font-weight:700;color:var(--sky);letter-spacing:.08em;margin:16px 0 8px;text-transform:uppercase;}
   .pwrow{display:flex;gap:8px;align-items:stretch;}
   .pwrow input{flex:1;min-width:0;}
+  .fctl input.dv,.pwrow input.dv{flex:0 0 56px;max-width:56px;padding:12px 4px;text-align:center;}
   .eyebtn{background:rgba(147,165,214,.15);border:1px solid var(--edge);border-radius:12px;
     color:var(--muted);font-family:'Archivo',sans-serif;font-weight:600;font-size:14px;
     padding:0 14px;cursor:pointer;}
@@ -88,44 +89,75 @@
 <body>
 
 <div class="top">
-  <h1>1478 Daily Board <small>v5.0</small></h1>
+  <h1>1478 Daily Board <small>v5.2</small></h1>
   <a id="boardLink" href="daily.html" target="_blank">View board →</a>
 </div>
 <div id="lastUpdated">Loading current figures…</div>
 
 <section>
-  <h2>Figures</h2>
-  <div class="legend">Each figure: value, then <b>Green/Red</b> (copy from Power BI), <b>Bud/LY</b> (what the colour compares against), <b>WTD/L wk</b> (which period the value covers).</div>
-  <div class="frow"><label>Retail sales <small>£</small></label>
-    <div class="fctl"><input class="num" id="f_retail" inputmode="decimal" placeholder="value"><select id="c_retail" class="csel"><option value="">–</option><option value="g">Green</option><option value="r">Red</option></select><select id="b_retail" class="csel"><option value="bud">Bud</option><option value="ly">LY</option></select><select id="p_retail" class="csel"><option value="wtd">WTD</option><option value="lastweek">L wk</option></select></div></div>
-  <div class="frow"><label>Total items</label>
-    <div class="fctl"><input class="num" id="f_items" inputmode="numeric" placeholder="value"><select id="c_items" class="csel"><option value="">–</option><option value="g">Green</option><option value="r">Red</option></select><select id="b_items" class="csel"><option value="bud">Bud</option><option value="ly">LY</option></select><select id="p_items" class="csel"><option value="wtd">WTD</option><option value="lastweek">L wk</option></select></div></div>
-  <div class="frow"><label>Core items</label>
-    <div class="fctl"><input class="num" id="f_core" inputmode="numeric" placeholder="value"><select id="c_core" class="csel"><option value="">–</option><option value="g">Green</option><option value="r">Red</option></select><select id="b_core" class="csel"><option value="bud">Bud</option><option value="ly">LY</option></select><select id="p_core" class="csel"><option value="wtd">WTD</option><option value="lastweek">L wk</option></select></div></div>
-  <div class="frow"><label>Total services <small>exc BOD</small></label>
-    <div class="fctl"><input class="num" id="f_totalExBod" inputmode="numeric" placeholder="value"><select id="c_totalExBod" class="csel"><option value="">–</option><option value="g">Green</option><option value="r">Red</option></select><select id="b_totalExBod" class="csel"><option value="bud">Bud</option><option value="ly">LY</option></select><select id="p_totalExBod" class="csel"><option value="wtd">WTD</option><option value="lastweek">L wk</option></select></div></div>
-  <div class="frow"><label>Pharmacy First total</label>
-    <div class="fctl"><input class="num" id="f_pf" inputmode="numeric" placeholder="value"><select id="c_pf" class="csel"><option value="">–</option><option value="g">Green</option><option value="r">Red</option></select><select id="b_pf" class="csel"><option value="bud">Bud</option><option value="ly">LY</option></select><select id="p_pf" class="csel"><option value="wtd">WTD</option><option value="lastweek">L wk</option></select></div></div>
-  <div class="frow"><label>PF clinical pathways</label>
-    <div class="fctl"><input class="num" id="f_pfcp" inputmode="numeric" placeholder="value"><select id="c_pfcp" class="csel"><option value="">–</option><option value="g">Green</option><option value="r">Red</option></select><select id="b_pfcp" class="csel"><option value="bud">Bud</option><option value="ly">LY</option></select><select id="p_pfcp" class="csel"><option value="wtd">WTD</option><option value="lastweek">L wk</option></select></div></div>
-  <div class="frow"><label>NMS sign-ups</label>
-    <div class="fctl"><input class="num" id="f_nmsSu" inputmode="numeric" placeholder="value"><select id="c_nmsSu" class="csel"><option value="">–</option><option value="g">Green</option><option value="r">Red</option></select><select id="b_nmsSu" class="csel"><option value="bud">Bud</option><option value="ly">LY</option></select><select id="p_nmsSu" class="csel"><option value="wtd">WTD</option><option value="lastweek">L wk</option></select></div></div>
-  <div class="frow"><label>NMS follow-ups</label>
-    <div class="fctl"><input class="num" id="f_nmsFu" inputmode="numeric" placeholder="value"><select id="c_nmsFu" class="csel"><option value="">–</option><option value="g">Green</option><option value="r">Red</option></select><select id="b_nmsFu" class="csel"><option value="bud">Bud</option><option value="ly">LY</option></select><select id="p_nmsFu" class="csel"><option value="wtd">WTD</option><option value="lastweek">L wk</option></select></div></div>
-  <div class="frow"><label>BP checks</label>
-    <div class="fctl"><input class="num" id="f_bp" inputmode="numeric" placeholder="value"><select id="c_bp" class="csel"><option value="">–</option><option value="g">Green</option><option value="r">Red</option></select><select id="b_bp" class="csel"><option value="bud">Bud</option><option value="ly">LY</option></select><select id="p_bp" class="csel"><option value="wtd">WTD</option><option value="lastweek">L wk</option></select></div></div>
+  <h2>Store scorecard · figures</h2>
+  <div class="legend">One entry per measure, used everywhere on the board. Value, then <b>±</b> (how far over or under, exactly as the deck shows it, e.g. +4, (3), 16.7%p), then the <b>colour</b> that variance earns, <b>Bud/LY</b>, and the <b>period</b> the value covers.</div>
+  <span class="gsec" style="margin-top:4px;">NHS Services · /6</span>
+  <div class="frow"><label>NMS sign up</label>
+    <div class="fctl"><input class="num" id="n6_su_v" inputmode="decimal" placeholder="value"><input class="num dv" id="n6_su_d" placeholder="±"><select id="n6_su_c" class="csel"><option value="">–</option><option value="g">Green</option><option value="r">Red</option></select><select id="n6_su_b" class="csel"><option value="bud">Bud</option><option value="ly">LY</option></select><select id="n6_su_p" class="csel"><option value="wtd">This wk</option><option value="lastweek">L wk</option><option value="mtd">Month</option></select></div></div>
+  <div class="frow"><label>NMS comp</label>
+    <div class="fctl"><input class="num" id="n6_comp_v" inputmode="decimal" placeholder="value"><input class="num dv" id="n6_comp_d" placeholder="±"><select id="n6_comp_c" class="csel"><option value="">–</option><option value="g">Green</option><option value="r">Red</option></select><select id="n6_comp_b" class="csel"><option value="bud">Bud</option><option value="ly">LY</option></select><select id="n6_comp_p" class="csel"><option value="wtd">This wk</option><option value="lastweek">L wk</option><option value="mtd">Month</option></select></div></div>
+  <div class="frow"><label>HT CC</label>
+    <div class="fctl"><input class="num" id="n6_htcc_v" inputmode="decimal" placeholder="value"><input class="num dv" id="n6_htcc_d" placeholder="±"><select id="n6_htcc_c" class="csel"><option value="">–</option><option value="g">Green</option><option value="r">Red</option></select><select id="n6_htcc_b" class="csel"><option value="bud">Bud</option><option value="ly">LY</option></select><select id="n6_htcc_p" class="csel"><option value="wtd">This wk</option><option value="lastweek">L wk</option><option value="mtd">Month</option></select></div></div>
   <div class="frow"><label>ABPM</label>
-    <div class="fctl"><input class="num" id="f_abpm" inputmode="numeric" placeholder="value"><select id="c_abpm" class="csel"><option value="">–</option><option value="g">Green</option><option value="r">Red</option></select><select id="b_abpm" class="csel"><option value="bud">Bud</option><option value="ly">LY</option></select><select id="p_abpm" class="csel"><option value="wtd">WTD</option><option value="lastweek">L wk</option></select></div></div>
-  <div class="frow"><label>Contraception</label>
-    <div class="fctl"><input class="num" id="f_contra" inputmode="numeric" placeholder="value"><select id="c_contra" class="csel"><option value="">–</option><option value="g">Green</option><option value="r">Red</option></select><select id="b_contra" class="csel"><option value="bud">Bud</option><option value="ly">LY</option></select><select id="p_contra" class="csel"><option value="wtd">WTD</option><option value="lastweek">L wk</option></select></div></div>
+    <div class="fctl"><input class="num" id="n6_abpm_v" inputmode="decimal" placeholder="value"><input class="num dv" id="n6_abpm_d" placeholder="±"><select id="n6_abpm_c" class="csel"><option value="">–</option><option value="g">Green</option><option value="r">Red</option></select><select id="n6_abpm_b" class="csel"><option value="bud">Bud</option><option value="ly">LY</option></select><select id="n6_abpm_p" class="csel"><option value="wtd">This wk</option><option value="lastweek">L wk</option><option value="mtd">Month</option></select></div></div>
+  <div class="frow"><label>Cont / EHC</label>
+    <div class="fctl"><input class="num" id="n6_cont_v" inputmode="decimal" placeholder="value"><input class="num dv" id="n6_cont_d" placeholder="±"><select id="n6_cont_c" class="csel"><option value="">–</option><option value="g">Green</option><option value="r">Red</option></select><select id="n6_cont_b" class="csel"><option value="bud">Bud</option><option value="ly">LY</option></select><select id="n6_cont_p" class="csel"><option value="wtd">This wk</option><option value="lastweek">L wk</option><option value="mtd">Month</option></select></div></div>
+  <div class="frow"><label>PF CP</label>
+    <div class="fctl"><input class="num" id="n6_pfcp_v" inputmode="decimal" placeholder="value"><input class="num dv" id="n6_pfcp_d" placeholder="±"><select id="n6_pfcp_c" class="csel"><option value="">–</option><option value="g">Green</option><option value="r">Red</option></select><select id="n6_pfcp_b" class="csel"><option value="bud">Bud</option><option value="ly">LY</option></select><select id="n6_pfcp_p" class="csel"><option value="wtd">This wk</option><option value="lastweek">L wk</option><option value="mtd">Month</option></select></div></div>
+  <span class="gsec">Pharmacy · Care · /7</span>
+  <div class="frow"><label>Items</label>
+    <div class="fctl"><input class="num" id="t7_items_v" inputmode="decimal" placeholder="value"><input class="num dv" id="t7_items_d" placeholder="±"><select id="t7_items_c" class="csel"><option value="">–</option><option value="g">Green</option><option value="r">Red</option></select><select id="t7_items_b" class="csel"><option value="bud">Bud</option><option value="ly">LY</option></select><select id="t7_items_p" class="csel"><option value="wtd">This wk</option><option value="lastweek">L wk</option><option value="mtd">Month</option></select></div></div>
+  <div class="frow"><label>Services</label>
+    <div class="fctl"><input class="num" id="t7_services_v" inputmode="decimal" placeholder="value"><input class="num dv" id="t7_services_d" placeholder="±"><select id="t7_services_c" class="csel"><option value="">–</option><option value="g">Green</option><option value="r">Red</option></select><select id="t7_services_b" class="csel"><option value="bud">Bud</option><option value="ly">LY</option></select><select id="t7_services_p" class="csel"><option value="wtd">This wk</option><option value="lastweek">L wk</option><option value="mtd">Month</option></select></div></div>
+  <div class="frow"><label>PSAT <small>%</small></label>
+    <div class="fctl"><input class="num" id="t7_psat_v" inputmode="decimal" placeholder="value"><input class="num dv" id="t7_psat_d" placeholder="±"><select id="t7_psat_c" class="csel"><option value="">–</option><option value="g">Green</option><option value="r">Red</option></select><select id="t7_psat_b" class="csel"><option value="bud">Bud</option><option value="ly">LY</option></select><select id="t7_psat_p" class="csel"><option value="wtd">This wk</option><option value="lastweek">L wk</option><option value="mtd">Month</option></select></div></div>
+  <div class="frow"><label>OSAT <small>%</small></label>
+    <div class="fctl"><input class="num" id="t7_osat_v" inputmode="decimal" placeholder="value"><input class="num dv" id="t7_osat_d" placeholder="±"><select id="t7_osat_c" class="csel"><option value="">–</option><option value="g">Green</option><option value="r">Red</option></select><select id="t7_osat_b" class="csel"><option value="bud">Bud</option><option value="ly">LY</option></select><select id="t7_osat_p" class="csel"><option value="wtd">This wk</option><option value="lastweek">L wk</option><option value="mtd">Month</option></select></div></div>
+  <div class="frow"><label>RSAT <small>%</small></label>
+    <div class="fctl"><input class="num" id="t7_rsat_v" inputmode="decimal" placeholder="value"><input class="num dv" id="t7_rsat_d" placeholder="±"><select id="t7_rsat_c" class="csel"><option value="">–</option><option value="g">Green</option><option value="r">Red</option></select><select id="t7_rsat_b" class="csel"><option value="bud">Bud</option><option value="ly">LY</option></select><select id="t7_rsat_p" class="csel"><option value="wtd">This wk</option><option value="lastweek">L wk</option><option value="mtd">Month</option></select></div></div>
+  <div class="frow"><label>NPS <small>%</small></label>
+    <div class="fctl"><input class="num" id="t7_nps_v" inputmode="decimal" placeholder="value"><input class="num dv" id="t7_nps_d" placeholder="±"><select id="t7_nps_c" class="csel"><option value="">–</option><option value="g">Green</option><option value="r">Red</option></select><select id="t7_nps_b" class="csel"><option value="bud">Bud</option><option value="ly">LY</option></select><select id="t7_nps_p" class="csel"><option value="wtd">This wk</option><option value="lastweek">L wk</option><option value="mtd">Month</option></select></div></div>
+  <div class="frow"><label>Responses</label>
+    <div class="fctl"><input class="num" id="t7_resp_v" inputmode="decimal" placeholder="value"><input class="num dv" id="t7_resp_d" placeholder="±"><select id="t7_resp_c" class="csel"><option value="">–</option><option value="g">Green</option><option value="r">Red</option></select><select id="t7_resp_b" class="csel"><option value="bud">Bud</option><option value="ly">LY</option></select><select id="t7_resp_p" class="csel"><option value="wtd">This wk</option><option value="lastweek">L wk</option><option value="mtd">Month</option></select></div></div>
+  <span class="gsec">Retail · Ops · /8</span>
+  <div class="frow"><label>Sales <small>£</small></label>
+    <div class="fctl"><input class="num" id="e8_sales_v" inputmode="decimal" placeholder="value"><input class="num dv" id="e8_sales_d" placeholder="±"><select id="e8_sales_c" class="csel"><option value="">–</option><option value="g">Green</option><option value="r">Red</option></select><select id="e8_sales_b" class="csel"><option value="bud">Bud</option><option value="ly">LY</option></select><select id="e8_sales_p" class="csel"><option value="wtd">This wk</option><option value="lastweek">L wk</option><option value="mtd">Month</option></select></div></div>
+  <div class="frow"><label>ATV</label>
+    <div class="fctl"><input class="num" id="e8_atv_v" inputmode="decimal" placeholder="value"><input class="num dv" id="e8_atv_d" placeholder="±"><select id="e8_atv_c" class="csel"><option value="">–</option><option value="g">Green</option><option value="r">Red</option></select><select id="e8_atv_b" class="csel"><option value="bud">Bud</option><option value="ly">LY</option></select><select id="e8_atv_p" class="csel"><option value="wtd">This wk</option><option value="lastweek">L wk</option><option value="mtd">Month</option></select></div></div>
+  <div class="frow"><label>No7 v LY</label>
+    <div class="fctl"><input class="num" id="e8_no7_v" inputmode="decimal" placeholder="value"><input class="num dv" id="e8_no7_d" placeholder="±"><select id="e8_no7_c" class="csel"><option value="">–</option><option value="g">Green</option><option value="r">Red</option></select><select id="e8_no7_b" class="csel"><option value="bud">Bud</option><option value="ly">LY</option></select><select id="e8_no7_p" class="csel"><option value="wtd">This wk</option><option value="lastweek">L wk</option><option value="mtd">Month</option></select></div></div>
+  <div class="frow"><label>Boots Brand</label>
+    <div class="fctl"><input class="num" id="e8_bb_v" inputmode="decimal" placeholder="value"><input class="num dv" id="e8_bb_d" placeholder="±"><select id="e8_bb_c" class="csel"><option value="">–</option><option value="g">Green</option><option value="r">Red</option></select><select id="e8_bb_b" class="csel"><option value="bud">Bud</option><option value="ly">LY</option></select><select id="e8_bb_p" class="csel"><option value="wtd">This wk</option><option value="lastweek">L wk</option><option value="mtd">Month</option></select></div></div>
+  <div class="frow"><label>Ad Card <small>%</small></label>
+    <div class="fctl"><input class="num" id="e8_adcard_v" inputmode="decimal" placeholder="value"><input class="num dv" id="e8_adcard_d" placeholder="±"><select id="e8_adcard_c" class="csel"><option value="">–</option><option value="g">Green</option><option value="r">Red</option></select><select id="e8_adcard_b" class="csel"><option value="bud">Bud</option><option value="ly">LY</option></select><select id="e8_adcard_p" class="csel"><option value="wtd">This wk</option><option value="lastweek">L wk</option><option value="mtd">Month</option></select></div></div>
+  <div class="frow"><label>ISP <small>%</small></label>
+    <div class="fctl"><input class="num" id="e8_isp_v" inputmode="decimal" placeholder="value"><input class="num dv" id="e8_isp_d" placeholder="±"><select id="e8_isp_c" class="csel"><option value="">–</option><option value="g">Green</option><option value="r">Red</option></select><select id="e8_isp_b" class="csel"><option value="bud">Bud</option><option value="ly">LY</option></select><select id="e8_isp_p" class="csel"><option value="wtd">This wk</option><option value="lastweek">L wk</option><option value="mtd">Month</option></select></div></div>
+  <div class="frow"><label>My Stock</label>
+    <div class="fctl"><input class="num" id="e8_mystock_v" inputmode="decimal" placeholder="value"><input class="num dv" id="e8_mystock_d" placeholder="±"><select id="e8_mystock_c" class="csel"><option value="">–</option><option value="g">Green</option><option value="r">Red</option></select><select id="e8_mystock_b" class="csel"><option value="bud">Bud</option><option value="ly">LY</option></select><select id="e8_mystock_p" class="csel"><option value="wtd">This wk</option><option value="lastweek">L wk</option><option value="mtd">Month</option></select></div></div>
+  <div class="frow"><label>Retail Loss</label>
+    <div class="fctl"><input class="num" id="e8_loss_v" inputmode="decimal" placeholder="value"><input class="num dv" id="e8_loss_d" placeholder="±"><select id="e8_loss_c" class="csel"><option value="">–</option><option value="g">Green</option><option value="r">Red</option></select><select id="e8_loss_b" class="csel"><option value="bud">Bud</option><option value="ly">LY</option></select><select id="e8_loss_p" class="csel"><option value="wtd">This wk</option><option value="lastweek">L wk</option><option value="mtd">Month</option></select></div></div>
+</section>
+
+<section>
+  <h2>Extra store figures <small style="color:var(--faint);font-weight:500;">not in the /21</small></h2>
+  <div class="frow"><label>Core items</label>
+    <div class="fctl"><input class="num" id="x_core_v" inputmode="decimal" placeholder="value"><input class="num dv" id="x_core_d" placeholder="±"><select id="x_core_c" class="csel"><option value="">–</option><option value="g">Green</option><option value="r">Red</option></select><select id="x_core_b" class="csel"><option value="bud">Bud</option><option value="ly">LY</option></select><select id="x_core_p" class="csel"><option value="wtd">This wk</option><option value="lastweek">L wk</option><option value="mtd">Month</option></select></div></div>
+  <div class="frow"><label>Pharmacy First total</label>
+    <div class="fctl"><input class="num" id="x_pf_v" inputmode="decimal" placeholder="value"><input class="num dv" id="x_pf_d" placeholder="±"><select id="x_pf_c" class="csel"><option value="">–</option><option value="g">Green</option><option value="r">Red</option></select><select id="x_pf_b" class="csel"><option value="bud">Bud</option><option value="ly">LY</option></select><select id="x_pf_p" class="csel"><option value="wtd">This wk</option><option value="lastweek">L wk</option><option value="mtd">Month</option></select></div></div>
   <div class="frow"><label>EHC</label>
-    <div class="fctl"><input class="num" id="f_ehc" inputmode="numeric" placeholder="value"><select id="c_ehc" class="csel"><option value="">–</option><option value="g">Green</option><option value="r">Red</option></select><select id="b_ehc" class="csel"><option value="bud">Bud</option><option value="ly">LY</option></select><select id="p_ehc" class="csel"><option value="wtd">WTD</option><option value="lastweek">L wk</option></select></div></div>
+    <div class="fctl"><input class="num" id="x_ehc_v" inputmode="decimal" placeholder="value"><input class="num dv" id="x_ehc_d" placeholder="±"><select id="x_ehc_c" class="csel"><option value="">–</option><option value="g">Green</option><option value="r">Red</option></select><select id="x_ehc_b" class="csel"><option value="bud">Bud</option><option value="ly">LY</option></select><select id="x_ehc_p" class="csel"><option value="wtd">This wk</option><option value="lastweek">L wk</option><option value="mtd">Month</option></select></div></div>
   <div class="frow"><label>BOP</label>
-    <div class="fctl"><input class="num" id="f_bop" inputmode="numeric" placeholder="value"><select id="c_bop" class="csel"><option value="">–</option><option value="g">Green</option><option value="r">Red</option></select><select id="b_bop" class="csel"><option value="bud">Bud</option><option value="ly">LY</option></select><select id="p_bop" class="csel"><option value="wtd">WTD</option><option value="lastweek">L wk</option></select></div></div>
+    <div class="fctl"><input class="num" id="x_bop_v" inputmode="decimal" placeholder="value"><input class="num dv" id="x_bop_d" placeholder="±"><select id="x_bop_c" class="csel"><option value="">–</option><option value="g">Green</option><option value="r">Red</option></select><select id="x_bop_b" class="csel"><option value="bud">Bud</option><option value="ly">LY</option></select><select id="x_bop_p" class="csel"><option value="wtd">This wk</option><option value="lastweek">L wk</option><option value="mtd">Month</option></select></div></div>
   <div class="frow"><label>EPS noms</label>
-    <div class="fctl"><input class="num" id="f_eps" inputmode="numeric" placeholder="value"><select id="c_eps" class="csel"><option value="">–</option><option value="g">Green</option><option value="r">Red</option></select><select id="b_eps" class="csel"><option value="bud">Bud</option><option value="ly">LY</option></select><select id="p_eps" class="csel"><option value="wtd">WTD</option><option value="lastweek">L wk</option></select></div></div>
+    <div class="fctl"><input class="num" id="x_eps_v" inputmode="decimal" placeholder="value"><input class="num dv" id="x_eps_d" placeholder="±"><select id="x_eps_c" class="csel"><option value="">–</option><option value="g">Green</option><option value="r">Red</option></select><select id="x_eps_b" class="csel"><option value="bud">Bud</option><option value="ly">LY</option></select><select id="x_eps_p" class="csel"><option value="wtd">This wk</option><option value="lastweek">L wk</option><option value="mtd">Month</option></select></div></div>
   <div class="frow"><label>Welcome texts</label>
-    <div class="fctl"><input class="num" id="f_welcome" inputmode="numeric" placeholder="value"><select id="c_welcome" class="csel"><option value="">–</option><option value="g">Green</option><option value="r">Red</option></select><select id="b_welcome" class="csel"><option value="bud">Bud</option><option value="ly">LY</option></select><select id="p_welcome" class="csel"><option value="wtd">WTD</option><option value="lastweek">L wk</option></select></div></div>
+    <div class="fctl"><input class="num" id="x_welcome_v" inputmode="decimal" placeholder="value"><input class="num dv" id="x_welcome_d" placeholder="±"><select id="x_welcome_c" class="csel"><option value="">–</option><option value="g">Green</option><option value="r">Red</option></select><select id="x_welcome_b" class="csel"><option value="bud">Bud</option><option value="ly">LY</option></select><select id="x_welcome_p" class="csel"><option value="wtd">This wk</option><option value="lastweek">L wk</option><option value="mtd">Month</option></select></div></div>
 </section>
 
 <section>
@@ -141,42 +173,6 @@
   <div class="field wide" style="margin-top:10px;"><label>Focuses &amp; notices <small>shown on the board</small></label><textarea id="n_notes"></textarea><div class="cnt" id="cnt_notes">0/120</div></div>
 </section>
 
-<details>
-  <summary>Store scorecard · 21 greens (open when the deck lands)</summary>
-  <div class="inner">
-    <span class="gsec" style="margin-top:4px;">NHS Services · /6</span>
-    <div class="grid2">
-      <div class="field"><label>NMS sign up</label><div class="pwrow"><input class="num" id="n6_su_v" inputmode="decimal" placeholder="no."><select id="n6_su_c" style="max-width:104px;"><option value="">–</option><option value="g">Green</option><option value="r">Red</option></select></div></div>
-      <div class="field"><label>NMS comp</label><div class="pwrow"><input class="num" id="n6_comp_v" inputmode="decimal" placeholder="no."><select id="n6_comp_c" style="max-width:104px;"><option value="">–</option><option value="g">Green</option><option value="r">Red</option></select></div></div>
-      <div class="field"><label>HT CC</label><div class="pwrow"><input class="num" id="n6_htcc_v" inputmode="decimal" placeholder="no."><select id="n6_htcc_c" style="max-width:104px;"><option value="">–</option><option value="g">Green</option><option value="r">Red</option></select></div></div>
-      <div class="field"><label>ABPM</label><div class="pwrow"><input class="num" id="n6_abpm_v" inputmode="decimal" placeholder="no."><select id="n6_abpm_c" style="max-width:104px;"><option value="">–</option><option value="g">Green</option><option value="r">Red</option></select></div></div>
-      <div class="field"><label>Cont / EHC</label><div class="pwrow"><input class="num" id="n6_cont_v" inputmode="decimal" placeholder="no."><select id="n6_cont_c" style="max-width:104px;"><option value="">–</option><option value="g">Green</option><option value="r">Red</option></select></div></div>
-      <div class="field"><label>PF CP</label><div class="pwrow"><input class="num" id="n6_pfcp_v" inputmode="decimal" placeholder="no."><select id="n6_pfcp_c" style="max-width:104px;"><option value="">–</option><option value="g">Green</option><option value="r">Red</option></select></div></div>
-    </div>
-    <span class="gsec">Pharmacy · Care · /7</span>
-    <div class="grid2">
-      <div class="field"><label>Items</label><div class="pwrow"><input class="num" id="t7_items_v" inputmode="decimal" placeholder="no."><select id="t7_items_c" style="max-width:104px;"><option value="">–</option><option value="g">Green</option><option value="r">Red</option></select></div></div>
-      <div class="field"><label>Services</label><div class="pwrow"><input class="num" id="t7_services_v" inputmode="decimal" placeholder="no."><select id="t7_services_c" style="max-width:104px;"><option value="">–</option><option value="g">Green</option><option value="r">Red</option></select></div></div>
-      <div class="field"><label>PSAT <small>%</small></label><div class="pwrow"><input class="num" id="t7_psat_v" inputmode="decimal" placeholder="no."><select id="t7_psat_c" style="max-width:104px;"><option value="">–</option><option value="g">Green</option><option value="r">Red</option></select></div></div>
-      <div class="field"><label>OSAT <small>%</small></label><div class="pwrow"><input class="num" id="t7_osat_v" inputmode="decimal" placeholder="no."><select id="t7_osat_c" style="max-width:104px;"><option value="">–</option><option value="g">Green</option><option value="r">Red</option></select></div></div>
-      <div class="field"><label>RSAT <small>%</small></label><div class="pwrow"><input class="num" id="t7_rsat_v" inputmode="decimal" placeholder="no."><select id="t7_rsat_c" style="max-width:104px;"><option value="">–</option><option value="g">Green</option><option value="r">Red</option></select></div></div>
-      <div class="field"><label>NPS <small>%</small></label><div class="pwrow"><input class="num" id="t7_nps_v" inputmode="decimal" placeholder="no."><select id="t7_nps_c" style="max-width:104px;"><option value="">–</option><option value="g">Green</option><option value="r">Red</option></select></div></div>
-      <div class="field"><label>Responses</label><div class="pwrow"><input class="num" id="t7_resp_v" inputmode="decimal" placeholder="no."><select id="t7_resp_c" style="max-width:104px;"><option value="">–</option><option value="g">Green</option><option value="r">Red</option></select></div></div>
-    </div>
-    <span class="gsec">Retail · Ops · /8</span>
-    <div class="grid2">
-      <div class="field"><label>Sales</label><div class="pwrow"><input class="num" id="e8_sales_v" inputmode="decimal" placeholder="no."><select id="e8_sales_c" style="max-width:104px;"><option value="">–</option><option value="g">Green</option><option value="r">Red</option></select></div></div>
-      <div class="field"><label>ATV</label><div class="pwrow"><input class="num" id="e8_atv_v" inputmode="decimal" placeholder="no."><select id="e8_atv_c" style="max-width:104px;"><option value="">–</option><option value="g">Green</option><option value="r">Red</option></select></div></div>
-      <div class="field"><label>No7 v LY</label><div class="pwrow"><input class="num" id="e8_no7_v" inputmode="decimal" placeholder="no."><select id="e8_no7_c" style="max-width:104px;"><option value="">–</option><option value="g">Green</option><option value="r">Red</option></select></div></div>
-      <div class="field"><label>Boots Brand</label><div class="pwrow"><input class="num" id="e8_bb_v" inputmode="decimal" placeholder="no."><select id="e8_bb_c" style="max-width:104px;"><option value="">–</option><option value="g">Green</option><option value="r">Red</option></select></div></div>
-      <div class="field"><label>Ad Card <small>%</small></label><div class="pwrow"><input class="num" id="e8_adcard_v" inputmode="decimal" placeholder="no."><select id="e8_adcard_c" style="max-width:104px;"><option value="">–</option><option value="g">Green</option><option value="r">Red</option></select></div></div>
-      <div class="field"><label>ISP <small>%</small></label><div class="pwrow"><input class="num" id="e8_isp_v" inputmode="decimal" placeholder="no."><select id="e8_isp_c" style="max-width:104px;"><option value="">–</option><option value="g">Green</option><option value="r">Red</option></select></div></div>
-      <div class="field"><label>My Stock</label><div class="pwrow"><input class="num" id="e8_mystock_v" inputmode="decimal" placeholder="no."><select id="e8_mystock_c" style="max-width:104px;"><option value="">–</option><option value="g">Green</option><option value="r">Red</option></select></div></div>
-      <div class="field"><label>Retail Loss</label><div class="pwrow"><input class="num" id="e8_loss_v" inputmode="decimal" placeholder="no."><select id="e8_loss_c" style="max-width:104px;"><option value="">–</option><option value="g">Green</option><option value="r">Red</option></select></div></div>
-    </div>
-    <p class="hint">Copy the numbers and colours for 1478 straight from the area deck's three tables. The board totals each row and the /21 automatically. Store row only, never the area.</p>
-  </div>
-</details>
 
 <details>
   <summary>Birthdays &amp; work anniversaries (kept encrypted)</summary>
@@ -216,11 +212,11 @@
 </div></div>
 
 <script>
-var SVC_KEYS=['totalExBod','pf','pfcp','nmsSu','nmsFu','bp','abpm','contra','ehc','bop','eps','welcome'];
-var FIG_KEYS=['retail','items','core'].concat(SVC_KEYS);
 var N6K=['su','comp','htcc','abpm','cont','pfcp'];
 var T7K=['items','services','psat','osat','rsat','nps','resp'];
 var E8K=['sales','atv','no7','bb','adcard','isp','mystock','loss'];
+var XK=['core','pf','ehc','bop','eps','welcome'];
+var GROUPS=[['n6_',N6K,'nhs'],['t7_',T7K,'seven'],['e8_',E8K,'eight'],['x_',XK,'extras']];
 var LOADED_HISTORY=[];
 var WEEK_START_DAY=0; /* 0=Sunday, must match the board */
 
@@ -330,27 +326,68 @@ function makeBody(){
 }
 
 /* ---------- prefill ---------- */
-function figIn(o){
+function cellIn(o){
   o=o||{};
   var v=(typeof o.v==='number')?o.v:((typeof o.wtd==='number')?o.wtd:((typeof o.a==='number')?o.a:null));
-  return {v:v,c:(o.c==='g'||o.c==='r')?o.c:'',basis:(o.basis==='ly')?'ly':'bud'};
+  return {v:v,
+    d:(o.d!==undefined&&o.d!==null&&String(o.d).trim()!=='')?String(o.d).trim():null,
+    c:(o.c==='g'||o.c==='r')?o.c:'',
+    basis:(o.basis==='ly')?'ly':'bud',
+    per:(o.per==='lastweek'||o.per==='mtd'||o.per==='wtd')?o.per:null};
+}
+function unifyIn(d){
+  var g=d.greens||{};
+  var M={nhs:{},seven:{},eight:{},extras:{}};
+  var i;
+  for(i=0;i<N6K.length;i++)M.nhs[N6K[i]]=cellIn((g.nhs||d.nhs6||{})[N6K[i]]);
+  for(i=0;i<T7K.length;i++)M.seven[T7K[i]]=cellIn((g.seven||g.ten||{})[T7K[i]]);
+  for(i=0;i<E8K.length;i++)M.eight[E8K[i]]=cellIn((g.eight||{})[E8K[i]]);
+  for(i=0;i<XK.length;i++)M.extras[XK[i]]=cellIn((d.extras||{})[XK[i]]);
+  var P=d.periods||{};
+  function lay(dst,src,pk,fam){
+    if(!src||!dst)return;
+    var c=cellIn(src);
+    if(dst.v===null&&c.v!==null)dst.v=c.v;
+    if(!dst.d&&c.d)dst.d=c.d;
+    if(!dst.c&&c.c)dst.c=c.c;
+    if(c.basis==='ly')dst.basis='ly';
+    if(!dst.per){
+      var p=(src.per)||P[pk]||P[fam]||d.period;
+      if(p==='lastweek')dst.per='lastweek';
+    }
+  }
+  var sv=d.services||{};
+  lay(M.eight.sales,d.retail,'retail','retail');
+  lay(M.seven.items,d.items,'items','items');
+  lay(M.seven.services,sv.totalExBod,'totalExBod','services');
+  lay(M.nhs.su,sv.nmsSu,'nmsSu','services');
+  lay(M.nhs.comp,sv.nmsFu,'nmsFu','services');
+  lay(M.nhs.htcc,sv.bp,'bp','services');
+  lay(M.nhs.abpm,sv.abpm,'abpm','services');
+  lay(M.nhs.cont,sv.contra,'contra','services');
+  lay(M.nhs.pfcp,sv.pfcp,'pfcp','services');
+  lay(M.extras.core,d.core||((d.items&&typeof d.items.coreWtd==='number')?{v:d.items.coreWtd}:null),'core','items');
+  lay(M.extras.pf,sv.pf,'pf','services');
+  lay(M.extras.ehc,sv.ehc,'ehc','services');
+  lay(M.extras.bop,sv.bop,'bop','services');
+  lay(M.extras.eps,sv.eps,'eps','services');
+  lay(M.extras.welcome,sv.welcome,'welcome','services');
+  return M;
 }
 function fill(d){
   d=d||{};
   LOADED_HISTORY=(d.history&&d.history.slice)?d.history.slice():[];
-  var srcs={retail:d.retail,items:d.items,
-            core:d.core||((d.items&&typeof d.items.coreWtd==='number')?{v:d.items.coreWtd}:{})};
-  var svcs=d.services||{};
-  for(var i=0;i<SVC_KEYS.length;i++) srcs[SVC_KEYS[i]]=svcs[SVC_KEYS[i]];
-  var Pd=d.periods||{};
-  function pv(k,fam){var v=Pd[k]||Pd[fam]||d.period||'wtd';return v==='lastweek'?'lastweek':'wtd';}
-  for(i=0;i<FIG_KEYS.length;i++){
-    var k=FIG_KEYS[i],o=figIn(srcs[k]);
-    put('f_'+k,o.v);
-    $('c_'+k).value=o.c;
-    $('b_'+k).value=o.basis;
-    var fam=(k==='retail')?'retail':((k==='items'||k==='core')?'items':'services');
-    $('p_'+k).value=pv(k,fam);
+  var M=unifyIn(d),gi,ki;
+  for(gi=0;gi<GROUPS.length;gi++){
+    var pre=GROUPS[gi][0],keys=GROUPS[gi][1],grp=GROUPS[gi][2];
+    for(ki=0;ki<keys.length;ki++){
+      var o=M[grp][keys[ki]];
+      put(pre+keys[ki]+'_v',o.v);
+      put(pre+keys[ki]+'_d',o.d);
+      $(pre+keys[ki]+'_c').value=o.c||'';
+      $(pre+keys[ki]+'_b').value=o.basis;
+      $(pre+keys[ki]+'_p').value=o.per||'wtd';
+    }
   }
   var dl=d.delivery||{};
   var isToday=false;
@@ -361,30 +398,6 @@ function fill(d){
   $('d_target').value=(isToday&&dl.target)?dl.target:'';
   var nt=d.notes||{};
   $('n_www').value=nt.www||''; $('n_focus').value=nt.focus||''; $('n_notes').value=nt.notes||'';
-  var gg=d.greens||{};
-  var gn=gg.nhs||d.nhs6||{};
-  for(i=0;i<N6K.length;i++){
-    var o6=gn[N6K[i]]||{};
-    put('n6_'+N6K[i]+'_v',o6.v);
-    $('n6_'+N6K[i]+'_c').value=o6.c||'';
-  }
-  var g7=gg.seven;
-  if(!g7&&gg.ten){
-    g7={};
-    for(i=0;i<T7K.length;i++)g7[T7K[i]]=gg.ten[T7K[i]];
-  }
-  g7=g7||{};
-  for(i=0;i<T7K.length;i++){
-    var o7=g7[T7K[i]]||{};
-    put('t7_'+T7K[i]+'_v',o7.v);
-    $('t7_'+T7K[i]+'_c').value=o7.c||'';
-  }
-  var g8=gg.eight||{};
-  for(i=0;i<E8K.length;i++){
-    var o8=g8[E8K[i]]||{};
-    put('e8_'+E8K[i]+'_v',o8.v);
-    $('e8_'+E8K[i]+'_c').value=o8.c||'';
-  }
   $('bd_list').value=(d.birthdays||[]).map(function(b){return b.name+' '+b.date;}).join('\n');
   $('an_list').value=(d.anniversaries||[]).map(function(a){return a.name+' '+a.date+(a.year?'-'+a.year:'');}).join('\n');
   updateCnts();
@@ -442,28 +455,24 @@ function parseAnniversaries(){
   }
   return out;
 }
+function dstr(id){var x=$(id).value.trim();return x?x.slice(0,12):null;}
 function buildData(){
-  var i,figs={};
-  function fx(k){
-    return {v:num('f_'+k),
-            c:($('c_'+k).value||null),
-            basis:($('b_'+k).value==='ly')?'ly':'bud'};
+  var i,gi,greens={nhs:{},seven:{},eight:{}},extras={};
+  function readCell(pre,key){
+    return {v:num(pre+key+'_v'),
+            d:dstr(pre+key+'_d'),
+            c:($(pre+key+'_c').value||null),
+            basis:($(pre+key+'_b').value==='ly')?'ly':'bud',
+            per:(function(p){return (p==='lastweek'||p==='mtd')?p:'wtd';})($(pre+key+'_p').value)};
   }
-  var periods={};
-  for(i=0;i<FIG_KEYS.length;i++){
-    figs[FIG_KEYS[i]]=fx(FIG_KEYS[i]);
-    periods[FIG_KEYS[i]]=($('p_'+FIG_KEYS[i]).value==='lastweek')?'lastweek':'wtd';
-  }
-  var services={};
-  for(i=0;i<SVC_KEYS.length;i++) services[SVC_KEYS[i]]=figs[SVC_KEYS[i]];
-  var greens={nhs:{},seven:{},eight:{}};
-  for(i=0;i<N6K.length;i++) greens.nhs[N6K[i]]={v:num('n6_'+N6K[i]+'_v'),c:($('n6_'+N6K[i]+'_c').value||null)};
-  for(i=0;i<T7K.length;i++) greens.seven[T7K[i]]={v:num('t7_'+T7K[i]+'_v'),c:($('t7_'+T7K[i]+'_c').value||null)};
-  for(i=0;i<E8K.length;i++) greens.eight[E8K[i]]={v:num('e8_'+E8K[i]+'_v'),c:($('e8_'+E8K[i]+'_c').value||null)};
+  for(i=0;i<N6K.length;i++) greens.nhs[N6K[i]]=readCell('n6_',N6K[i]);
+  for(i=0;i<T7K.length;i++) greens.seven[T7K[i]]=readCell('t7_',T7K[i]);
+  for(i=0;i<E8K.length;i++) greens.eight[E8K[i]]=readCell('e8_',E8K[i]);
+  for(i=0;i<XK.length;i++) extras[XK[i]]=readCell('x_',XK[i]);
   var gCount=0,gSet=0,grp=[greens.nhs,greens.seven,greens.eight];
-  for(i=0;i<grp.length;i++){
-    for(var gk in grp[i]){
-      if(grp[i][gk]&&grp[i][gk].c){gSet++;if(grp[i][gk].c==='g')gCount++;}
+  for(gi=0;gi<grp.length;gi++){
+    for(var gk in grp[gi]){
+      if(grp[gi][gk]&&grp[gi][gk].c){gSet++;if(grp[gi][gk].c==='g')gCount++;}
     }
   }
   var wkNow=weekKeyOffset(0),wkPrev=weekKeyOffset(1),nowIso=new Date().toISOString();
@@ -472,23 +481,17 @@ function buildData(){
     for(var h=0;h<hist.length;h++){ if(hist[h]&&hist[h].wk===wk)return hist[h]; }
     var e={wk:wk};hist.push(e);return e;
   }
-  var eR=histEntry(periods.retail==='lastweek'?wkPrev:wkNow); eR.retail=figs.retail.v; eR.updated=nowIso;
-  var eI=histEntry(periods.items==='lastweek'?wkPrev:wkNow); eI.items=figs.items.v; eI.updated=nowIso;
-  var eS=histEntry(periods.totalExBod==='lastweek'?wkPrev:wkNow); eS.services=figs.totalExBod.v; eS.updated=nowIso;
+  function wkFor(per){ return per==='lastweek'?wkPrev:wkNow; }
+  var eR=histEntry(wkFor(greens.eight.sales.per)); eR.retail=greens.eight.sales.v; eR.updated=nowIso;
+  var eI=histEntry(wkFor(greens.seven.items.per)); eI.items=greens.seven.items.v; eI.updated=nowIso;
+  var eS=histEntry(wkFor(greens.seven.services.per)); eS.services=greens.seven.services.v; eS.updated=nowIso;
   var eG=histEntry(wkNow); eG.g24=(gSet?gCount:null); eG.updated=nowIso;
   hist.sort(function(a,b){return (a.wk<b.wk)?-1:1;});
   if(hist.length>12)hist=hist.slice(hist.length-12);
-  var allLW=true;
-  for(var pk in periods){ if(periods[pk]!=='lastweek'){allLW=false;break;} }
   return {
     updated:nowIso,
-    period:allLW?'lastweek':'wtd',
-    periods:periods,
-    retail:figs.retail,
-    items:figs.items,
-    core:figs.core,
-    services:services,
     greens:greens,
+    extras:extras,
     history:hist,
     delivery:{target:($('d_target').value||null)},
     birthdays:parseBirthdays(),

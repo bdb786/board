@@ -82,7 +82,13 @@
   .ofline{color:var(--muted);font-size:18px;margin-top:6px;}
   .ofline b{color:var(--ink);font-weight:700;}
   .ofline b.vg{color:var(--teal);} .ofline b.vr{color:var(--coral);}
-  .ofline .dvg{color:var(--teal);font-weight:700;} .ofline .dvr{color:var(--coral);font-weight:700;}
+  .bigline{display:flex;align-items:baseline;gap:14px;flex-wrap:wrap;}
+  .bsuf{font-size:24px;font-weight:600;color:var(--muted);font-variant-numeric:tabular-nums;}
+  .bsuf b{font-weight:800;color:var(--ink);}
+  .bsuf b.dvg,.dvg{color:var(--teal);} .bsuf b.dvr,.dvr{color:var(--coral);}
+  .t-suf{font-size:16px;font-weight:600;color:var(--muted);margin-left:10px;font-variant-numeric:tabular-nums;white-space:nowrap;}
+  .t-suf b{font-weight:700;color:var(--ink);}
+  .tile.g .t-suf b{color:var(--teal);} .tile.r .t-suf b{color:var(--coral);}
   .chip.m{background:rgba(111,168,255,.14);color:var(--sky);}
   .ptag.m{background:rgba(111,168,255,.18);color:var(--sky);}
   .gc-name i{font-style:normal;font-size:9px;font-weight:700;margin-left:3px;color:var(--amber);}
@@ -101,7 +107,7 @@
 
   /* Row 2: services */
   .row-svc{height:208px;flex:0 0 auto;}
-  .svc-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:10px;flex:1;min-height:0;}
+  .svc-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin-top:10px;flex:1;min-height:0;}
   .tile{background:rgba(147,165,214,.07);border:1px solid rgba(159,178,230,.10);
     border-radius:12px;padding:9px 12px;display:flex;flex-direction:column;justify-content:center;min-height:0;}
   .tile.g{background:rgba(47,224,176,.14);border-color:rgba(47,224,176,.25);}
@@ -131,7 +137,7 @@
   .gcell .gc-name{font-size:12px;font-weight:600;letter-spacing:.03em;text-transform:uppercase;color:var(--muted);
     line-height:1.15;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
   .gcell .gc-val{font-family:'Sora',sans-serif;font-weight:700;font-size:21px;line-height:1.2;font-variant-numeric:tabular-nums;min-height:25px;}
-  .gcell .gc-delta{font-size:13px;font-weight:600;line-height:1.15;color:var(--muted);font-variant-numeric:tabular-nums;
+  .gcell .gc-delta{font-size:14.5px;font-weight:600;line-height:1.15;color:var(--muted);font-variant-numeric:tabular-nums;
     white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
   .gcell.g{background:rgba(47,224,176,.20);} .gcell.g .gc-val,.gcell.g .gc-delta{color:var(--teal);}
   .gcell.r{background:rgba(255,107,112,.20);} .gcell.r .gc-val,.gcell.r .gc-delta{color:var(--coral);}
@@ -192,14 +198,13 @@
     <div class="row-hero">
       <section class="card hero" id="retailCard">
         <div class="head"><span class="eyebrow" id="retailEyebrow">Retail sales · week to date</span></div>
-        <div class="bignum num" id="retailVal">—</div>
-        <div class="ofline" id="retailDelta"></div>
+        <div class="bigline"><span class="bignum num" id="retailVal">—</span><span class="bsuf num" id="retailSuf"></span></div>
         <div class="tags" id="retailTags"></div>
       </section>
       <section class="card hero" id="itemsCard">
         <div class="head"><span class="eyebrow" id="itemsEyebrow">Items · week to date</span></div>
-        <div class="bignum num" id="itemsVal">—</div>
-        <div class="ofline"><span id="itemsDelta"></span> · Core <b class="num" id="coreVal">—</b><span id="coreTag"></span></div>
+        <div class="bigline"><span class="bignum num" id="itemsVal">—</span><span class="bsuf num" id="itemsSuf"></span></div>
+        <div class="ofline">Core <b class="num" id="coreVal">—</b><span id="coreTag"></span></div>
         <div class="tags" id="itemsTags"></div>
       </section>
       <div class="pcol">
@@ -274,7 +279,7 @@
 
 <script>
 /* =====================  CONFIG (edit me)  ===================== */
-var VERSION='5.2';
+var VERSION='5.4';
 var CONFIG = {
   STORE_NAME : 'Didsbury',
   STORE_SUB  : 'Store 1478 · 736–740 Wilmslow Road',
@@ -294,9 +299,11 @@ var CONFIG = {
     { grp:'nhs',    key:'abpm', label:'ABPM' },
     { grp:'nhs',    key:'cont', label:'Contraception' },
     { grp:'extras', key:'ehc',  label:'EHC' },
-    { grp:'extras', key:'bop',  label:'BOP' }
+    { grp:'extras', key:'bop',  label:'BOP' },
+    { grp:'extras', key:'mps',  label:'MPS %' },
+    { grp:'extras', key:'mpsAcc', label:'MPS Acc %' }
   ],
-  EXTRAS : [['core','Core items'],['pf','Pharmacy First'],['ehc','EHC'],['bop','BOP'],['eps','EPS noms'],['welcome','Welcome texts']],
+  EXTRAS : [['core','Core items'],['pf','Pharmacy First'],['ehc','EHC'],['bop','BOP'],['eps','EPS noms'],['welcome','Welcome texts'],['mps','MPS'],['mpsAcc','MPS Accuracy']],
   G21 : {
     nhs   : [['su','Sign Up'],['comp','NMS Comp'],['htcc','HT CC'],['abpm','ABPM'],['cont','Cont/EHC'],['pfcp','PF CP']],
     seven : [['items','Items'],['services','Services'],['psat','PSAT'],['osat','OSAT'],['rsat','RSAT'],['nps','NPS'],['resp','Responses']],
@@ -535,10 +542,9 @@ function perOf(cell,prevWeek){
   if(prevWeek&&p==='wtd')p='lastweek';
   return p;
 }
-function tagHtml(basis,p){
+function perChip(p){
   var pc=p==='lastweek'?' lw':(p==='mtd'?' m':'');
-  return '<span class="chip basis">'+(basis==='ly'?'vs LY':'vs Budget')+'</span>'+
-         '<span class="chip'+pc+'">'+(p==='lastweek'?'Last week (final)':(p==='mtd'?'Month to date':'This week'))+'</span>';
+  return '<span class="chip'+pc+'">'+(p==='lastweek'?'Last week (final)':(p==='mtd'?'Month to date':'This week'))+'</span>';
 }
 function perTag(p){
   if(p==='lastweek')return '<span class="ptag">LW</span>';
@@ -561,15 +567,20 @@ function render(){
     var pR=perOf(R,prevWeek),pI=perOf(I,prevWeek),pC=perOf(C,prevWeek);
     $('retailEyebrow').textContent='Retail sales · '+PER_LABEL[pR];
     $('itemsEyebrow').textContent='Items · '+PER_LABEL[pI];
+    function suf(o){
+      if(!isNum(o.v)&&!o.d)return '';
+      var b=o.d?('<b class="'+(o.c==='g'?'dvg':(o.c==='r'?'dvr':''))+'">'+esc(o.d)+'</b> '):'';
+      return b+'vs '+(o.basis==='ly'?'LY':'Bud');
+    }
     var rv=$('retailVal');rv.textContent=money(R.v);rv.className='bignum num'+(R.c==='g'?' vg':(R.c==='r'?' vr':''));
     $('retailCard').className='card hero'+(R.c?' '+R.c:'');
-    $('retailDelta').innerHTML=R.d?('<span class="'+(R.c==='g'?'dvg':(R.c==='r'?'dvr':''))+'">'+esc(R.d)+'</span> vs '+(R.basis==='ly'?'LY':'budget')):'';
-    $('retailTags').innerHTML=isNum(R.v)?tagHtml(R.basis,pR):'';
+    $('retailSuf').innerHTML=suf(R);
+    $('retailTags').innerHTML=isNum(R.v)?perChip(pR):'';
     var iv=$('itemsVal');iv.textContent=isNum(I.v)?String(Math.round(I.v)):'—';
     iv.className='bignum num'+(I.c==='g'?' vg':(I.c==='r'?' vr':''));
     $('itemsCard').className='card hero'+(I.c?' '+I.c:'');
-    $('itemsDelta').innerHTML=I.d?('<span class="'+(I.c==='g'?'dvg':(I.c==='r'?'dvr':''))+'">'+esc(I.d)+'</span>'):'<span>—</span>';
-    $('itemsTags').innerHTML=isNum(I.v)?tagHtml(I.basis,pI):'';
+    $('itemsSuf').innerHTML=suf(I);
+    $('itemsTags').innerHTML=isNum(I.v)?perChip(pI):'';
     var cv=$('coreVal');cv.textContent=isNum(C.v)?String(Math.round(C.v)):'—';
     cv.className='num'+(C.c==='g'?' vg':(C.c==='r'?' vr':''));
     $('coreTag').innerHTML=perTag(pC);
@@ -581,18 +592,20 @@ function render(){
     for(i=0;i<CONFIG.SERVICES.length;i++){
       var cfg=CONFIG.SERVICES[i],o=M[cfg.grp][cfg.key]||cellN(null);
       var p=perOf(o,prevWeek);pers.push(p);
-      var sub=(o.d?esc(o.d)+' · ':'')+(o.basis==='ly'?'vs LY':'vs Bud');
+      var sub='';
       if(cfg.subKey){
         var s2=M[cfg.subGrp][cfg.subKey]||cellN(null);
-        sub+=' · '+cfg.subLabel+' '+(isNum(s2.v)?s2.v:'—');
+        sub+=cfg.subLabel+' '+(isNum(s2.v)?s2.v:'—');
       } else if(cfg.convOf){
         var so=M[cfg.convGrp][cfg.convOf]||cellN(null);
-        if(isNum(so.v)&&so.v>0&&isNum(o.v)) sub+=' · conv. '+Math.round(100*o.v/so.v)+'%';
+        if(isNum(so.v)&&so.v>0&&isNum(o.v)) sub+='conv. '+Math.round(100*o.v/so.v)+'%';
       }
       var el=document.createElement('div');
       el.className='tile'+(o.c?' '+o.c:'');
+      var tsuf=(isNum(o.v)||o.d)
+        ? '<span class="t-suf">'+(o.d?'<b>'+esc(o.d)+'</b> ':'')+'vs '+(o.basis==='ly'?'LY':'Bud')+'</span>' : '';
       el.innerHTML='<div class="t-name">'+cfg.label+perTag(p)+'</div>'+
-        '<div class="t-val num">'+(isNum(o.v)?o.v:'—')+'</div>'+
+        '<div class="t-val num">'+(isNum(o.v)?o.v:'—')+tsuf+'</div>'+
         '<div class="t-sub">'+sub+'</div>';
       grid.appendChild(el);
     }

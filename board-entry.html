@@ -89,7 +89,7 @@
 <body>
 
 <div class="top">
-  <h1>1478 Daily Board <small>v5.2</small></h1>
+  <h1>1478 Daily Board <small>v5.3</small></h1>
   <a id="boardLink" href="daily.html" target="_blank">View board →</a>
 </div>
 <div id="lastUpdated">Loading current figures…</div>
@@ -158,6 +158,10 @@
     <div class="fctl"><input class="num" id="x_eps_v" inputmode="decimal" placeholder="value"><input class="num dv" id="x_eps_d" placeholder="±"><select id="x_eps_c" class="csel"><option value="">–</option><option value="g">Green</option><option value="r">Red</option></select><select id="x_eps_b" class="csel"><option value="bud">Bud</option><option value="ly">LY</option></select><select id="x_eps_p" class="csel"><option value="wtd">This wk</option><option value="lastweek">L wk</option><option value="mtd">Month</option></select></div></div>
   <div class="frow"><label>Welcome texts</label>
     <div class="fctl"><input class="num" id="x_welcome_v" inputmode="decimal" placeholder="value"><input class="num dv" id="x_welcome_d" placeholder="±"><select id="x_welcome_c" class="csel"><option value="">–</option><option value="g">Green</option><option value="r">Red</option></select><select id="x_welcome_b" class="csel"><option value="bud">Bud</option><option value="ly">LY</option></select><select id="x_welcome_p" class="csel"><option value="wtd">This wk</option><option value="lastweek">L wk</option><option value="mtd">Month</option></select></div></div>
+  <div class="frow"><label>MPS <small>%</small></label>
+    <div class="fctl"><input class="num" id="x_mps_v" inputmode="decimal" placeholder="value"><input class="num dv" id="x_mps_d" placeholder="±"><select id="x_mps_c" class="csel"><option value="">–</option><option value="g">Green</option><option value="r">Red</option></select><select id="x_mps_b" class="csel"><option value="bud">Bud</option><option value="ly">LY</option></select><select id="x_mps_p" class="csel"><option value="wtd">This wk</option><option value="lastweek">L wk</option><option value="mtd">Month</option></select></div></div>
+  <div class="frow"><label>MPS Accuracy <small>%</small></label>
+    <div class="fctl"><input class="num" id="x_mpsAcc_v" inputmode="decimal" placeholder="value"><input class="num dv" id="x_mpsAcc_d" placeholder="±"><select id="x_mpsAcc_c" class="csel"><option value="">–</option><option value="g">Green</option><option value="r">Red</option></select><select id="x_mpsAcc_b" class="csel"><option value="bud">Bud</option><option value="ly">LY</option></select><select id="x_mpsAcc_p" class="csel"><option value="wtd">This wk</option><option value="lastweek">L wk</option><option value="mtd">Month</option></select></div></div>
 </section>
 
 <section>
@@ -215,7 +219,7 @@
 var N6K=['su','comp','htcc','abpm','cont','pfcp'];
 var T7K=['items','services','psat','osat','rsat','nps','resp'];
 var E8K=['sales','atv','no7','bb','adcard','isp','mystock','loss'];
-var XK=['core','pf','ehc','bop','eps','welcome'];
+var XK=['core','pf','ehc','bop','eps','welcome','mps','mpsAcc'];
 var GROUPS=[['n6_',N6K,'nhs'],['t7_',T7K,'seven'],['e8_',E8K,'eight'],['x_',XK,'extras']];
 var LOADED_HISTORY=[];
 var WEEK_START_DAY=0; /* 0=Sunday, must match the board */

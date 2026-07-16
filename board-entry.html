@@ -89,7 +89,7 @@
 <body>
 
 <div class="top">
-  <h1>1478 Daily Board <small>v5.3</small></h1>
+  <h1>1478 Daily Board <small>v5.4</small></h1>
   <a id="boardLink" href="daily.html" target="_blank">View board →</a>
 </div>
 <div id="lastUpdated">Loading current figures…</div>
@@ -210,6 +210,7 @@
 </details>
 
 <div id="publishBar"><div class="wrap">
+  <div id="dirtyNote" style="display:none;text-align:center;font-size:13px;font-weight:700;color:var(--amber);margin-bottom:6px;">● Unpublished changes</div>
   <div id="status"></div>
   <button class="btn" id="publishBtn" type="button">Publish to board</button>
   <button class="btn secondary" id="copyBtn" type="button">Copy JSON (manual fallback)</button>
@@ -562,6 +563,8 @@ function publish(retrying){
       setStatus('ok', hasPass
         ? 'Published encrypted. The board updates within a couple of minutes.'
         : 'Published UNENCRYPTED. Set a passphrase in Settings to protect the data.');
+      DIRTY=false;
+      $('dirtyNote').style.display='none';
       btn.disabled=false;
     })
     .catch(function(e){
@@ -588,6 +591,23 @@ $('copyBtn').addEventListener('click',function(){
       document.body.removeChild(ta);
     }
   }).catch(function(){});
+});
+
+var DIRTY=false;
+function inSettings(el){
+  while(el){ if(el.id==='settings'||el.id==='publishBar')return true; el=el.parentNode; }
+  return false;
+}
+function markDirty(ev){
+  if(DIRTY)return;
+  if(ev&&ev.target&&inSettings(ev.target))return;
+  DIRTY=true;
+  $('dirtyNote').style.display='block';
+}
+document.addEventListener('input',markDirty);
+document.addEventListener('change',markDirty);
+window.addEventListener('beforeunload',function(ev){
+  if(DIRTY){ ev.preventDefault(); ev.returnValue=''; return ''; }
 });
 
 loadSettings();

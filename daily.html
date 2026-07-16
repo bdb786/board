@@ -170,6 +170,33 @@
   footer .dot{width:10px;height:10px;border-radius:50%;background:var(--teal);}
   footer .dot.warn{background:var(--amber);}
   footer .dot.bad{background:var(--coral);}
+
+  /* ---------- optional light theme: add ?theme=light to the URL ---------- */
+  html.light{
+    --bg:#F4F6FB; --bg-glow:#E7EDFA;
+    --card:#FFFFFF; --card-edge:#E0E7F5;
+    --ink:#16244A; --muted:#54628C; --faint:#8B98BD;
+    --teal:#0E9F76; --amber:#B07607; --coral:#D93A40; --sky:#2F6FE0;
+    --track:rgba(22,36,74,.10);
+  }
+  html.light #stage{
+    background:
+      radial-gradient(1100px 700px at 18% -10%, var(--bg-glow) 0%, rgba(231,237,250,0) 60%),
+      var(--bg);
+  }
+  html.light .card{box-shadow:0 1px 3px rgba(22,36,74,.08);}
+  html.light .lozenge{background:#06277E;color:#fff;}
+  html.light .chip{background:rgba(22,36,74,.08);}
+  html.light .chip.lw{background:rgba(176,118,7,.12);}
+  html.light .chip.m,html.light .chip.basis{background:rgba(47,111,224,.10);}
+  html.light .ptag{background:rgba(176,118,7,.14);}
+  html.light .ptag.m{background:rgba(47,111,224,.14);}
+  html.light .stale{background:rgba(176,118,7,.14);}
+  html.light .tile{background:rgba(22,36,74,.04);border-color:#E4E9F6;}
+  html.light .tile.g{background:rgba(14,159,118,.10);border-color:rgba(14,159,118,.35);}
+  html.light .tile.r{background:rgba(217,58,64,.09);border-color:rgba(217,58,64,.32);}
+  html.light .gcell.g{background:rgba(14,159,118,.14);}
+  html.light .gcell.r{background:rgba(217,58,64,.12);}
 </style>
 </head>
 <body>
@@ -219,14 +246,6 @@
       </div>
     </div>
 
-    <section class="card row-svc">
-      <div class="head">
-        <span class="eyebrow" id="svcEyebrow">Pharmacy services</span>
-        <span class="eyebrow num totline" id="svcTotalLine">Total exc BOD — · EPS — · Welcome —</span>
-      </div>
-      <div class="svc-grid" id="svcGrid"></div>
-    </section>
-
     <section class="card row-g21">
       <div class="g21-rows">
         <div class="g21-row">
@@ -243,6 +262,14 @@
         </div>
       </div>
       <div class="g21-total"><div class="t-big num" id="g21Total">–/21</div><div class="t-sub">Store scorecard</div><div class="t-trend num" id="g21Trend"></div></div>
+    </section>
+
+    <section class="card row-svc">
+      <div class="head">
+        <span class="eyebrow" id="svcEyebrow">Pharmacy services</span>
+        <span class="eyebrow num totline" id="svcTotalLine">Total exc BOD — · EPS — · Welcome —</span>
+      </div>
+      <div class="svc-grid" id="svcGrid"></div>
     </section>
 
     <div class="row-notes">
@@ -279,7 +306,7 @@
 
 <script>
 /* =====================  CONFIG (edit me)  ===================== */
-var VERSION='5.4';
+var VERSION='5.7';
 var CONFIG = {
   STORE_NAME : 'Didsbury',
   STORE_SUB  : 'Store 1478 · 736–740 Wilmslow Road',
@@ -313,6 +340,7 @@ var CONFIG = {
 /* ===================  end of config block  ==================== */
 
 var state = { data:null, lastGood:null };
+var CACHE_KEY='board_cache_1478b';
 
 function $(id){ return document.getElementById(id); }
 function pad(n){ return (n<10?'0':'')+n; }
@@ -666,6 +694,7 @@ function setStatus(kind,msg){
   $('statusDot').className='dot'+(kind==='ok'?'':' '+kind);
   $('statusText').textContent=msg;
 }
+if(/[?#&]theme=light/.test(location.search+location.hash))document.documentElement.className='light';
 var DBG=/[?#&]debug=1/.test(location.search+location.hash);
 var dbgEl=null;
 function dlog(m){
@@ -686,6 +715,7 @@ window.onerror=function(msg,src,line){
 };
 function gotData(json){
   state.data=json;state.lastGood=json;
+  try{ localStorage.setItem(CACHE_KEY,JSON.stringify(json)); }catch(e){}
   try{ render(); }catch(e){ dlog('render failed '+(e&&e.message)); }
   var up=json.updated?new Date(json.updated):null;
   setStatus('ok', up&&!isNaN(up.getTime())
@@ -762,6 +792,17 @@ $('footLeft').textContent='Boots UK · Store 1478 · v'+VERSION;
 fit();window.addEventListener('resize',fit);setTimeout(fit,1000);setTimeout(fit,3000);
 tickClock();setInterval(tickClock,1000);
 render();
+/* cold boot: show the last decrypted data instantly while fetching fresh */
+try{
+  var _c=localStorage.getItem(CACHE_KEY);
+  if(_c){
+    var _cj=JSON.parse(_c);
+    state.data=_cj;state.lastGood=_cj;
+    render();
+    setStatus('warn','Showing saved data, refreshing…');
+    dlog('cache loaded');
+  }
+}catch(e){ dlog('cache read failed'); }
 loadWeather();setInterval(loadWeather,CONFIG.WEATHER_REFRESH_MIN*60*1000);
 loadData();setInterval(loadData,CONFIG.DATA_REFRESH_MIN*60*1000);
 function keepAwake(){

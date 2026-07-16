@@ -7,16 +7,11 @@
 <meta name="referrer" content="no-referrer">
 <title>1478 Board Entry</title>
 <!--
-  ============================================================
-  STORE 1478 BOARD ENTRY  (open on your phone)
-  ============================================================
-  - Prefills with the current data.json, so you only change
-    the numbers that moved. Blank = shows a dash on the board.
-  - Tap PUBLISH to commit data.json to the GitHub repo.
-    Needs a fine-grained GitHub token saved once in Settings.
-  - No token? Tap "Copy JSON" and paste it into data.json on
-    github.com instead.
-  ============================================================
+  STORE 1478 BOARD ENTRY v5.0
+  - Every figure: value + Green/Red + vs Budget/vs LY + WTD/Last week.
+    Budgets and targets removed; colours copied from Power BI / the deck.
+  - Store scorecard: /6 NHS + /7 Pharmacy & Care + /8 Retail Ops = /21.
+  - Publishes encrypted data.json to GitHub. Settings stay on this phone.
 -->
 <link href="https://fonts.googleapis.com/css2?family=Sora:wght@600;700;800&family=Archivo:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
@@ -33,18 +28,12 @@
     padding:20px 16px 120px;max-width:560px;margin:0 auto;
   }
   h1{font-family:'Sora',sans-serif;font-weight:800;font-size:26px;}
+  h1 small{font-size:13px;color:var(--faint);font-weight:600;}
   .top{display:flex;align-items:flex-end;justify-content:space-between;gap:12px;margin-bottom:6px;}
   .top a{color:var(--sky);font-size:14px;text-decoration:none;font-weight:600;}
   #lastUpdated{color:var(--muted);font-size:14px;margin-bottom:16px;}
-
-  section{
-    background:var(--card);border:1px solid var(--edge);border-radius:18px;
-    padding:16px;margin-bottom:14px;
-  }
-  section h2{
-    font-family:'Sora',sans-serif;font-weight:700;font-size:16px;
-    letter-spacing:.04em;margin-bottom:12px;color:var(--ink);
-  }
+  section{background:var(--card);border:1px solid var(--edge);border-radius:18px;padding:16px;margin-bottom:14px;}
+  section h2{font-family:'Sora',sans-serif;font-weight:700;font-size:16px;letter-spacing:.04em;margin-bottom:12px;}
   .grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
   .field{display:flex;flex-direction:column;gap:5px;}
   .field.wide{grid-column:1 / -1;}
@@ -57,31 +46,24 @@
   }
   input:focus,textarea:focus,select:focus{border-color:var(--sky);}
   select{font-weight:600;}
-  .psel{max-width:104px;font-size:15px;padding:10px 8px;flex:0 0 104px;}
+  textarea{min-height:74px;resize:vertical;font-size:16px;line-height:1.4;}
+  .cnt{font-size:12px;color:var(--faint);text-align:right;margin-top:3px;}
+  .cnt.over{color:var(--amber);font-weight:600;}
+  input.num{font-family:'Sora',sans-serif;font-weight:600;font-variant-numeric:tabular-nums;}
+  .frow{margin-bottom:10px;}
+  .fctl{display:flex;gap:6px;margin-top:5px;}
+  .fctl input{flex:1;min-width:0;}
+  .csel{flex:0 0 74px;max-width:74px;font-size:14px;padding:11px 4px;}
+  .legend{font-size:12px;color:var(--faint);line-height:1.5;margin-bottom:12px;}
+  .gsec{display:block;font-size:13px;font-weight:700;color:var(--sky);letter-spacing:.08em;margin:16px 0 8px;text-transform:uppercase;}
   .pwrow{display:flex;gap:8px;align-items:stretch;}
   .pwrow input{flex:1;min-width:0;}
   .eyebtn{background:rgba(147,165,214,.15);border:1px solid var(--edge);border-radius:12px;
     color:var(--muted);font-family:'Archivo',sans-serif;font-weight:600;font-size:14px;
     padding:0 14px;cursor:pointer;}
-  textarea{min-height:74px;resize:vertical;font-size:16px;line-height:1.4;}
-  .cnt{font-size:12px;color:var(--faint);text-align:right;margin-top:3px;}
-  .cnt.over{color:var(--amber);font-weight:600;}
-  .gsec{display:block;font-size:13px;font-weight:700;color:var(--sky);letter-spacing:.08em;margin:16px 0 8px;text-transform:uppercase;}
-  .r8row{display:flex;gap:8px;margin-bottom:8px;}
-  .r8row input.lab{flex:1.4;}
-  .r8row input.val{flex:0 0 78px;}
-  .r8row select{flex:0 0 104px;width:auto;}
-  input.num{font-family:'Sora',sans-serif;font-weight:600;font-variant-numeric:tabular-nums;}
-
-  details{
-    background:var(--card);border:1px solid var(--edge);border-radius:18px;
-    padding:0;margin-bottom:14px;overflow:hidden;
-  }
-  details summary{
-    list-style:none;cursor:pointer;padding:16px;
-    font-family:'Sora',sans-serif;font-weight:700;font-size:16px;
-    display:flex;justify-content:space-between;align-items:center;
-  }
+  details{background:var(--card);border:1px solid var(--edge);border-radius:18px;padding:0;margin-bottom:14px;overflow:hidden;}
+  details summary{list-style:none;cursor:pointer;padding:16px;font-family:'Sora',sans-serif;font-weight:700;font-size:16px;
+    display:flex;justify-content:space-between;align-items:center;}
   details summary::-webkit-details-marker{display:none;}
   details summary:after{content:'+';color:var(--muted);font-size:20px;}
   details[open] summary:after{content:'–';}
@@ -89,25 +71,15 @@
   .hint{font-size:13px;color:var(--faint);line-height:1.5;margin-top:10px;}
   .hint a{color:var(--sky);}
   .hint code{background:var(--field);padding:1px 6px;border-radius:6px;font-size:12px;}
-
-  .btn{
-    display:block;width:100%;border:none;border-radius:14px;cursor:pointer;
+  .btn{display:block;width:100%;border:none;border-radius:14px;cursor:pointer;
     font-family:'Sora',sans-serif;font-weight:700;font-size:17px;padding:15px;
-    color:#04122E;background:linear-gradient(90deg,#1F8FFF,var(--teal));
-  }
+    color:#04122E;background:linear-gradient(90deg,#1F8FFF,var(--teal));}
   .btn.secondary{background:rgba(147,165,214,.15);color:var(--ink);font-weight:600;margin-top:10px;}
   .btn:disabled{opacity:.55;}
-
-  #publishBar{
-    position:fixed;left:0;right:0;bottom:0;
-    background:rgba(6,17,55,.92);backdrop-filter:blur(6px);
-    border-top:1px solid var(--edge);padding:12px 16px 22px;
-  }
+  #publishBar{position:fixed;left:0;right:0;bottom:0;background:rgba(6,17,55,.92);backdrop-filter:blur(6px);
+    border-top:1px solid var(--edge);padding:12px 16px 22px;}
   #publishBar .wrap{max-width:560px;margin:0 auto;}
-  #status{
-    text-align:center;font-size:14px;font-weight:600;min-height:18px;margin-bottom:8px;
-    color:var(--muted);
-  }
+  #status{text-align:center;font-size:14px;font-weight:600;min-height:18px;margin-bottom:8px;color:var(--muted);}
   #status.ok{color:var(--teal);}
   #status.err{color:var(--coral);}
   #status.busy{color:var(--amber);}
@@ -116,75 +88,45 @@
 <body>
 
 <div class="top">
-  <h1>1478 Daily Board <small style="font-size:13px;color:var(--faint);font-weight:600;">v4.5</small></h1>
+  <h1>1478 Daily Board <small>v5.0</small></h1>
   <a id="boardLink" href="daily.html" target="_blank">View board →</a>
 </div>
 <div id="lastUpdated">Loading current figures…</div>
 
 <section>
-  <h2>Retail &amp; items · figures</h2>
-  <div class="grid2">
-    <div class="field"><label>Retail sales <small>£</small></label><div class="pwrow"><input class="num" id="r_wtd" inputmode="decimal"><select id="pp_retail" class="psel"><option value="wtd">WTD</option><option value="lastweek">Last wk</option></select></div></div>
-    <div class="field"><label>Total items</label><div class="pwrow"><input class="num" id="i_wtd" inputmode="numeric"><select id="pp_items" class="psel"><option value="wtd">WTD</option><option value="lastweek">Last wk</option></select></div></div>
-    <div class="field"><label>Core items <small>follows Items dropdown</small></label><input class="num" id="i_core" inputmode="numeric"></div>
-    <div class="field"><label>Total services <small>exc BOD</small></label><div class="pwrow"><input class="num" id="s_totalExBod" inputmode="numeric"><select id="pp_totalExBod" class="psel"><option value="wtd">WTD</option><option value="lastweek">Last wk</option></select></div></div>
-  </div>
+  <h2>Figures</h2>
+  <div class="legend">Each figure: value, then <b>Green/Red</b> (copy from Power BI), <b>Bud/LY</b> (what the colour compares against), <b>WTD/L wk</b> (which period the value covers).</div>
+  <div class="frow"><label>Retail sales <small>£</small></label>
+    <div class="fctl"><input class="num" id="f_retail" inputmode="decimal" placeholder="value"><select id="c_retail" class="csel"><option value="">–</option><option value="g">Green</option><option value="r">Red</option></select><select id="b_retail" class="csel"><option value="bud">Bud</option><option value="ly">LY</option></select><select id="p_retail" class="csel"><option value="wtd">WTD</option><option value="lastweek">L wk</option></select></div></div>
+  <div class="frow"><label>Total items</label>
+    <div class="fctl"><input class="num" id="f_items" inputmode="numeric" placeholder="value"><select id="c_items" class="csel"><option value="">–</option><option value="g">Green</option><option value="r">Red</option></select><select id="b_items" class="csel"><option value="bud">Bud</option><option value="ly">LY</option></select><select id="p_items" class="csel"><option value="wtd">WTD</option><option value="lastweek">L wk</option></select></div></div>
+  <div class="frow"><label>Core items</label>
+    <div class="fctl"><input class="num" id="f_core" inputmode="numeric" placeholder="value"><select id="c_core" class="csel"><option value="">–</option><option value="g">Green</option><option value="r">Red</option></select><select id="b_core" class="csel"><option value="bud">Bud</option><option value="ly">LY</option></select><select id="p_core" class="csel"><option value="wtd">WTD</option><option value="lastweek">L wk</option></select></div></div>
+  <div class="frow"><label>Total services <small>exc BOD</small></label>
+    <div class="fctl"><input class="num" id="f_totalExBod" inputmode="numeric" placeholder="value"><select id="c_totalExBod" class="csel"><option value="">–</option><option value="g">Green</option><option value="r">Red</option></select><select id="b_totalExBod" class="csel"><option value="bud">Bud</option><option value="ly">LY</option></select><select id="p_totalExBod" class="csel"><option value="wtd">WTD</option><option value="lastweek">L wk</option></select></div></div>
+  <div class="frow"><label>Pharmacy First total</label>
+    <div class="fctl"><input class="num" id="f_pf" inputmode="numeric" placeholder="value"><select id="c_pf" class="csel"><option value="">–</option><option value="g">Green</option><option value="r">Red</option></select><select id="b_pf" class="csel"><option value="bud">Bud</option><option value="ly">LY</option></select><select id="p_pf" class="csel"><option value="wtd">WTD</option><option value="lastweek">L wk</option></select></div></div>
+  <div class="frow"><label>PF clinical pathways</label>
+    <div class="fctl"><input class="num" id="f_pfcp" inputmode="numeric" placeholder="value"><select id="c_pfcp" class="csel"><option value="">–</option><option value="g">Green</option><option value="r">Red</option></select><select id="b_pfcp" class="csel"><option value="bud">Bud</option><option value="ly">LY</option></select><select id="p_pfcp" class="csel"><option value="wtd">WTD</option><option value="lastweek">L wk</option></select></div></div>
+  <div class="frow"><label>NMS sign-ups</label>
+    <div class="fctl"><input class="num" id="f_nmsSu" inputmode="numeric" placeholder="value"><select id="c_nmsSu" class="csel"><option value="">–</option><option value="g">Green</option><option value="r">Red</option></select><select id="b_nmsSu" class="csel"><option value="bud">Bud</option><option value="ly">LY</option></select><select id="p_nmsSu" class="csel"><option value="wtd">WTD</option><option value="lastweek">L wk</option></select></div></div>
+  <div class="frow"><label>NMS follow-ups</label>
+    <div class="fctl"><input class="num" id="f_nmsFu" inputmode="numeric" placeholder="value"><select id="c_nmsFu" class="csel"><option value="">–</option><option value="g">Green</option><option value="r">Red</option></select><select id="b_nmsFu" class="csel"><option value="bud">Bud</option><option value="ly">LY</option></select><select id="p_nmsFu" class="csel"><option value="wtd">WTD</option><option value="lastweek">L wk</option></select></div></div>
+  <div class="frow"><label>BP checks</label>
+    <div class="fctl"><input class="num" id="f_bp" inputmode="numeric" placeholder="value"><select id="c_bp" class="csel"><option value="">–</option><option value="g">Green</option><option value="r">Red</option></select><select id="b_bp" class="csel"><option value="bud">Bud</option><option value="ly">LY</option></select><select id="p_bp" class="csel"><option value="wtd">WTD</option><option value="lastweek">L wk</option></select></div></div>
+  <div class="frow"><label>ABPM</label>
+    <div class="fctl"><input class="num" id="f_abpm" inputmode="numeric" placeholder="value"><select id="c_abpm" class="csel"><option value="">–</option><option value="g">Green</option><option value="r">Red</option></select><select id="b_abpm" class="csel"><option value="bud">Bud</option><option value="ly">LY</option></select><select id="p_abpm" class="csel"><option value="wtd">WTD</option><option value="lastweek">L wk</option></select></div></div>
+  <div class="frow"><label>Contraception</label>
+    <div class="fctl"><input class="num" id="f_contra" inputmode="numeric" placeholder="value"><select id="c_contra" class="csel"><option value="">–</option><option value="g">Green</option><option value="r">Red</option></select><select id="b_contra" class="csel"><option value="bud">Bud</option><option value="ly">LY</option></select><select id="p_contra" class="csel"><option value="wtd">WTD</option><option value="lastweek">L wk</option></select></div></div>
+  <div class="frow"><label>EHC</label>
+    <div class="fctl"><input class="num" id="f_ehc" inputmode="numeric" placeholder="value"><select id="c_ehc" class="csel"><option value="">–</option><option value="g">Green</option><option value="r">Red</option></select><select id="b_ehc" class="csel"><option value="bud">Bud</option><option value="ly">LY</option></select><select id="p_ehc" class="csel"><option value="wtd">WTD</option><option value="lastweek">L wk</option></select></div></div>
+  <div class="frow"><label>BOP</label>
+    <div class="fctl"><input class="num" id="f_bop" inputmode="numeric" placeholder="value"><select id="c_bop" class="csel"><option value="">–</option><option value="g">Green</option><option value="r">Red</option></select><select id="b_bop" class="csel"><option value="bud">Bud</option><option value="ly">LY</option></select><select id="p_bop" class="csel"><option value="wtd">WTD</option><option value="lastweek">L wk</option></select></div></div>
+  <div class="frow"><label>EPS noms</label>
+    <div class="fctl"><input class="num" id="f_eps" inputmode="numeric" placeholder="value"><select id="c_eps" class="csel"><option value="">–</option><option value="g">Green</option><option value="r">Red</option></select><select id="b_eps" class="csel"><option value="bud">Bud</option><option value="ly">LY</option></select><select id="p_eps" class="csel"><option value="wtd">WTD</option><option value="lastweek">L wk</option></select></div></div>
+  <div class="frow"><label>Welcome texts</label>
+    <div class="fctl"><input class="num" id="f_welcome" inputmode="numeric" placeholder="value"><select id="c_welcome" class="csel"><option value="">–</option><option value="g">Green</option><option value="r">Red</option></select><select id="b_welcome" class="csel"><option value="bud">Bud</option><option value="ly">LY</option></select><select id="p_welcome" class="csel"><option value="wtd">WTD</option><option value="lastweek">L wk</option></select></div></div>
 </section>
-
-<section>
-  <h2>Services · figures</h2>
-  <div class="grid2">
-    <div class="field"><label>Pharmacy First total</label><div class="pwrow"><input class="num" id="s_pf" inputmode="numeric"><select id="pp_pf" class="psel"><option value="wtd">WTD</option><option value="lastweek">Last wk</option></select></div></div>
-    <div class="field"><label>PF clinical pathways</label><div class="pwrow"><input class="num" id="s_pfcp" inputmode="numeric"><select id="pp_pfcp" class="psel"><option value="wtd">WTD</option><option value="lastweek">Last wk</option></select></div></div>
-    <div class="field"><label>NMS sign-ups</label><div class="pwrow"><input class="num" id="s_nmsSu" inputmode="numeric"><select id="pp_nmsSu" class="psel"><option value="wtd">WTD</option><option value="lastweek">Last wk</option></select></div></div>
-    <div class="field"><label>NMS follow-ups</label><div class="pwrow"><input class="num" id="s_nmsFu" inputmode="numeric"><select id="pp_nmsFu" class="psel"><option value="wtd">WTD</option><option value="lastweek">Last wk</option></select></div></div>
-    <div class="field"><label>BP checks</label><div class="pwrow"><input class="num" id="s_bp" inputmode="numeric"><select id="pp_bp" class="psel"><option value="wtd">WTD</option><option value="lastweek">Last wk</option></select></div></div>
-    <div class="field"><label>ABPM</label><div class="pwrow"><input class="num" id="s_abpm" inputmode="numeric"><select id="pp_abpm" class="psel"><option value="wtd">WTD</option><option value="lastweek">Last wk</option></select></div></div>
-    <div class="field"><label>Contraception</label><div class="pwrow"><input class="num" id="s_contra" inputmode="numeric"><select id="pp_contra" class="psel"><option value="wtd">WTD</option><option value="lastweek">Last wk</option></select></div></div>
-    <div class="field"><label>EHC</label><div class="pwrow"><input class="num" id="s_ehc" inputmode="numeric"><select id="pp_ehc" class="psel"><option value="wtd">WTD</option><option value="lastweek">Last wk</option></select></div></div>
-    <div class="field"><label>BOP</label><div class="pwrow"><input class="num" id="s_bop" inputmode="numeric"><select id="pp_bop" class="psel"><option value="wtd">WTD</option><option value="lastweek">Last wk</option></select></div></div>
-    <div class="field"><label>EPS noms</label><div class="pwrow"><input class="num" id="s_eps" inputmode="numeric"><select id="pp_eps" class="psel"><option value="wtd">WTD</option><option value="lastweek">Last wk</option></select></div></div>
-    <div class="field"><label>Welcome texts</label><div class="pwrow"><input class="num" id="s_welcome" inputmode="numeric"><select id="pp_welcome" class="psel"><option value="wtd">WTD</option><option value="lastweek">Last wk</option></select></div></div>
-  </div>
-</section>
-
-<details>
-  <summary>Regional scorecard · 24 greens (open when the deck lands)</summary>
-  <div class="inner">
-  <span class="gsec" style="margin-top:4px;">NHS Services · /6</span>
-  <div class="grid2">
-    <div class="field"><label>NMS sign up</label><div class="pwrow"><input class="num" id="n6_su_v" inputmode="decimal" placeholder="no."><select id="n6_su_c" style="max-width:104px;"><option value="">–</option><option value="g">Green</option><option value="r">Red</option></select></div></div>
-    <div class="field"><label>NMS comp</label><div class="pwrow"><input class="num" id="n6_comp_v" inputmode="decimal" placeholder="no."><select id="n6_comp_c" style="max-width:104px;"><option value="">–</option><option value="g">Green</option><option value="r">Red</option></select></div></div>
-    <div class="field"><label>HT CC</label><div class="pwrow"><input class="num" id="n6_htcc_v" inputmode="decimal" placeholder="no."><select id="n6_htcc_c" style="max-width:104px;"><option value="">–</option><option value="g">Green</option><option value="r">Red</option></select></div></div>
-    <div class="field"><label>ABPM</label><div class="pwrow"><input class="num" id="n6_abpm_v" inputmode="decimal" placeholder="no."><select id="n6_abpm_c" style="max-width:104px;"><option value="">–</option><option value="g">Green</option><option value="r">Red</option></select></div></div>
-    <div class="field"><label>Contraception</label><div class="pwrow"><input class="num" id="n6_cont_v" inputmode="decimal" placeholder="no."><select id="n6_cont_c" style="max-width:104px;"><option value="">–</option><option value="g">Green</option><option value="r">Red</option></select></div></div>
-    <div class="field"><label>PF CP</label><div class="pwrow"><input class="num" id="n6_pfcp_v" inputmode="decimal" placeholder="no."><select id="n6_pfcp_c" style="max-width:104px;"><option value="">–</option><option value="g">Green</option><option value="r">Red</option></select></div></div>
-  </div>
-  <span class="gsec">Pharmacy · Care · Payroll · /10</span>
-  <div class="grid2">
-    <div class="field"><label>Items</label><div class="pwrow"><input class="num" id="t10_items_v" inputmode="decimal" placeholder="no."><select id="t10_items_c" style="max-width:104px;"><option value="">–</option><option value="g">Green</option><option value="r">Red</option></select></div></div>
-    <div class="field"><label>EPS</label><div class="pwrow"><input class="num" id="t10_eps_v" inputmode="decimal" placeholder="no."><select id="t10_eps_c" style="max-width:104px;"><option value="">–</option><option value="g">Green</option><option value="r">Red</option></select></div></div>
-    <div class="field"><label>MPS <small>%</small></label><div class="pwrow"><input class="num" id="t10_mps_v" inputmode="decimal" placeholder="no."><select id="t10_mps_c" style="max-width:104px;"><option value="">–</option><option value="g">Green</option><option value="r">Red</option></select></div></div>
-    <div class="field"><label>Services</label><div class="pwrow"><input class="num" id="t10_services_v" inputmode="decimal" placeholder="no."><select id="t10_services_c" style="max-width:104px;"><option value="">–</option><option value="g">Green</option><option value="r">Red</option></select></div></div>
-    <div class="field"><label>PSAT <small>%</small></label><div class="pwrow"><input class="num" id="t10_psat_v" inputmode="decimal" placeholder="no."><select id="t10_psat_c" style="max-width:104px;"><option value="">–</option><option value="g">Green</option><option value="r">Red</option></select></div></div>
-    <div class="field"><label>OSAT <small>%</small></label><div class="pwrow"><input class="num" id="t10_osat_v" inputmode="decimal" placeholder="no."><select id="t10_osat_c" style="max-width:104px;"><option value="">–</option><option value="g">Green</option><option value="r">Red</option></select></div></div>
-    <div class="field"><label>RSAT <small>%</small></label><div class="pwrow"><input class="num" id="t10_rsat_v" inputmode="decimal" placeholder="no."><select id="t10_rsat_c" style="max-width:104px;"><option value="">–</option><option value="g">Green</option><option value="r">Red</option></select></div></div>
-    <div class="field"><label>NPS <small>%</small></label><div class="pwrow"><input class="num" id="t10_nps_v" inputmode="decimal" placeholder="no."><select id="t10_nps_c" style="max-width:104px;"><option value="">–</option><option value="g">Green</option><option value="r">Red</option></select></div></div>
-    <div class="field"><label>Responses</label><div class="pwrow"><input class="num" id="t10_resp_v" inputmode="decimal" placeholder="no."><select id="t10_resp_c" style="max-width:104px;"><option value="">–</option><option value="g">Green</option><option value="r">Red</option></select></div></div>
-    <div class="field"><label>Payroll <small>£</small></label><div class="pwrow"><input class="num" id="t10_payroll_v" inputmode="decimal" placeholder="no."><select id="t10_payroll_c" style="max-width:104px;"><option value="">–</option><option value="g">Green</option><option value="r">Red</option></select></div></div>
-  </div>
-  <span class="gsec">Retail · Ops · /8 <small style="text-transform:none;color:var(--faint);font-weight:500;">edit names to match the deck</small></span>
-    <div class="r8row"><input class="lab" id="r8_1_label" placeholder="Metric 1"><input class="num val" id="r8_1_v" inputmode="decimal" placeholder="no."><select id="r8_1_c" style="max-width:104px;"><option value="">–</option><option value="g">Green</option><option value="r">Red</option></select></div>
-    <div class="r8row"><input class="lab" id="r8_2_label" placeholder="Metric 2"><input class="num val" id="r8_2_v" inputmode="decimal" placeholder="no."><select id="r8_2_c" style="max-width:104px;"><option value="">–</option><option value="g">Green</option><option value="r">Red</option></select></div>
-    <div class="r8row"><input class="lab" id="r8_3_label" placeholder="Metric 3"><input class="num val" id="r8_3_v" inputmode="decimal" placeholder="no."><select id="r8_3_c" style="max-width:104px;"><option value="">–</option><option value="g">Green</option><option value="r">Red</option></select></div>
-    <div class="r8row"><input class="lab" id="r8_4_label" placeholder="Metric 4"><input class="num val" id="r8_4_v" inputmode="decimal" placeholder="no."><select id="r8_4_c" style="max-width:104px;"><option value="">–</option><option value="g">Green</option><option value="r">Red</option></select></div>
-    <div class="r8row"><input class="lab" id="r8_5_label" placeholder="Metric 5"><input class="num val" id="r8_5_v" inputmode="decimal" placeholder="no."><select id="r8_5_c" style="max-width:104px;"><option value="">–</option><option value="g">Green</option><option value="r">Red</option></select></div>
-    <div class="r8row"><input class="lab" id="r8_6_label" placeholder="Metric 6"><input class="num val" id="r8_6_v" inputmode="decimal" placeholder="no."><select id="r8_6_c" style="max-width:104px;"><option value="">–</option><option value="g">Green</option><option value="r">Red</option></select></div>
-    <div class="r8row"><input class="lab" id="r8_7_label" placeholder="Metric 7"><input class="num val" id="r8_7_v" inputmode="decimal" placeholder="no."><select id="r8_7_c" style="max-width:104px;"><option value="">–</option><option value="g">Green</option><option value="r">Red</option></select></div>
-    <div class="r8row"><input class="lab" id="r8_8_label" placeholder="Metric 8"><input class="num val" id="r8_8_v" inputmode="decimal" placeholder="no."><select id="r8_8_c" style="max-width:104px;"><option value="">–</option><option value="g">Green</option><option value="r">Red</option></select></div>
-  <p class="hint">Copy the colours (and any numbers you want shown) for 1478 straight from the area deck's three tables. The board totals each row and the /24 automatically.</p>
-  </div>
-</details>
 
 <section>
   <h2>Work delivery</h2>
@@ -200,25 +142,39 @@
 </section>
 
 <details>
-  <summary>Weekly budgets (rarely change)</summary>
+  <summary>Store scorecard · 21 greens (open when the deck lands)</summary>
   <div class="inner">
+    <span class="gsec" style="margin-top:4px;">NHS Services · /6</span>
     <div class="grid2">
-      <div class="field"><label>Retail sales budget <small>£/wk</small></label><input class="num" id="b_retail" inputmode="decimal"></div>
-      <div class="field"><label>Total items</label><input class="num" id="b_items" inputmode="numeric"></div>
-      <div class="field"><label>Core items <small>follows Items dropdown</small></label><input class="num" id="b_core" inputmode="numeric"></div>
-      <div class="field"><label>Total services exc BOD</label><input class="num" id="b_totalExBod" inputmode="numeric"></div>
-      <div class="field"><label>Pharmacy First</label><input class="num" id="b_pf" inputmode="numeric"></div>
-      <div class="field"><label>PF clinical pathways</label><input class="num" id="b_pfcp" inputmode="numeric"></div>
-      <div class="field"><label>NMS sign-ups</label><input class="num" id="b_nmsSu" inputmode="numeric"></div>
-      <div class="field"><label>NMS follow-ups</label><input class="num" id="b_nmsFu" inputmode="numeric"></div>
-      <div class="field"><label>BP checks</label><input class="num" id="b_bp" inputmode="numeric"></div>
-      <div class="field"><label>ABPM</label><input class="num" id="b_abpm" inputmode="numeric"></div>
-      <div class="field"><label>Contraception</label><input class="num" id="b_contra" inputmode="numeric"></div>
-      <div class="field"><label>EHC</label><input class="num" id="b_ehc" inputmode="numeric"></div>
-      <div class="field"><label>BOP</label><input class="num" id="b_bop" inputmode="numeric"></div>
-      <div class="field"><label>EPS noms</label><input class="num" id="b_eps" inputmode="numeric"></div>
-      <div class="field"><label>Welcome texts</label><input class="num" id="b_welcome" inputmode="numeric"></div>
+      <div class="field"><label>NMS sign up</label><div class="pwrow"><input class="num" id="n6_su_v" inputmode="decimal" placeholder="no."><select id="n6_su_c" style="max-width:104px;"><option value="">–</option><option value="g">Green</option><option value="r">Red</option></select></div></div>
+      <div class="field"><label>NMS comp</label><div class="pwrow"><input class="num" id="n6_comp_v" inputmode="decimal" placeholder="no."><select id="n6_comp_c" style="max-width:104px;"><option value="">–</option><option value="g">Green</option><option value="r">Red</option></select></div></div>
+      <div class="field"><label>HT CC</label><div class="pwrow"><input class="num" id="n6_htcc_v" inputmode="decimal" placeholder="no."><select id="n6_htcc_c" style="max-width:104px;"><option value="">–</option><option value="g">Green</option><option value="r">Red</option></select></div></div>
+      <div class="field"><label>ABPM</label><div class="pwrow"><input class="num" id="n6_abpm_v" inputmode="decimal" placeholder="no."><select id="n6_abpm_c" style="max-width:104px;"><option value="">–</option><option value="g">Green</option><option value="r">Red</option></select></div></div>
+      <div class="field"><label>Cont / EHC</label><div class="pwrow"><input class="num" id="n6_cont_v" inputmode="decimal" placeholder="no."><select id="n6_cont_c" style="max-width:104px;"><option value="">–</option><option value="g">Green</option><option value="r">Red</option></select></div></div>
+      <div class="field"><label>PF CP</label><div class="pwrow"><input class="num" id="n6_pfcp_v" inputmode="decimal" placeholder="no."><select id="n6_pfcp_c" style="max-width:104px;"><option value="">–</option><option value="g">Green</option><option value="r">Red</option></select></div></div>
     </div>
+    <span class="gsec">Pharmacy · Care · /7</span>
+    <div class="grid2">
+      <div class="field"><label>Items</label><div class="pwrow"><input class="num" id="t7_items_v" inputmode="decimal" placeholder="no."><select id="t7_items_c" style="max-width:104px;"><option value="">–</option><option value="g">Green</option><option value="r">Red</option></select></div></div>
+      <div class="field"><label>Services</label><div class="pwrow"><input class="num" id="t7_services_v" inputmode="decimal" placeholder="no."><select id="t7_services_c" style="max-width:104px;"><option value="">–</option><option value="g">Green</option><option value="r">Red</option></select></div></div>
+      <div class="field"><label>PSAT <small>%</small></label><div class="pwrow"><input class="num" id="t7_psat_v" inputmode="decimal" placeholder="no."><select id="t7_psat_c" style="max-width:104px;"><option value="">–</option><option value="g">Green</option><option value="r">Red</option></select></div></div>
+      <div class="field"><label>OSAT <small>%</small></label><div class="pwrow"><input class="num" id="t7_osat_v" inputmode="decimal" placeholder="no."><select id="t7_osat_c" style="max-width:104px;"><option value="">–</option><option value="g">Green</option><option value="r">Red</option></select></div></div>
+      <div class="field"><label>RSAT <small>%</small></label><div class="pwrow"><input class="num" id="t7_rsat_v" inputmode="decimal" placeholder="no."><select id="t7_rsat_c" style="max-width:104px;"><option value="">–</option><option value="g">Green</option><option value="r">Red</option></select></div></div>
+      <div class="field"><label>NPS <small>%</small></label><div class="pwrow"><input class="num" id="t7_nps_v" inputmode="decimal" placeholder="no."><select id="t7_nps_c" style="max-width:104px;"><option value="">–</option><option value="g">Green</option><option value="r">Red</option></select></div></div>
+      <div class="field"><label>Responses</label><div class="pwrow"><input class="num" id="t7_resp_v" inputmode="decimal" placeholder="no."><select id="t7_resp_c" style="max-width:104px;"><option value="">–</option><option value="g">Green</option><option value="r">Red</option></select></div></div>
+    </div>
+    <span class="gsec">Retail · Ops · /8</span>
+    <div class="grid2">
+      <div class="field"><label>Sales</label><div class="pwrow"><input class="num" id="e8_sales_v" inputmode="decimal" placeholder="no."><select id="e8_sales_c" style="max-width:104px;"><option value="">–</option><option value="g">Green</option><option value="r">Red</option></select></div></div>
+      <div class="field"><label>ATV</label><div class="pwrow"><input class="num" id="e8_atv_v" inputmode="decimal" placeholder="no."><select id="e8_atv_c" style="max-width:104px;"><option value="">–</option><option value="g">Green</option><option value="r">Red</option></select></div></div>
+      <div class="field"><label>No7 v LY</label><div class="pwrow"><input class="num" id="e8_no7_v" inputmode="decimal" placeholder="no."><select id="e8_no7_c" style="max-width:104px;"><option value="">–</option><option value="g">Green</option><option value="r">Red</option></select></div></div>
+      <div class="field"><label>Boots Brand</label><div class="pwrow"><input class="num" id="e8_bb_v" inputmode="decimal" placeholder="no."><select id="e8_bb_c" style="max-width:104px;"><option value="">–</option><option value="g">Green</option><option value="r">Red</option></select></div></div>
+      <div class="field"><label>Ad Card <small>%</small></label><div class="pwrow"><input class="num" id="e8_adcard_v" inputmode="decimal" placeholder="no."><select id="e8_adcard_c" style="max-width:104px;"><option value="">–</option><option value="g">Green</option><option value="r">Red</option></select></div></div>
+      <div class="field"><label>ISP <small>%</small></label><div class="pwrow"><input class="num" id="e8_isp_v" inputmode="decimal" placeholder="no."><select id="e8_isp_c" style="max-width:104px;"><option value="">–</option><option value="g">Green</option><option value="r">Red</option></select></div></div>
+      <div class="field"><label>My Stock</label><div class="pwrow"><input class="num" id="e8_mystock_v" inputmode="decimal" placeholder="no."><select id="e8_mystock_c" style="max-width:104px;"><option value="">–</option><option value="g">Green</option><option value="r">Red</option></select></div></div>
+      <div class="field"><label>Retail Loss</label><div class="pwrow"><input class="num" id="e8_loss_v" inputmode="decimal" placeholder="no."><select id="e8_loss_c" style="max-width:104px;"><option value="">–</option><option value="g">Green</option><option value="r">Red</option></select></div></div>
+    </div>
+    <p class="hint">Copy the numbers and colours for 1478 straight from the area deck's three tables. The board totals each row and the /21 automatically. Store row only, never the area.</p>
   </div>
 </details>
 
@@ -229,7 +185,7 @@
       <textarea id="bd_list" style="min-height:150px;" placeholder="Michelle 14-02&#10;Sarah 03-09"></textarea></div>
     <div class="field wide" style="margin-top:10px;"><label>Work anniversaries, one per line: Name DD-MM-YYYY</label>
       <textarea id="an_list" style="min-height:120px;" placeholder="Alex 23-07-2019&#10;Sam 05-11-2021"></textarea></div>
-    <p class="hint">Both publish inside the encrypted data, so they never appear in the public page code. The board lists the next few of each, shows years of service from the start year, and puts a ribbon up on birthdays.</p>
+    <p class="hint">Both publish inside the encrypted data, so they never appear in the public page code. The board lists the next few of each, shows years of service, and puts a ribbon up on birthdays.</p>
   </div>
 </details>
 
@@ -248,8 +204,8 @@
     </div>
     <button class="btn secondary" id="saveSettings" type="button">Save settings</button>
     <p class="hint">Token: create at <a href="https://github.com/settings/personal-access-tokens/new" target="_blank">github.com → Settings → Developer settings → Fine-grained tokens</a>. Repository access: <b>only</b> this repo. Permissions: <b>Contents → Read and write</b>. Treat it like a password.</p>
-    <p class="hint">Passphrase: pick something long and memorable. The TV unlocks with the same passphrase added to the board URL after a hash, e.g. <code>…/daily.html#k=YourPassphrase</code>. The part after # is never sent over the internet. Change it any time, then republish and update the YoDeck URL.</p>
-    <p class="hint"><b>Important:</b> Safari and a Home Screen icon keep separate storage on iPhone. Enter and save these settings inside whichever one you actually use each day. If saving fails, check iPhone Settings → Apps → Safari → Block All Cookies is OFF, and avoid Private Browsing.</p>
+    <p class="hint">Passphrase: pick something long and memorable. The TV unlocks with the same passphrase in the board URL, e.g. <code>…/daily.html#k=YourPassphrase</code>. Change it any time, then republish and update the TV URL.</p>
+    <p class="hint"><b>Important:</b> browsers keep separate storage. Enter and save these settings inside whichever browser or icon you actually use each day. If saving fails, allow cookies/storage for this site.</p>
   </div>
 </details>
 
@@ -260,22 +216,13 @@
 </div></div>
 
 <script>
-/* Defaults from the Store 1478 weekly budget */
-var DEFAULT_BUDGETS = {
-  retail:null, items:1797, core:1784, totalExBod:895,
-  pf:13, pfcp:8, nmsSu:11, nmsFu:8, bp:8, abpm:1,
-  contra:4, ehc:13, bop:10, eps:2, welcome:12
-};
-var SVC_KEYS = ['totalExBod','pf','pfcp','nmsSu','nmsFu','bp','abpm','contra','ehc','bop','eps','welcome'];
-var DEF8=['Sales','ATV','No7','Adcard','Digital Pick','Loss','Ops 7','Ops 8'];
+var SVC_KEYS=['totalExBod','pf','pfcp','nmsSu','nmsFu','bp','abpm','contra','ehc','bop','eps','welcome'];
+var FIG_KEYS=['retail','items','core'].concat(SVC_KEYS);
+var N6K=['su','comp','htcc','abpm','cont','pfcp'];
+var T7K=['items','services','psat','osat','rsat','nps','resp'];
+var E8K=['sales','atv','no7','bb','adcard','isp','mystock','loss'];
 var LOADED_HISTORY=[];
 var WEEK_START_DAY=0; /* 0=Sunday, must match the board */
-function weekKey(){
-  var d=new Date(),x=new Date(d.getFullYear(),d.getMonth(),d.getDate());
-  x.setDate(x.getDate()-((x.getDay()-WEEK_START_DAY+7)%7));
-  var p=function(n){return (n<10?'0':'')+n;};
-  return x.getFullYear()+'-'+p(x.getMonth()+1)+'-'+p(x.getDate());
-}
 
 function $(id){ return document.getElementById(id); }
 function num(id){
@@ -286,13 +233,18 @@ function num(id){
 }
 function put(id,v){ $(id).value=(v===null||v===undefined)?'':v; }
 function setStatus(cls,msg){ var s=$('status'); s.className=cls; s.textContent=msg; }
+function weekKeyOffset(off){
+  var d=new Date(),x=new Date(d.getFullYear(),d.getMonth(),d.getDate());
+  x.setDate(x.getDate()-((x.getDay()-WEEK_START_DAY+7)%7)-off*7);
+  var p=function(n){return (n<10?'0':'')+n;};
+  return x.getFullYear()+'-'+p(x.getMonth()+1)+'-'+p(x.getDate());
+}
 
 /* ---------- settings ---------- */
 var LS={owner:'gh_owner_1478b',repo:'gh_repo_1478b',branch:'gh_branch_1478b',path:'gh_path_1478b',token:'gh_token_1478b',pass:'board_pass_1478b'};
 function lsGet(k){ try{return localStorage.getItem(k);}catch(e){return null;} }
 function lsSet(k,v){ try{localStorage.setItem(k,v);return true;}catch(e){return false;} }
-var encPkg=null; /* last fetched encrypted data.json, used to test the passphrase */
-
+var encPkg=null;
 function loadSettings(){
   put('gh_owner', lsGet(LS.owner) || 'bdb786');
   put('gh_repo',  lsGet(LS.repo)  || '1478-board');
@@ -314,7 +266,7 @@ function persistSettings(){
 }
 $('saveSettings').addEventListener('click',function(){
   if(!persistSettings()){
-    setStatus('err','Browser is blocking storage. Turn OFF Block All Cookies in Safari settings and avoid Private Browsing.');
+    setStatus('err','Browser is blocking storage. Allow cookies/storage and avoid Private Browsing.');
     return;
   }
   var pass=$('gh_pass').value.trim();
@@ -323,7 +275,7 @@ $('saveSettings').addEventListener('click',function(){
       fill(data);
       setStatus('ok','Saved. Passphrase matches the published board data.');
     }).catch(function(){
-      setStatus('err','Saved, but this passphrase does NOT match the published data. Fix it, or enter fresh figures and Publish to start over with this passphrase.');
+      setStatus('err','Saved, but this passphrase does NOT match the published data. Fix it, or enter fresh figures and Publish to start over.');
     });
   } else {
     setStatus('ok','Settings saved on this phone.');
@@ -341,67 +293,7 @@ $('saveSettings').addEventListener('click',function(){
   }
 })();
 
-/* ---------- prefill ---------- */
-function fill(d){
-  d=d||{};
-  var Pd=d.periods||{};
-  function pv(k,fam){var v=Pd[k]||Pd[fam]||d.period||'wtd';return v==='lastweek'?'lastweek':'wtd';}
-  $('pp_retail').value=pv('retail','retail');
-  $('pp_items').value=pv('items','items');
-  for(i=0;i<SVC_KEYS.length;i++) $('pp_'+SVC_KEYS[i]).value=pv(SVC_KEYS[i],'services');
-  var r=d.retail||{},it=d.items||{},sv=d.services||{},kp=d.kpis||{},nt=d.notes||{};
-  put('r_wtd',r.wtd); put('i_wtd',it.wtd); put('i_core',it.coreWtd);
-  for(var i=0;i<SVC_KEYS.length;i++){
-    var k=SVC_KEYS[i],o=sv[k]||{};
-    put('s_'+k,o.a);
-    var bDef=DEFAULT_BUDGETS[k];
-    put('b_'+k,(o.b===null||o.b===undefined)?bDef:o.b);
-  }
-  put('b_retail',(r.budget===null||r.budget===undefined)?DEFAULT_BUDGETS.retail:r.budget);
-  put('b_items',(it.budget===null||it.budget===undefined)?DEFAULT_BUDGETS.items:it.budget);
-  put('b_core',(it.coreBudget===null||it.coreBudget===undefined)?DEFAULT_BUDGETS.core:it.coreBudget);
-  LOADED_HISTORY=(d.history&&d.history.slice)?d.history.slice():[];
-  var gg=d.greens||{};
-  var gn=gg.nhs||d.nhs6||{};
-  var N6K=['su','comp','htcc','abpm','cont','pfcp'];
-  for(i=0;i<N6K.length;i++){
-    var o6=gn[N6K[i]]||{};
-    put('n6_'+N6K[i]+'_v',o6.v);
-    $('n6_'+N6K[i]+'_c').value=o6.c||'';
-  }
-  var gt=gg.ten||{},T10K=['items','eps','mps','services','psat','osat','rsat','nps','resp','payroll'];
-  for(i=0;i<T10K.length;i++){
-    var ot=gt[T10K[i]]||{};
-    put('t10_'+T10K[i]+'_v',ot.v);
-    $('t10_'+T10K[i]+'_c').value=ot.c||'';
-  }
-  var ge=gg.eight||{};
-  var gl=(gg.eightLabels&&gg.eightLabels.length===8)?gg.eightLabels:DEF8;
-  for(i=1;i<=8;i++){
-    var oe=ge['r'+i]||{};
-    $('r8_'+i+'_label').value=gl[i-1]||('Ops '+i);
-    put('r8_'+i+'_v',oe.v);
-    $('r8_'+i+'_c').value=oe.c||'';
-  }
-  $('n_www').value=nt.www||''; $('n_focus').value=nt.focus||''; $('n_notes').value=nt.notes||'';
-  var dl=d.delivery||{};
-  var isToday=false;
-  if(d.updated){
-    var u=new Date(d.updated),now=new Date();
-    if(!isNaN(u.getTime())&&u.getFullYear()===now.getFullYear()&&u.getMonth()===now.getMonth()&&u.getDate()===now.getDate())isToday=true;
-  }
-  $('d_target').value=(isToday&&dl.target)?dl.target:'';
-  $('bd_list').value=(d.birthdays||[]).map(function(b){return b.name+' '+b.date;}).join('\n');
-  updateCnts();
-  $('an_list').value=(d.anniversaries||[]).map(function(a){return a.name+' '+a.date+(a.year?'-'+a.year:'');}).join('\n');
-  if(d.updated){
-    var u=new Date(d.updated);
-    if(!isNaN(u.getTime())) $('lastUpdated').textContent='Board last updated '+
-      u.toLocaleDateString('en-GB',{weekday:'short',day:'numeric',month:'short'})+' at '+
-      ('0'+u.getHours()).slice(-2)+':'+('0'+u.getMinutes()).slice(-2);
-  }
-}
-/* ---------- encryption (AES-256-GCM) ---------- */
+/* ---------- encryption ---------- */
 function b64e(buf){var b='',u=new Uint8Array(buf);for(var i=0;i<u.length;i++)b+=String.fromCharCode(u[i]);return btoa(b);}
 function b64d(s){var b=atob(s),u=new Uint8Array(b.length);for(var i=0;i<b.length;i++)u[i]=b.charCodeAt(i);return u.buffer;}
 function deriveKey(pass,salt){
@@ -437,6 +329,72 @@ function makeBody(){
   return Promise.resolve(JSON.stringify(data,null,2));
 }
 
+/* ---------- prefill ---------- */
+function figIn(o){
+  o=o||{};
+  var v=(typeof o.v==='number')?o.v:((typeof o.wtd==='number')?o.wtd:((typeof o.a==='number')?o.a:null));
+  return {v:v,c:(o.c==='g'||o.c==='r')?o.c:'',basis:(o.basis==='ly')?'ly':'bud'};
+}
+function fill(d){
+  d=d||{};
+  LOADED_HISTORY=(d.history&&d.history.slice)?d.history.slice():[];
+  var srcs={retail:d.retail,items:d.items,
+            core:d.core||((d.items&&typeof d.items.coreWtd==='number')?{v:d.items.coreWtd}:{})};
+  var svcs=d.services||{};
+  for(var i=0;i<SVC_KEYS.length;i++) srcs[SVC_KEYS[i]]=svcs[SVC_KEYS[i]];
+  var Pd=d.periods||{};
+  function pv(k,fam){var v=Pd[k]||Pd[fam]||d.period||'wtd';return v==='lastweek'?'lastweek':'wtd';}
+  for(i=0;i<FIG_KEYS.length;i++){
+    var k=FIG_KEYS[i],o=figIn(srcs[k]);
+    put('f_'+k,o.v);
+    $('c_'+k).value=o.c;
+    $('b_'+k).value=o.basis;
+    var fam=(k==='retail')?'retail':((k==='items'||k==='core')?'items':'services');
+    $('p_'+k).value=pv(k,fam);
+  }
+  var dl=d.delivery||{};
+  var isToday=false;
+  if(d.updated){
+    var u=new Date(d.updated),now=new Date();
+    if(!isNaN(u.getTime())&&u.getFullYear()===now.getFullYear()&&u.getMonth()===now.getMonth()&&u.getDate()===now.getDate())isToday=true;
+  }
+  $('d_target').value=(isToday&&dl.target)?dl.target:'';
+  var nt=d.notes||{};
+  $('n_www').value=nt.www||''; $('n_focus').value=nt.focus||''; $('n_notes').value=nt.notes||'';
+  var gg=d.greens||{};
+  var gn=gg.nhs||d.nhs6||{};
+  for(i=0;i<N6K.length;i++){
+    var o6=gn[N6K[i]]||{};
+    put('n6_'+N6K[i]+'_v',o6.v);
+    $('n6_'+N6K[i]+'_c').value=o6.c||'';
+  }
+  var g7=gg.seven;
+  if(!g7&&gg.ten){
+    g7={};
+    for(i=0;i<T7K.length;i++)g7[T7K[i]]=gg.ten[T7K[i]];
+  }
+  g7=g7||{};
+  for(i=0;i<T7K.length;i++){
+    var o7=g7[T7K[i]]||{};
+    put('t7_'+T7K[i]+'_v',o7.v);
+    $('t7_'+T7K[i]+'_c').value=o7.c||'';
+  }
+  var g8=gg.eight||{};
+  for(i=0;i<E8K.length;i++){
+    var o8=g8[E8K[i]]||{};
+    put('e8_'+E8K[i]+'_v',o8.v);
+    $('e8_'+E8K[i]+'_c').value=o8.c||'';
+  }
+  $('bd_list').value=(d.birthdays||[]).map(function(b){return b.name+' '+b.date;}).join('\n');
+  $('an_list').value=(d.anniversaries||[]).map(function(a){return a.name+' '+a.date+(a.year?'-'+a.year:'');}).join('\n');
+  updateCnts();
+  if(d.updated){
+    var u2=new Date(d.updated);
+    if(!isNaN(u2.getTime())) $('lastUpdated').textContent='Board last updated '+
+      u2.toLocaleDateString('en-GB',{weekday:'short',day:'numeric',month:'short'})+' at '+
+      ('0'+u2.getHours()).slice(-2)+':'+('0'+u2.getMinutes()).slice(-2);
+  }
+}
 function prefill(){
   fetch('data.json?cachebust='+Date.now())
     .then(function(r){ if(!r.ok)throw 0; return r.json(); })
@@ -452,7 +410,7 @@ function prefill(){
         }
         return decryptJson(d,pass).then(fill).catch(function(){
           fill({});
-          $('lastUpdated').textContent='Saved passphrase does not match the published data. Fix it in Settings (use Show to check typing), or enter fresh figures and Publish to overwrite with your new passphrase.';
+          $('lastUpdated').textContent='Saved passphrase does not match the published data. Fix it in Settings (use Show to check typing), or enter fresh figures and Publish to overwrite.';
           $('settings').open=true;
         });
       }
@@ -460,11 +418,11 @@ function prefill(){
     })
     .catch(function(){
       fill({});
-      $('lastUpdated').textContent='No data.json yet, budgets prefilled. Publish to create it.';
+      $('lastUpdated').textContent='No data.json yet. Enter figures and Publish to create it.';
     });
 }
 
-/* ---------- build JSON ---------- */
+/* ---------- build ---------- */
 function parseBirthdays(){
   var out=[],lines=$('bd_list').value.split('\n');
   for(var i=0;i<lines.length;i++){
@@ -484,69 +442,76 @@ function parseAnniversaries(){
   }
   return out;
 }
-function weekKeyOffset(off){
-  var d=new Date(),x=new Date(d.getFullYear(),d.getMonth(),d.getDate());
-  x.setDate(x.getDate()-((x.getDay()-WEEK_START_DAY+7)%7)-off*7);
-  var p=function(n){return (n<10?'0':'')+n;};
-  return x.getFullYear()+'-'+p(x.getMonth()+1)+'-'+p(x.getDate());
-}
 function buildData(){
+  var i,figs={};
+  function fx(k){
+    return {v:num('f_'+k),
+            c:($('c_'+k).value||null),
+            basis:($('b_'+k).value==='ly')?'ly':'bud'};
+  }
+  var periods={};
+  for(i=0;i<FIG_KEYS.length;i++){
+    figs[FIG_KEYS[i]]=fx(FIG_KEYS[i]);
+    periods[FIG_KEYS[i]]=($('p_'+FIG_KEYS[i]).value==='lastweek')?'lastweek':'wtd';
+  }
   var services={};
-  for(var i=0;i<SVC_KEYS.length;i++){
-    var k=SVC_KEYS[i];
-    services[k]={a:num('s_'+k),b:num('b_'+k)};
-  }
-  var greens={nhs:{},ten:{},eight:{},eightLabels:[]};
-  var N6K=['su','comp','htcc','abpm','cont','pfcp'];
+  for(i=0;i<SVC_KEYS.length;i++) services[SVC_KEYS[i]]=figs[SVC_KEYS[i]];
+  var greens={nhs:{},seven:{},eight:{}};
   for(i=0;i<N6K.length;i++) greens.nhs[N6K[i]]={v:num('n6_'+N6K[i]+'_v'),c:($('n6_'+N6K[i]+'_c').value||null)};
-  var T10K=['items','eps','mps','services','psat','osat','rsat','nps','resp','payroll'];
-  for(i=0;i<T10K.length;i++) greens.ten[T10K[i]]={v:num('t10_'+T10K[i]+'_v'),c:($('t10_'+T10K[i]+'_c').value||null)};
-  for(i=1;i<=8;i++){
-    greens.eight['r'+i]={v:num('r8_'+i+'_v'),c:($('r8_'+i+'_c').value||null)};
-    var lb=$('r8_'+i+'_label').value.trim();
-    greens.eightLabels.push(lb||DEF8[i-1]||('Ops '+i));
-  }
-  var gCount=0,gSet=0,grp=[greens.nhs,greens.ten,greens.eight];
+  for(i=0;i<T7K.length;i++) greens.seven[T7K[i]]={v:num('t7_'+T7K[i]+'_v'),c:($('t7_'+T7K[i]+'_c').value||null)};
+  for(i=0;i<E8K.length;i++) greens.eight[E8K[i]]={v:num('e8_'+E8K[i]+'_v'),c:($('e8_'+E8K[i]+'_c').value||null)};
+  var gCount=0,gSet=0,grp=[greens.nhs,greens.seven,greens.eight];
   for(i=0;i<grp.length;i++){
     for(var gk in grp[i]){
       if(grp[i][gk]&&grp[i][gk].c){gSet++;if(grp[i][gk].c==='g')gCount++;}
     }
   }
-  function pv2(id){return ($(id).value==='lastweek')?'lastweek':'wtd';}
-  var periods={retail:pv2('pp_retail'),items:pv2('pp_items')};
-  for(i=0;i<SVC_KEYS.length;i++) periods[SVC_KEYS[i]]=pv2('pp_'+SVC_KEYS[i]);
-  var pR=periods.retail,pI=periods.items,pS=periods.totalExBod;
   var wkNow=weekKeyOffset(0),wkPrev=weekKeyOffset(1),nowIso=new Date().toISOString();
   var hist=LOADED_HISTORY.slice();
   function histEntry(wk){
     for(var h=0;h<hist.length;h++){ if(hist[h]&&hist[h].wk===wk)return hist[h]; }
     var e={wk:wk};hist.push(e);return e;
   }
-  var eR=histEntry(pR==='lastweek'?wkPrev:wkNow); eR.retail=num('r_wtd'); eR.updated=nowIso;
-  var eI=histEntry(pI==='lastweek'?wkPrev:wkNow); eI.items=num('i_wtd'); eI.updated=nowIso;
-  var eS=histEntry(pS==='lastweek'?wkPrev:wkNow); eS.services=num('s_totalExBod'); eS.updated=nowIso;
+  var eR=histEntry(periods.retail==='lastweek'?wkPrev:wkNow); eR.retail=figs.retail.v; eR.updated=nowIso;
+  var eI=histEntry(periods.items==='lastweek'?wkPrev:wkNow); eI.items=figs.items.v; eI.updated=nowIso;
+  var eS=histEntry(periods.totalExBod==='lastweek'?wkPrev:wkNow); eS.services=figs.totalExBod.v; eS.updated=nowIso;
   var eG=histEntry(wkNow); eG.g24=(gSet?gCount:null); eG.updated=nowIso;
   hist.sort(function(a,b){return (a.wk<b.wk)?-1:1;});
   if(hist.length>12)hist=hist.slice(hist.length-12);
+  var allLW=true;
+  for(var pk in periods){ if(periods[pk]!=='lastweek'){allLW=false;break;} }
   return {
-    updated:new Date().toISOString(),
-    period:(function(){for(var pk in periods){if(periods[pk]!=='lastweek')return 'wtd';}return 'lastweek';})(),
+    updated:nowIso,
+    period:allLW?'lastweek':'wtd',
     periods:periods,
-    retail:{wtd:num('r_wtd'),budget:num('b_retail')},
-    items:{wtd:num('i_wtd'),budget:num('b_items'),coreWtd:num('i_core'),coreBudget:num('b_core')},
+    retail:figs.retail,
+    items:figs.items,
+    core:figs.core,
     services:services,
     greens:greens,
     history:hist,
-
     delivery:{target:($('d_target').value||null)},
     birthdays:parseBirthdays(),
     anniversaries:parseAnniversaries(),
     notes:{www:$('n_www').value.trim(),focus:$('n_focus').value.trim(),notes:$('n_notes').value.trim()}
   };
 }
-function b64(str){ return btoa(unescape(encodeURIComponent(str))); }
 
-/* ---------- publish via GitHub API ---------- */
+/* ---------- counters ---------- */
+function updateCnts(){
+  var m=[['n_www','cnt_www'],['n_focus','cnt_focus'],['n_notes','cnt_notes']];
+  for(var i=0;i<m.length;i++){
+    var n=$(m[i][0]).value.length,c=$(m[i][1]);
+    c.textContent=n+'/120';
+    c.className='cnt'+(n>120?' over':'');
+  }
+}
+(function(){
+  var t=['n_www','n_focus','n_notes'];
+  for(var i=0;i<t.length;i++) $(t[i]).addEventListener('input',updateCnts);
+})();
+
+/* ---------- publish ---------- */
 function apiUrl(){
   return 'https://api.github.com/repos/'+$('gh_owner').value.trim()+'/'+$('gh_repo').value.trim()+
          '/contents/'+$('gh_path').value.trim();
@@ -558,15 +523,15 @@ function ghHeaders(){
     'X-GitHub-Api-Version':'2022-11-28'
   };
 }
+function b64(str){ return btoa(unescape(encodeURIComponent(str))); }
 function publish(retrying){
-  persistSettings(); /* auto-save whatever is in Settings so nothing relies on tapping Save */
+  persistSettings();
   var token=lsGet(LS.token)||$('gh_token').value.trim();
   if(!token){ setStatus('err','Add your GitHub token in Settings first, or use Copy JSON.'); $('settings').open=true; return; }
   var btn=$('publishBtn'); btn.disabled=true;
   setStatus('busy','Publishing…');
   var branch=$('gh_branch').value.trim()||'main';
   var hasPass=!!(lsGet(LS.pass)||$('gh_pass').value.trim());
-
   makeBody().then(function(body){
     return fetch(apiUrl()+'?ref='+encodeURIComponent(branch),{headers:ghHeaders()})
       .then(function(r){
@@ -603,8 +568,6 @@ function publish(retrying){
     });
 }
 $('publishBtn').addEventListener('click',function(){ publish(false); });
-
-/* ---------- copy fallback ---------- */
 $('copyBtn').addEventListener('click',function(){
   makeBody().then(function(txt){
     function done(){ setStatus('ok','Copied. Paste into data.json on github.com and commit.'); }
@@ -619,19 +582,6 @@ $('copyBtn').addEventListener('click',function(){
     }
   }).catch(function(){});
 });
-
-function updateCnts(){
-  var m=[['n_www','cnt_www'],['n_focus','cnt_focus'],['n_notes','cnt_notes']];
-  for(var i=0;i<m.length;i++){
-    var n=$(m[i][0]).value.length,c=$(m[i][1]);
-    c.textContent=n+'/120';
-    c.className='cnt'+(n>120?' over':'');
-  }
-}
-(function(){
-  var t=['n_www','n_focus','n_notes'];
-  for(var i=0;i<t.length;i++) $(t[i]).addEventListener('input',updateCnts);
-})();
 
 loadSettings();
 prefill();

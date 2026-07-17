@@ -303,10 +303,13 @@
   </footer>
 
 </div>
+<video id="keepAlive" muted playsinline loop autoplay
+  style="position:fixed;width:2px;height:2px;left:0;bottom:0;opacity:0.01;pointer-events:none;z-index:1;"></video>
+<div id="nightShade" style="position:fixed;left:0;top:0;right:0;bottom:0;background:#000;z-index:999;display:none;"></div>
 
 <script>
 /* =====================  CONFIG (edit me)  ===================== */
-var VERSION='5.8';
+var VERSION='5.13';
 var CONFIG = {
   STORE_NAME : 'Didsbury',
   STORE_SUB  : 'Store 1478 · 736–740 Wilmslow Road',
@@ -317,6 +320,9 @@ var CONFIG = {
   DATA_REFRESH_MIN : 5,
   WEATHER_REFRESH_MIN : 30,
   NIGHTLY_RELOAD_HOUR : 3,
+  ACTIVITY_POKE_MIN : 5,   /* on-screen nudge to stop Fire OS sleeping; NOT a network call */
+  DAY_START : '07:35',   /* board wakes at this time */
+  DAY_END   : '16:45',   /* board goes dark after this time; clear either value to disable */
   BIRTHDAYS : [],
   SERVICES : [
     { grp:'extras', key:'pf',   label:'Pharmacy First', subGrp:'nhs', subKey:'pfcp', subLabel:'incl. CP' },
@@ -424,7 +430,35 @@ var PER_LABEL={wtd:'this week',lastweek:'last week (final)',mtd:'month to date'}
 var DAYS=['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
 var MONTHS=['January','February','March','April','May','June','July','August','September','October','November','December'];
 var MON_S=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+function hm2min(t){
+  var m=String(t||'').match(/^(\d{1,2}):(\d{2})$/);
+  return m?(+m[1])*60+(+m[2]):null;
+}
+var wasNight=null;
+function nightCheck(){
+  var el=$('nightShade'); if(!el)return;
+  var scr=(state.data&&state.data.screen)||{};
+  var ov=scr.override||'auto';
+  var day;
+  if(ov==='on'){ day=true; }
+  else if(ov==='off'){ day=false; }
+  else {
+    /* if a screen object was published, honour its times exactly (blank both = schedule off).
+       only fall back to CONFIG when no screen object exists at all. */
+    var haveScreen=!!(state.data&&state.data.screen);
+    var startStr=haveScreen?scr.dayStart:CONFIG.DAY_START;
+    var endStr  =haveScreen?scr.dayEnd  :CONFIG.DAY_END;
+    var a=hm2min(startStr),b=hm2min(endStr);
+    if(a===null||b===null){ el.style.display='none'; wasNight=null; return; }
+    var n=new Date(),t=n.getHours()*60+n.getMinutes();
+    day=(a<=b)?(t>=a&&t<b):(t>=a||t<b);
+  }
+  el.style.display=day?'none':'block';
+  if(wasNight===true && day===true){ if(typeof dlog==='function')dlog('waking for open'); loadData(); }
+  wasNight=!day;
+}
 function tickClock(){
+  nightCheck();
   var n=new Date();
   $('hm').textContent=pad(n.getHours())+':'+pad(n.getMinutes());
   $('dateLine').textContent=DAYS[n.getDay()]+' '+n.getDate()+' '+MONTHS[n.getMonth()];
@@ -805,6 +839,26 @@ try{
 }catch(e){ dlog('cache read failed'); }
 loadWeather();setInterval(loadWeather,CONFIG.WEATHER_REFRESH_MIN*60*1000);
 loadData();setInterval(loadData,CONFIG.DATA_REFRESH_MIN*60*1000);
+function startKeepAliveVideo(){
+  try{
+    var v=$('keepAlive'); if(!v||!v.captureStream&&!document.createElement('canvas').captureStream) return;
+    var cvs=document.createElement('canvas'); cvs.width=2; cvs.height=2;
+    var ctx=cvs.getContext('2d'); ctx.fillStyle='#000'; ctx.fillRect(0,0,2,2);
+    var stream=cvs.captureStream(1);
+    v.srcObject=stream;
+    var draw=function(){ ctx.fillRect(0,0,2,2); };
+    setInterval(draw,1000);
+    var p=v.play(); if(p&&p.catch)p.catch(function(){});
+    dlog('keepalive video on');
+  }catch(e){ dlog('keepalive video failed '+(e&&e.message)); }
+}
+/* periodic tiny activity so Fire OS does not judge the app idle */
+function pokeActivity(){
+  try{
+    window.scrollTo(0,0);
+    var b=document.body; if(b){ b.style.opacity='0.999999'; setTimeout(function(){b.style.opacity='';},50); }
+  }catch(e){}
+}
 function keepAwake(){
   try{
     if(navigator.wakeLock&&navigator.wakeLock.request){
@@ -813,8 +867,10 @@ function keepAwake(){
     }
   }catch(e){}
 }
-document.addEventListener('visibilitychange',function(){ if(!document.hidden) keepAwake(); });
+document.addEventListener('visibilitychange',function(){ if(!document.hidden){ keepAwake(); var kv=$('keepAlive'); if(kv&&kv.paused){var pp=kv.play();if(pp&&pp.catch)pp.catch(function(){});} } });
 keepAwake();
+startKeepAliveVideo();
+setInterval(pokeActivity,(CONFIG.ACTIVITY_POKE_MIN||5)*60000);
 </script>
 </body>
 </html>

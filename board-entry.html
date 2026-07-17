@@ -89,7 +89,7 @@
 <body>
 
 <div class="top">
-  <h1>1478 Daily Board <small>v5.6</small></h1>
+  <h1>1478 Daily Board <small>v5.7</small></h1>
   <a id="boardLink" href="daily.html" target="_blank">View board →</a>
 </div>
 <div id="lastUpdated">Loading current figures…</div>
@@ -168,6 +168,18 @@
   <h2>Work delivery</h2>
   <div class="field wide"><label>Target delivery finish time</label><input id="d_target" type="time"></div>
   <p class="hint">Shown big and bold on the board, exactly as entered. Clears each day so yesterday's time never lingers.</p>
+</section>
+
+<section>
+  <h2>Screen · blank schedule</h2>
+  <div class="legend">Controls the TV directly. <b>Auto</b> follows the on/off times below. Use <b>Force ON</b> to keep the board awake after hours (late stock night), or <b>Force OFF</b> to blank it now (closing early). Takes effect on the TV within a couple of minutes of Publish.</div>
+  <div class="grid2">
+    <div class="field"><label>Wake / on time</label><input id="scr_start" type="time"></div>
+    <div class="field"><label>Blank / off time</label><input id="scr_end" type="time"></div>
+  </div>
+  <div class="field wide" style="margin-top:10px;"><label>Override</label>
+    <select id="scr_override"><option value="auto">Auto (follow times)</option><option value="on">Force ON — keep awake now</option><option value="off">Force OFF — blank now</option></select></div>
+  <p class="hint">Leave both times blank to disable the schedule entirely (screen always on unless Force OFF). Remember to set the Override back to Auto afterwards.</p>
 </section>
 
 <section>
@@ -394,6 +406,10 @@ function fill(d){
       $(pre+keys[ki]+'_p').value=o.per||'wtd';
     }
   }
+  var scr=d.screen||{};
+  $('scr_start').value=scr.dayStart||'';
+  $('scr_end').value=scr.dayEnd||'';
+  $('scr_override').value=(scr.override==='on'||scr.override==='off')?scr.override:'auto';
   var dl=d.delivery||{};
   var isToday=false;
   if(d.updated){
@@ -498,6 +514,7 @@ function buildData(){
     greens:greens,
     extras:extras,
     history:hist,
+    screen:{dayStart:($('scr_start').value||null),dayEnd:($('scr_end').value||null),override:($('scr_override').value||'auto')},
     delivery:{target:($('d_target').value||null)},
     birthdays:parseBirthdays(),
     anniversaries:parseAnniversaries(),

@@ -89,7 +89,7 @@
 <body>
 
 <div class="top">
-  <h1>1478 Daily Board <small>v5.5</small></h1>
+  <h1>1478 Daily Board <small>v5.6</small></h1>
   <a id="boardLink" href="daily.html" target="_blank">View board →</a>
 </div>
 <div id="lastUpdated">Loading current figures…</div>
@@ -111,7 +111,7 @@
   <div class="frow"><label>PF CP</label>
     <div class="fctl"><input class="num" id="n6_pfcp_v" inputmode="decimal" placeholder="value"><input class="num dv" id="n6_pfcp_d" placeholder="±"><select id="n6_pfcp_c" class="csel"><option value="">–</option><option value="g">Green</option><option value="r">Red</option></select><select id="n6_pfcp_b" class="csel"><option value="bud">Bud</option><option value="ly">LY</option></select><select id="n6_pfcp_p" class="csel"><option value="wtd">This wk</option><option value="lastweek">L wk</option><option value="mtd">Month</option></select></div></div>
   <span class="gsec">Pharmacy · Care · /7</span>
-  <div class="frow"><label>Items</label>
+  <div class="frow"><label>Core Items</label>
     <div class="fctl"><input class="num" id="t7_items_v" inputmode="decimal" placeholder="value"><input class="num dv" id="t7_items_d" placeholder="±"><select id="t7_items_c" class="csel"><option value="">–</option><option value="g">Green</option><option value="r">Red</option></select><select id="t7_items_b" class="csel"><option value="bud">Bud</option><option value="ly">LY</option></select><select id="t7_items_p" class="csel"><option value="wtd">This wk</option><option value="lastweek">L wk</option><option value="mtd">Month</option></select></div></div>
   <div class="frow"><label>Services</label>
     <div class="fctl"><input class="num" id="t7_services_v" inputmode="decimal" placeholder="value"><input class="num dv" id="t7_services_d" placeholder="±"><select id="t7_services_c" class="csel"><option value="">–</option><option value="g">Green</option><option value="r">Red</option></select><select id="t7_services_b" class="csel"><option value="bud">Bud</option><option value="ly">LY</option></select><select id="t7_services_p" class="csel"><option value="wtd">This wk</option><option value="lastweek">L wk</option><option value="mtd">Month</option></select></div></div>
@@ -146,8 +146,8 @@
 
 <section>
   <h2>Extra store figures <small style="color:var(--faint);font-weight:500;">not in the /21</small></h2>
-  <div class="frow"><label>Core items</label>
-    <div class="fctl"><input class="num" id="x_core_v" inputmode="decimal" placeholder="value"><input class="num dv" id="x_core_d" placeholder="±"><select id="x_core_c" class="csel"><option value="">–</option><option value="g">Green</option><option value="r">Red</option></select><select id="x_core_b" class="csel"><option value="bud">Bud</option><option value="ly">LY</option></select><select id="x_core_p" class="csel"><option value="wtd">This wk</option><option value="lastweek">L wk</option><option value="mtd">Month</option></select></div></div>
+  <div class="frow"><label>Total items</label>
+    <div class="fctl"><input class="num" id="x_totalItems_v" inputmode="decimal" placeholder="value"><input class="num dv" id="x_totalItems_d" placeholder="±"><select id="x_totalItems_c" class="csel"><option value="">–</option><option value="g">Green</option><option value="r">Red</option></select><select id="x_totalItems_b" class="csel"><option value="bud">Bud</option><option value="ly">LY</option></select><select id="x_totalItems_p" class="csel"><option value="wtd">This wk</option><option value="lastweek">L wk</option><option value="mtd">Month</option></select></div></div>
   <div class="frow"><label>Pharmacy First total</label>
     <div class="fctl"><input class="num" id="x_pf_v" inputmode="decimal" placeholder="value"><input class="num dv" id="x_pf_d" placeholder="±"><select id="x_pf_c" class="csel"><option value="">–</option><option value="g">Green</option><option value="r">Red</option></select><select id="x_pf_b" class="csel"><option value="bud">Bud</option><option value="ly">LY</option></select><select id="x_pf_p" class="csel"><option value="wtd">This wk</option><option value="lastweek">L wk</option><option value="mtd">Month</option></select></div></div>
   <div class="frow"><label>EHC</label>
@@ -220,7 +220,7 @@
 var N6K=['su','comp','htcc','abpm','cont','pfcp'];
 var T7K=['items','services','psat','osat','rsat','nps','resp'];
 var E8K=['sales','atv','no7','bb','adcard','isp','mystock','loss'];
-var XK=['core','pf','ehc','bop','eps','welcome','mps','mpsAcc'];
+var XK=['totalItems','pf','ehc','bop','eps','welcome','mps','mpsAcc'];
 var GROUPS=[['n6_',N6K,'nhs'],['t7_',T7K,'seven'],['e8_',E8K,'eight'],['x_',XK,'extras']];
 var LOADED_HISTORY=[];
 var WEEK_START_DAY=0; /* 0=Sunday, must match the board */
@@ -363,7 +363,7 @@ function unifyIn(d){
   }
   var sv=d.services||{};
   lay(M.eight.sales,d.retail,'retail','retail');
-  lay(M.seven.items,d.items,'items','items');
+  lay(M.extras.totalItems,((d.extras&&d.extras.core)||d.items),'items','items');
   lay(M.seven.services,sv.totalExBod,'totalExBod','services');
   lay(M.nhs.su,sv.nmsSu,'nmsSu','services');
   lay(M.nhs.comp,sv.nmsFu,'nmsFu','services');
@@ -371,7 +371,7 @@ function unifyIn(d){
   lay(M.nhs.abpm,sv.abpm,'abpm','services');
   lay(M.nhs.cont,sv.contra,'contra','services');
   lay(M.nhs.pfcp,sv.pfcp,'pfcp','services');
-  lay(M.extras.core,d.core||((d.items&&typeof d.items.coreWtd==='number')?{v:d.items.coreWtd}:null),'core','items');
+  lay(M.seven.items,d.core||((d.items&&typeof d.items.coreWtd==='number')?{v:d.items.coreWtd}:null),'core','items');
   lay(M.extras.pf,sv.pf,'pf','services');
   lay(M.extras.ehc,sv.ehc,'ehc','services');
   lay(M.extras.bop,sv.bop,'bop','services');
@@ -488,7 +488,7 @@ function buildData(){
   }
   function wkFor(per){ return per==='lastweek'?wkPrev:wkNow; }
   var eR=histEntry(wkFor(greens.eight.sales.per)); eR.retail=greens.eight.sales.v; eR.updated=nowIso;
-  var eI=histEntry(wkFor(greens.seven.items.per)); eI.items=greens.seven.items.v; eI.updated=nowIso;
+  var eI=histEntry(wkFor(extras.totalItems.per)); eI.items=extras.totalItems.v; eI.updated=nowIso;
   var eS=histEntry(wkFor(greens.seven.services.per)); eS.services=greens.seven.services.v; eS.updated=nowIso;
   var eG=histEntry(wkNow); eG.g24=(gSet?gCount:null); eG.updated=nowIso;
   hist.sort(function(a,b){return (a.wk<b.wk)?-1:1;});

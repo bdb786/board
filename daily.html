@@ -229,7 +229,7 @@
         <div class="tags" id="retailTags"></div>
       </section>
       <section class="card hero" id="itemsCard">
-        <div class="head"><span class="eyebrow" id="itemsEyebrow">Items · week to date</span></div>
+        <div class="head"><span class="eyebrow" id="itemsEyebrow">Total Items · week to date</span></div>
         <div class="bigline"><span class="bignum num" id="itemsVal">—</span><span class="bsuf num" id="itemsSuf"></span></div>
         <div class="ofline">Core <b class="num" id="coreVal">—</b><span id="coreTag"></span></div>
         <div class="tags" id="itemsTags"></div>
@@ -306,7 +306,7 @@
 
 <script>
 /* =====================  CONFIG (edit me)  ===================== */
-var VERSION='5.7';
+var VERSION='5.8';
 var CONFIG = {
   STORE_NAME : 'Didsbury',
   STORE_SUB  : 'Store 1478 · 736–740 Wilmslow Road',
@@ -330,10 +330,10 @@ var CONFIG = {
     { grp:'extras', key:'mps',  label:'MPS %' },
     { grp:'extras', key:'mpsAcc', label:'MPS Acc %' }
   ],
-  EXTRAS : [['core','Core items'],['pf','Pharmacy First'],['ehc','EHC'],['bop','BOP'],['eps','EPS noms'],['welcome','Welcome texts'],['mps','MPS'],['mpsAcc','MPS Accuracy']],
+  EXTRAS : [['totalItems','Total items'],['pf','Pharmacy First'],['ehc','EHC'],['bop','BOP'],['eps','EPS noms'],['welcome','Welcome texts'],['mps','MPS'],['mpsAcc','MPS Accuracy']],
   G21 : {
     nhs   : [['su','Sign Up'],['comp','NMS Comp'],['htcc','HT CC'],['abpm','ABPM'],['cont','Cont/EHC'],['pfcp','PF CP']],
-    seven : [['items','Items'],['services','Services'],['psat','PSAT'],['osat','OSAT'],['rsat','RSAT'],['nps','NPS'],['resp','Responses']],
+    seven : [['items','Core Items'],['services','Services'],['psat','PSAT'],['osat','OSAT'],['rsat','RSAT'],['nps','NPS'],['resp','Responses']],
     eight : [['sales','Sales'],['atv','ATV'],['no7','No7 v LY'],['bb','Boots Brand'],['adcard','Ad Card'],['isp','ISP'],['mystock','My Stock'],['loss','Retail Loss']]
   }
 };
@@ -402,7 +402,7 @@ function unify(d){
   }
   var sv=d.services||{};
   lay(M.eight.sales,d.retail,'retail','retail');
-  lay(M.seven.items,d.items,'items','items');
+  lay(M.extras.totalItems,((d.extras&&d.extras.core)||d.items),'items','items');
   lay(M.seven.services,sv.totalExBod,'totalExBod','services');
   lay(M.nhs.su,sv.nmsSu,'nmsSu','services');
   lay(M.nhs.comp,sv.nmsFu,'nmsFu','services');
@@ -410,7 +410,7 @@ function unify(d){
   lay(M.nhs.abpm,sv.abpm,'abpm','services');
   lay(M.nhs.cont,sv.contra,'contra','services');
   lay(M.nhs.pfcp,sv.pfcp,'pfcp','services');
-  lay(M.extras.core,d.core||((d.items&&isNum(d.items.coreWtd))?{v:d.items.coreWtd}:null),'core','items');
+  lay(M.seven.items,d.core||((d.items&&isNum(d.items.coreWtd))?{v:d.items.coreWtd}:null),'core','items');
   lay(M.extras.pf,sv.pf,'pf','services');
   lay(M.extras.ehc,sv.ehc,'ehc','services');
   lay(M.extras.bop,sv.bop,'bop','services');
@@ -591,10 +591,10 @@ function render(){
   var M=unify(d);
 
   safe('hero',function(){
-    var R=M.eight.sales,I=M.seven.items,C=M.extras.core;
+    var R=M.eight.sales,I=M.extras.totalItems,C=M.seven.items;
     var pR=perOf(R,prevWeek),pI=perOf(I,prevWeek),pC=perOf(C,prevWeek);
     $('retailEyebrow').textContent='Retail sales · '+PER_LABEL[pR];
-    $('itemsEyebrow').textContent='Items · '+PER_LABEL[pI];
+    $('itemsEyebrow').textContent='Total Items · '+PER_LABEL[pI];
     function suf(o){
       if(!isNum(o.v)&&!o.d)return '';
       var b=o.d?('<b class="'+(o.c==='g'?'dvg':(o.c==='r'?'dvr':''))+'">'+esc(o.d)+'</b> '):'';

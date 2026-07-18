@@ -89,10 +89,11 @@
 <body>
 
 <div class="top">
-  <h1>1478 Daily Board <small>v5.7</small></h1>
+  <h1>1478 Daily Board <small>v5.8</small></h1>
   <a id="boardLink" href="daily.html" target="_blank">View board →</a>
 </div>
 <div id="lastUpdated">Loading current figures…</div>
+<div id="screenStatus" style="display:none;font-size:14px;font-weight:700;padding:8px 12px;border-radius:12px;margin-bottom:16px;"></div>
 
 <section>
   <h2>Store scorecard · figures</h2>
@@ -627,8 +628,47 @@ window.addEventListener('beforeunload',function(ev){
   if(DIRTY){ ev.preventDefault(); ev.returnValue=''; return ''; }
 });
 
+var HEARTBEAT_URL=''; /* Claude fills this with your Worker URL */
+function fmtAgo(sec){
+  if(sec<90)return 'just now';
+  if(sec<3600)return Math.round(sec/60)+' min ago';
+  if(sec<86400)return Math.round(sec/3600)+'h ago';
+  return Math.round(sec/86400)+'d ago';
+}
+function checkScreen(){
+  var el=$('screenStatus');
+  if(!HEARTBEAT_URL){ el.style.display='none'; return; }
+  el.style.display='block';
+  el.style.background='rgba(147,165,214,.12)';
+  el.style.color='var(--muted)';
+  el.textContent='Checking screen…';
+  fetch(HEARTBEAT_URL+'?t='+Date.now())
+    .then(function(r){return r.json();})
+    .then(function(d){
+      if(!d.everSeen){
+        el.style.background='rgba(147,165,214,.12)';el.style.color='var(--muted)';
+        el.textContent='📺 Screen has not reported in yet. Upload the new board and let it load once.';
+        return;
+      }
+      if(d.online){
+        el.style.background='rgba(47,224,176,.14)';el.style.color='var(--teal)';
+        var extra=(d.screen==='blank')?' · currently blanked (out of hours)':'';
+        el.textContent='🟢 Screen online · last seen '+fmtAgo(d.ageSec)+extra;
+      } else {
+        el.style.background='rgba(255,107,112,.14)';el.style.color='var(--coral)';
+        el.textContent='🔴 Screen offline · last seen '+fmtAgo(d.ageSec)+'. Check the TV and Fire Stick.';
+      }
+    })
+    .catch(function(){
+      el.style.background='rgba(255,184,77,.14)';el.style.color='var(--amber)';
+      el.textContent='Could not reach the monitor just now.';
+    });
+}
+
 loadSettings();
 prefill();
+checkScreen();
+setInterval(checkScreen,60000);
 </script>
 </body>
 </html>

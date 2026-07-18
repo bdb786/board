@@ -106,8 +106,8 @@
   .plist .none{color:var(--faint);}
 
   /* Row 2: services */
-  .row-svc{height:208px;flex:0 0 auto;}
-  .svc-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin-top:10px;flex:1;min-height:0;}
+  .row-svc{height:214px;flex:0 0 auto;}
+  .svc-grid{display:grid;grid-template-columns:repeat(9,1fr);gap:10px;margin-top:10px;flex:1;min-height:0;}
   .tile{background:rgba(147,165,214,.07);border:1px solid rgba(159,178,230,.10);
     border-radius:12px;padding:9px 12px;display:flex;flex-direction:column;justify-content:center;min-height:0;}
   .tile.g{background:rgba(47,224,176,.14);border-color:rgba(47,224,176,.25);}
@@ -120,6 +120,10 @@
     font-size:10px;font-weight:700;padding:1px 6px;margin-left:6px;vertical-align:2px;letter-spacing:.05em;}
   .totline b{font-weight:700;}
   .totline b.vg{color:var(--teal);} .totline b.vr{color:var(--coral);}
+  .tile.dlv{background:rgba(255,184,77,.10);border-color:rgba(255,184,77,.30);justify-content:center;}
+  .tile.dlv .t-name{color:var(--amber);}
+  .tile.dlv .dv{font-family:'Sora',sans-serif;font-weight:800;font-size:30px;line-height:1.05;margin-top:2px;font-variant-numeric:tabular-nums;}
+  .tile.dlv .ds{font-size:11px;color:var(--faint);margin-top:2px;line-height:1.2;}
 
   /* Row 3: store scorecard /21 */
   .row-g21{height:246px;flex:0 0 auto;flex-direction:row;align-items:stretch;gap:16px;padding:12px 20px;}
@@ -148,7 +152,7 @@
   .g21-total .t-trend{font-size:14px;font-weight:600;color:var(--muted);margin-top:4px;}
 
   /* Row 4: Celebrate etc */
-  .row-notes{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;height:188px;flex:0 0 auto;}
+  .row-notes{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;height:188px;flex:0 0 auto;}
   #stage.hasRibbon .row-notes{height:140px;}
   .tcard{padding:14px 18px;}
   .tcard .head{align-items:center;justify-content:flex-start;gap:10px;}
@@ -285,11 +289,6 @@
         <div class="head"><span class="emo">📌</span><span class="eyebrow">Focuses &amp; Notices</span></div>
         <p id="notesText" class="empty">Nothing posted today.</p>
       </section>
-      <section class="card tcard t-amber">
-        <div class="head"><span class="emo">📦</span><span class="eyebrow">Target Delivery Finish Time</span></div>
-        <div class="dlv-target num" id="dlvTarget">—:—</div>
-        <div class="dlv-sub" id="dlvSub">Add today's delivery time on the entry page.</div>
-      </section>
     </div>
   </main>
 
@@ -309,15 +308,17 @@
 
 <script>
 /* =====================  CONFIG (edit me)  ===================== */
-var VERSION='5.13';
+var VERSION='5.17';
 var CONFIG = {
   STORE_NAME : 'Didsbury',
-  STORE_SUB  : 'Store 1478 · 736–740 Wilmslow Road',
+  STORE_SUB  : 'Digital Huddle',
   DATA_URL   : 'data.json',
   LAT : 53.4106, LON : -2.2311,
   WEEK_START_DAY : 0,
   FY_WEEK1_START : '2025-08-31',
   DATA_REFRESH_MIN : 5,
+  HEARTBEAT_URL : '',   /* paste your Cloudflare Worker URL here to enable the online/offline monitor */
+  HEARTBEAT_MIN : 3,    /* how often the board reports 'I'm alive' */
   WEATHER_REFRESH_MIN : 30,
   NIGHTLY_RELOAD_HOUR : 3,
   ACTIVITY_POKE_MIN : 5,   /* on-screen nudge to stop Fire OS sleeping; NOT a network call */
@@ -325,14 +326,12 @@ var CONFIG = {
   DAY_END   : '16:45',   /* board goes dark after this time; clear either value to disable */
   BIRTHDAYS : [],
   SERVICES : [
+    { grp:'seven',  key:'services', label:'Services exc BOD' },
     { grp:'extras', key:'pf',   label:'Pharmacy First', subGrp:'nhs', subKey:'pfcp', subLabel:'incl. CP' },
-    { grp:'nhs',    key:'su',   label:'NMS sign-ups' },
-    { grp:'nhs',    key:'comp', label:'NMS follow-ups', convGrp:'nhs', convOf:'su' },
-    { grp:'nhs',    key:'htcc', label:'BP checks' },
-    { grp:'nhs',    key:'abpm', label:'ABPM' },
-    { grp:'nhs',    key:'cont', label:'Contraception' },
     { grp:'extras', key:'ehc',  label:'EHC' },
     { grp:'extras', key:'bop',  label:'BOP' },
+    { grp:'nhs',    key:'abpm', label:'ABPM' },
+    { grp:'extras', key:'eps',  label:'EPS noms' },
     { grp:'extras', key:'mps',  label:'MPS %' },
     { grp:'extras', key:'mpsAcc', label:'MPS Acc %' }
   ],
@@ -541,22 +540,7 @@ function renderPeople(){
 }
 
 /* ---------- delivery ---------- */
-function renderDelivery(d){
-  var dl=d.delivery||{};
-  var todayOk=true;
-  if(d.updated){
-    var u=new Date(d.updated);
-    if(!isNaN(u.getTime()) && dayKey(u)!==dayKey(new Date())) todayOk=false;
-  }
-  var m=(todayOk && dl.target) ? String(dl.target).match(/^(\d{1,2}):(\d{2})/) : null;
-  if(m){
-    $('dlvTarget').textContent=pad(+m[1])+':'+m[2];
-    $('dlvSub').textContent='as per Work Delivery Calculator';
-  } else {
-    $('dlvTarget').textContent='—:—';
-    $('dlvSub').textContent="Add today's delivery time on the entry page.";
-  }
-}
+function renderDelivery(d){ /* delivery now renders as a tile in the services row */ }
 
 /* ---------- scorecard /21 ---------- */
 function gcells(el,defs,data,prevWeek){
@@ -672,7 +656,17 @@ function render(){
       grid.appendChild(el);
     }
     var tot=M.seven.services,eps=M.extras.eps,wel=M.extras.welcome;
-    pers.push(perOf(tot,prevWeek));pers.push(perOf(eps,prevWeek));pers.push(perOf(wel,prevWeek));
+    pers.push(perOf(wel,prevWeek));
+    /* delivery finish time as the final tile */
+    var dl=d.delivery||{},dtile=document.createElement('div');
+    var dtOk=true;
+    if(d.updated){var du=new Date(d.updated);if(!isNaN(du.getTime())&&dayKey(du)!==dayKey(new Date()))dtOk=false;}
+    var dm=(dtOk&&dl.target)?String(dl.target).match(/^(\d{1,2}):(\d{2})/):null;
+    dtile.className='tile dlv';
+    dtile.innerHTML='<div class="t-name">📦 Delivery finish</div>'+
+      '<div class="dv num">'+(dm?(pad(+dm[1])+':'+dm[2]):'—:—')+'</div>'+
+      '<div class="ds">'+(dm?'per Work Delivery Calc':"set on entry page")+'</div>';
+    grid.appendChild(dtile);
     var allSame=true;
     for(i=1;i<pers.length;i++)if(pers[i]!==pers[0]){allSame=false;break;}
     $('svcEyebrow').textContent='Pharmacy services · '+(allSame?PER_LABEL[pers[0]]:'mixed periods');
@@ -839,6 +833,19 @@ try{
 }catch(e){ dlog('cache read failed'); }
 loadWeather();setInterval(loadWeather,CONFIG.WEATHER_REFRESH_MIN*60*1000);
 loadData();setInterval(loadData,CONFIG.DATA_REFRESH_MIN*60*1000);
+function sendHeartbeat(){
+  if(!CONFIG.HEARTBEAT_URL)return;
+  try{
+    var scr=$('nightShade');
+    var blanked=scr&&scr.style.display==='block';
+    fetch(CONFIG.HEARTBEAT_URL,{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({id:'1478',v:VERSION,ua:String(navigator.userAgent).slice(0,120),screen:blanked?'blank':'on'})
+    }).then(function(){dlog('heartbeat sent');},function(){dlog('heartbeat failed');});
+  }catch(e){}
+}
+sendHeartbeat();setInterval(sendHeartbeat,(CONFIG.HEARTBEAT_MIN||3)*60*1000);
 function startKeepAliveVideo(){
   try{
     var v=$('keepAlive'); if(!v||!v.captureStream&&!document.createElement('canvas').captureStream) return;

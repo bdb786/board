@@ -135,6 +135,7 @@
   .g21-cells{flex:1;display:grid;gap:6px;min-width:0;}
   .g21-cells.c6{grid-template-columns:repeat(6,1fr);}
   .g21-cells.c7{grid-template-columns:repeat(7,1fr);}
+  .g21-cells.c10{grid-template-columns:repeat(10,1fr);}
   .g21-cells.c8{grid-template-columns:repeat(8,1fr);}
   .gcell{border-radius:9px;padding:4px 6px;text-align:center;background:var(--track);overflow:hidden;
     display:flex;flex-direction:column;justify-content:center;min-width:0;}
@@ -257,15 +258,15 @@
           <div class="g21-cells c6" id="gRowNhs"></div>
         </div>
         <div class="g21-row">
-          <div class="g21-label"><b id="gSubSeven">–/7</b>Pharmacy · Care</div>
-          <div class="g21-cells c7" id="gRowSeven"></div>
+          <div class="g21-label"><b id="gSubTen">–/10</b>Pharmacy · Care · Payroll</div>
+          <div class="g21-cells c10" id="gRowTen"></div>
         </div>
         <div class="g21-row">
           <div class="g21-label"><b id="gSubEight">–/8</b>Retail · Ops</div>
           <div class="g21-cells c8" id="gRowEight"></div>
         </div>
       </div>
-      <div class="g21-total"><div class="t-big num" id="g21Total">–/21</div><div class="t-sub">Store scorecard</div><div class="t-trend num" id="g21Trend"></div></div>
+      <div class="g21-total"><div class="t-big num" id="g21Total">–/24</div><div class="t-sub">Store scorecard</div><div class="t-trend num" id="g21Trend"></div></div>
     </section>
 
     <section class="card row-svc">
@@ -308,7 +309,7 @@
 
 <script>
 /* =====================  CONFIG (edit me)  ===================== */
-var VERSION='5.17';
+var VERSION='5.19';
 var CONFIG = {
   STORE_NAME : 'Didsbury',
   STORE_SUB  : 'Digital Huddle',
@@ -326,19 +327,19 @@ var CONFIG = {
   DAY_END   : '16:45',   /* board goes dark after this time; clear either value to disable */
   BIRTHDAYS : [],
   SERVICES : [
-    { grp:'seven',  key:'services', label:'Services exc BOD' },
+    { grp:'ten',    key:'services', label:'Services exc BOD' },
     { grp:'extras', key:'pf',   label:'Pharmacy First', subGrp:'nhs', subKey:'pfcp', subLabel:'incl. CP' },
     { grp:'extras', key:'ehc',  label:'EHC' },
     { grp:'extras', key:'bop',  label:'BOP' },
     { grp:'nhs',    key:'abpm', label:'ABPM' },
-    { grp:'extras', key:'eps',  label:'EPS noms' },
-    { grp:'extras', key:'mps',  label:'MPS %' },
+    { grp:'ten',    key:'eps',  label:'EPS noms' },
+    { grp:'ten',    key:'mps',  label:'MPS %' },
     { grp:'extras', key:'mpsAcc', label:'MPS Acc %' }
   ],
-  EXTRAS : [['totalItems','Total items'],['pf','Pharmacy First'],['ehc','EHC'],['bop','BOP'],['eps','EPS noms'],['welcome','Welcome texts'],['mps','MPS'],['mpsAcc','MPS Accuracy']],
-  G21 : {
-    nhs   : [['su','Sign Up'],['comp','NMS Comp'],['htcc','HT CC'],['abpm','ABPM'],['cont','Cont/EHC'],['pfcp','PF CP']],
-    seven : [['items','Core Items'],['services','Services'],['psat','PSAT'],['osat','OSAT'],['rsat','RSAT'],['nps','NPS'],['resp','Responses']],
+  EXTRAS : [['totalItems','Total items'],['pf','Pharmacy First'],['ehc','EHC'],['bop','BOP'],['welcome','Welcome texts'],['mpsAcc','MPS Accuracy']],
+  G24 : {
+    nhs : [['su','Sign Up'],['comp','NMS Comp'],['htcc','HT CC'],['abpm','ABPM'],['cont','Cont/EHC'],['pfcp','PF CP']],
+    ten : [['items','Items'],['eps','EPS'],['mps','MPS'],['services','Services'],['psat','PSAT'],['osat','OSAT'],['rsat','RSAT'],['nps','NPS'],['resp','Responses'],['payroll','Payroll']],
     eight : [['sales','Sales'],['atv','ATV'],['no7','No7 v LY'],['bb','Boots Brand'],['adcard','Ad Card'],['isp','ISP'],['mystock','My Stock'],['loss','Retail Loss']]
   }
 };
@@ -350,6 +351,15 @@ var CACHE_KEY='board_cache_1478b';
 function $(id){ return document.getElementById(id); }
 function pad(n){ return (n<10?'0':'')+n; }
 function isNum(v){ return typeof v==='number' && !isNaN(v); }
+function fmtNum(n){
+  if(!isNum(n)) return '—';
+  var neg=n<0, a=Math.abs(n);
+  var whole=Math.floor(a), frac=a-whole;
+  var w=String(whole).replace(/\B(?=(\d{3})+(?!\d))/g,',');
+  var out=w;
+  if(frac>0){ out=w+ (Math.round(frac*100)/100+'').slice(1); }  /* keep decimals like 12.06 */
+  return (neg?'-':'')+out;
+}
 function esc(t){return String(t).replace(/[<>&]/g,function(c){return c==='<'?'&lt;':(c==='>'?'&gt;':'&amp;');});}
 function money(n){
   if(!isNum(n)) return '—';
@@ -385,11 +395,11 @@ function cellN(o){
 /* Build one unified model from v5.2, v5.x or v4 data */
 function unify(d){
   var g=d.greens||{};
-  var M={nhs:{},seven:{},eight:{},extras:{}};
+  var M={nhs:{},ten:{},eight:{},extras:{}};
   var i,defs;
-  defs=CONFIG.G21.nhs;   for(i=0;i<defs.length;i++) M.nhs[defs[i][0]]  =cellN((g.nhs||{})[defs[i][0]]);
-  defs=CONFIG.G21.seven; for(i=0;i<defs.length;i++) M.seven[defs[i][0]]=cellN((g.seven||g.ten||{})[defs[i][0]]);
-  defs=CONFIG.G21.eight; for(i=0;i<defs.length;i++) M.eight[defs[i][0]]=cellN((g.eight||{})[defs[i][0]]);
+  defs=CONFIG.G24.nhs; for(i=0;i<defs.length;i++) M.nhs[defs[i][0]]=cellN((g.nhs||{})[defs[i][0]]);
+  defs=CONFIG.G24.ten; for(i=0;i<defs.length;i++) M.ten[defs[i][0]]=cellN((g.ten||g.seven||{})[defs[i][0]]);
+  defs=CONFIG.G24.eight; for(i=0;i<defs.length;i++) M.eight[defs[i][0]]=cellN((g.eight||{})[defs[i][0]]);
   defs=CONFIG.EXTRAS;    for(i=0;i<defs.length;i++) M.extras[defs[i][0]]=cellN((d.extras||{})[defs[i][0]]);
   /* overlay legacy figure objects where the unified cell is empty */
   var P=d.periods||{};
@@ -408,18 +418,20 @@ function unify(d){
   var sv=d.services||{};
   lay(M.eight.sales,d.retail,'retail','retail');
   lay(M.extras.totalItems,((d.extras&&d.extras.core)||d.items),'items','items');
-  lay(M.seven.services,sv.totalExBod,'totalExBod','services');
+  lay(M.ten.services,sv.totalExBod,'totalExBod','services');
   lay(M.nhs.su,sv.nmsSu,'nmsSu','services');
   lay(M.nhs.comp,sv.nmsFu,'nmsFu','services');
   lay(M.nhs.htcc,sv.bp,'bp','services');
   lay(M.nhs.abpm,sv.abpm,'abpm','services');
   lay(M.nhs.cont,sv.contra,'contra','services');
   lay(M.nhs.pfcp,sv.pfcp,'pfcp','services');
-  lay(M.seven.items,d.core||((d.items&&isNum(d.items.coreWtd))?{v:d.items.coreWtd}:null),'core','items');
+  lay(M.ten.items,d.core||((d.items&&isNum(d.items.coreWtd))?{v:d.items.coreWtd}:null),'core','items');
+  lay(M.ten.eps,sv.eps,'eps','services');
+  lay(M.ten.mps,(d.extras&&d.extras.mps),'mps','services');
+  lay(M.ten.payroll,(d.extras&&d.extras.payroll),'payroll','services');
   lay(M.extras.pf,sv.pf,'pf','services');
   lay(M.extras.ehc,sv.ehc,'ehc','services');
   lay(M.extras.bop,sv.bop,'bop','services');
-  lay(M.extras.eps,sv.eps,'eps','services');
   lay(M.extras.welcome,sv.welcome,'welcome','services');
   return M;
 }
@@ -555,22 +567,22 @@ function gcells(el,defs,data,prevWeek){
     var pm=p==='lastweek'?'<i>LW</i>':(p==='mtd'?'<i class="m">M</i>':'');
     var dl=(o.d!==undefined&&o.d!==null&&String(o.d).trim()!=='')
       ? '<span class="gc-delta num">'+esc(String(o.d).trim())+'</span>' : '';
-    html+='<div class="gcell'+cls+'"><span class="gc-name">'+esc(defs[i][1])+pm+'</span><span class="gc-val num">'+mark+(isNum(o.v)?' '+o.v:'')+'</span>'+dl+'</div>';
+    html+='<div class="gcell'+cls+'"><span class="gc-name">'+esc(defs[i][1])+pm+'</span><span class="gc-val num">'+mark+(isNum(o.v)?' '+fmtNum(o.v):'')+'</span>'+dl+'</div>';
   }
   if(el)el.innerHTML=html;
   return {g:greens,set:set};
 }
 function renderGreens(d,M,prevWeek){
-  var a=gcells($('gRowNhs'),CONFIG.G21.nhs,M.nhs,prevWeek);
-  var b=gcells($('gRowSeven'),CONFIG.G21.seven,M.seven,prevWeek);
-  var c=gcells($('gRowEight'),CONFIG.G21.eight,M.eight,prevWeek);
+  var a=gcells($('gRowNhs'),CONFIG.G24.nhs,M.nhs,prevWeek);
+  var b=gcells($('gRowTen'),CONFIG.G24.ten,M.ten,prevWeek);
+  var c=gcells($('gRowEight'),CONFIG.G24.eight,M.eight,prevWeek);
   $('gSubNhs').textContent=(a.set?a.g:'–')+'/6';
-  $('gSubSeven').textContent=(b.set?b.g:'–')+'/7';
+  $('gSubTen').textContent=(b.set?b.g:'–')+'/10';
   $('gSubEight').textContent=(c.set?c.g:'–')+'/8';
   var tot=a.g+b.g+c.g, anySet=a.set+b.set+c.set;
   var te=$('g21Total');
-  te.textContent=(anySet?tot:'–')+'/21';
-  te.className='t-big num '+(anySet?(tot>=14?'g':(tot>=9?'mid':'low')):'');
+  te.textContent=(anySet?tot:'–')+'/24';
+  te.className='t-big num '+(anySet?(tot>=16?'g':(tot>=10?'mid':'low')):'');
   var tr=$('g21Trend');
   var hist=d.history||[],curWk=dayKey(startOfWeek(new Date())),prev=null;
   for(var h=0;h<hist.length;h++){
@@ -578,7 +590,7 @@ function renderGreens(d,M,prevWeek){
   }
   if(prev&&anySet){
     var arrow=tot>prev.g24?'\u25B2':(tot<prev.g24?'\u25BC':'\u25B6');
-    tr.textContent='was '+prev.g24+'/21 last wk '+arrow;
+    tr.textContent='was '+prev.g24+'/24 last wk '+arrow;
   } else tr.textContent='';
 }
 
@@ -609,7 +621,7 @@ function render(){
   var M=unify(d);
 
   safe('hero',function(){
-    var R=M.eight.sales,I=M.extras.totalItems,C=M.seven.items;
+    var R=M.eight.sales,I=M.extras.totalItems,C=M.ten.items;
     var pR=perOf(R,prevWeek),pI=perOf(I,prevWeek),pC=perOf(C,prevWeek);
     $('retailEyebrow').textContent='Retail sales · '+PER_LABEL[pR];
     $('itemsEyebrow').textContent='Total Items · '+PER_LABEL[pI];
@@ -622,12 +634,12 @@ function render(){
     $('retailCard').className='card hero'+(R.c?' '+R.c:'');
     $('retailSuf').innerHTML=suf(R);
     $('retailTags').innerHTML=isNum(R.v)?perChip(pR):'';
-    var iv=$('itemsVal');iv.textContent=isNum(I.v)?String(Math.round(I.v)):'—';
+    var iv=$('itemsVal');iv.textContent=isNum(I.v)?fmtNum(Math.round(I.v)):'—';
     iv.className='bignum num'+(I.c==='g'?' vg':(I.c==='r'?' vr':''));
     $('itemsCard').className='card hero'+(I.c?' '+I.c:'');
     $('itemsSuf').innerHTML=suf(I);
     $('itemsTags').innerHTML=isNum(I.v)?perChip(pI):'';
-    var cv=$('coreVal');cv.textContent=isNum(C.v)?String(Math.round(C.v)):'—';
+    var cv=$('coreVal');cv.textContent=isNum(C.v)?fmtNum(Math.round(C.v)):'—';
     cv.className='num'+(C.c==='g'?' vg':(C.c==='r'?' vr':''));
     $('coreTag').innerHTML=perTag(pC);
   });
@@ -641,7 +653,7 @@ function render(){
       var sub='';
       if(cfg.subKey){
         var s2=M[cfg.subGrp][cfg.subKey]||cellN(null);
-        sub+=cfg.subLabel+' '+(isNum(s2.v)?s2.v:'—');
+        sub+=cfg.subLabel+' '+(isNum(s2.v)?fmtNum(s2.v):'—');
       } else if(cfg.convOf){
         var so=M[cfg.convGrp][cfg.convOf]||cellN(null);
         if(isNum(so.v)&&so.v>0&&isNum(o.v)) sub+='conv. '+Math.round(100*o.v/so.v)+'%';
@@ -651,11 +663,11 @@ function render(){
       var tsuf=(isNum(o.v)||o.d)
         ? '<span class="t-suf">'+(o.d?'<b>'+esc(o.d)+'</b> ':'')+'vs '+(o.basis==='ly'?'LY':'Bud')+'</span>' : '';
       el.innerHTML='<div class="t-name">'+cfg.label+perTag(p)+'</div>'+
-        '<div class="t-val num">'+(isNum(o.v)?o.v:'—')+tsuf+'</div>'+
+        '<div class="t-val num">'+(isNum(o.v)?fmtNum(o.v):'—')+tsuf+'</div>'+
         '<div class="t-sub">'+sub+'</div>';
       grid.appendChild(el);
     }
-    var tot=M.seven.services,eps=M.extras.eps,wel=M.extras.welcome;
+    var tot=M.ten.services,eps=M.extras.eps,wel=M.extras.welcome;
     pers.push(perOf(wel,prevWeek));
     /* delivery finish time as the final tile */
     var dl=d.delivery||{},dtile=document.createElement('div');
@@ -672,7 +684,7 @@ function render(){
     $('svcEyebrow').textContent='Pharmacy services · '+(allSame?PER_LABEL[pers[0]]:'mixed periods');
     function span(o,lbl){
       var cls=o.c==='g'?'vg':(o.c==='r'?'vr':'');
-      return lbl+' <b class="num '+cls+'">'+(isNum(o.v)?o.v:'—')+'</b>'+(o.d?' <span class="num" style="opacity:.8;">'+esc(o.d)+'</span>':'')+perTag(perOf(o,prevWeek));
+      return lbl+' <b class="num '+cls+'">'+(isNum(o.v)?fmtNum(o.v):'—')+'</b>'+(o.d?' <span class="num" style="opacity:.8;">'+esc(o.d)+'</span>':'')+perTag(perOf(o,prevWeek));
     }
     $('svcTotalLine').innerHTML=span(tot,'Total exc BOD')+' · '+span(eps,'EPS')+' · '+span(wel,'Welcome');
   });

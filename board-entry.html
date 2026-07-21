@@ -89,7 +89,7 @@
 <body>
 
 <div class="top">
-  <h1>1478 Daily Board <small>v5.9</small></h1>
+  <h1>1478 Daily Board <small>v5.10</small></h1>
   <a id="boardLink" href="daily.html" target="_blank">View board →</a>
 </div>
 <div id="lastUpdated">Loading current figures…</div>
@@ -190,6 +190,8 @@
   <div class="field wide"><label>Celebrate</label><textarea id="n_www"></textarea><div class="cnt" id="cnt_www">0/120</div></div>
   <div class="field wide" style="margin-top:10px;"><label>Opportunities</label><textarea id="n_focus"></textarea><div class="cnt" id="cnt_focus">0/120</div></div>
   <div class="field wide" style="margin-top:10px;"><label>Focuses &amp; notices <small>shown on the board</small></label><textarea id="n_notes"></textarea><div class="cnt" id="cnt_notes">0/120</div></div>
+  <div class="field wide" style="margin-top:10px;"><label>Top 3 growth categories <small>vs last week</small></label><input id="mv_up" placeholder="Skincare +12% · Baby +8% · Fragrance +5%"></div>
+  <div class="field wide" style="margin-top:10px;"><label>Top 3 declining categories <small>vs last week</small></label><input id="mv_down" placeholder="Photo (9%) · Gifting (6%) · Electrical (4%)"></div>
 </section>
 
 
@@ -242,10 +244,14 @@ var WEEK_START_DAY=0; /* 0=Sunday, must match the board */
 
 function $(id){ return document.getElementById(id); }
 function num(id){
-  var s=String($(id).value).replace(/[^0-9.\-]/g,'');
+  var raw=String($(id).value).trim();
+  var neg=/^\(.*\)$/.test(raw);           /* accountancy brackets: (574) = -574 */
+  var s=raw.replace(/[^0-9.\-]/g,'');
   if(s===''||s==='-'||s==='.')return null;
   var n=parseFloat(s);
-  return isNaN(n)?null:n;
+  if(isNaN(n))return null;
+  if(neg&&n>0)n=-n;
+  return n;
 }
 function put(id,v){ $(id).value=(v===null||v===undefined)?'':v; }
 function setStatus(cls,msg){ var s=$('status'); s.className=cls; s.textContent=msg; }
@@ -424,6 +430,8 @@ function fill(d){
   $('d_target').value=(isToday&&dl.target)?dl.target:'';
   var nt=d.notes||{};
   $('n_www').value=nt.www||''; $('n_focus').value=nt.focus||''; $('n_notes').value=nt.notes||'';
+  var mv=d.movers||{};
+  $('mv_up').value=mv.up||''; $('mv_down').value=mv.down||'';
   $('bd_list').value=(d.birthdays||[]).map(function(b){return b.name+' '+b.date;}).join('\n');
   $('an_list').value=(d.anniversaries||[]).map(function(a){return a.name+' '+a.date+(a.year?'-'+a.year:'');}).join('\n');
   updateCnts();
@@ -523,6 +531,7 @@ function buildData(){
     delivery:{target:($('d_target').value||null)},
     birthdays:parseBirthdays(),
     anniversaries:parseAnniversaries(),
+    movers:{up:$('mv_up').value.trim().slice(0,90)||null,down:$('mv_down').value.trim().slice(0,90)||null},
     notes:{www:$('n_www').value.trim(),focus:$('n_focus').value.trim(),notes:$('n_notes').value.trim()}
   };
 }

@@ -153,7 +153,7 @@
   .g21-total .t-trend{font-size:14px;font-weight:600;color:var(--muted);margin-top:4px;}
 
   /* Row 4: Celebrate etc */
-  .row-notes{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;height:188px;flex:0 0 auto;}
+  .row-notes{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;height:188px;flex:0 0 auto;}
   #stage.hasRibbon .row-notes{height:140px;}
   .tcard{padding:14px 18px;}
   .tcard .head{align-items:center;justify-content:flex-start;gap:10px;}
@@ -162,6 +162,11 @@
     display:-webkit-box;-webkit-line-clamp:4;-webkit-box-orient:vertical;overflow:hidden;}
   #stage.hasRibbon .tcard p{-webkit-line-clamp:2;}
   .tcard p.empty{color:var(--faint);font-weight:400;}
+  .tcard .mv{display:flex;gap:8px;align-items:flex-start;font-size:16.5px;line-height:1.35;font-weight:600;margin-top:6px;}
+  .tcard .mv .mvmark{font-size:15px;flex:0 0 auto;margin-top:1px;}
+  .tcard .mv.up .mvmark,.tcard .mv.up span:not(.empty){color:var(--teal);}
+  .tcard .mv.down .mvmark,.tcard .mv.down span:not(.empty){color:var(--coral);}
+  .tcard .mv span.empty{color:var(--faint);font-weight:400;}
   .tcard.t-teal{border-top:4px solid var(--teal);}
   .tcard.t-sky{border-top:4px solid var(--sky);}
   .tcard.t-amber{border-top:4px solid var(--amber);}
@@ -290,6 +295,11 @@
         <div class="head"><span class="emo">📌</span><span class="eyebrow">Focuses &amp; Notices</span></div>
         <p id="notesText" class="empty">Nothing posted today.</p>
       </section>
+      <section class="card tcard t-sky">
+        <div class="head"><span class="emo">📈</span><span class="eyebrow">Category movers · vs LW</span></div>
+        <p class="mv up"><span class="mvmark">▲</span><span id="mvUpTxt" class="empty">Add top growers on the entry page.</span></p>
+        <p class="mv down"><span class="mvmark">▼</span><span id="mvDownTxt" class="empty">Add decliners on the entry page.</span></p>
+      </section>
     </div>
   </main>
 
@@ -309,7 +319,7 @@
 
 <script>
 /* =====================  CONFIG (edit me)  ===================== */
-var VERSION='5.19';
+var VERSION='5.20';
 var CONFIG = {
   STORE_NAME : 'Didsbury',
   STORE_SUB  : 'Digital Huddle',
@@ -693,6 +703,12 @@ function render(){
 
   safe('notes',function(){
     var nt=d.notes||{};
+    var mv=(d.movers)||{};
+    var up=$('mvUpTxt'),dn=$('mvDownTxt');
+    if(mv.up&&String(mv.up).trim()){up.textContent=String(mv.up).trim();up.className='';}
+    else {up.textContent='Add top growers on the entry page.';up.className='empty';}
+    if(mv.down&&String(mv.down).trim()){dn.textContent=String(mv.down).trim();dn.className='';}
+    else {dn.textContent='Add decliners on the entry page.';dn.className='empty';}
     var map=[['www','wwwText'],['focus','focusText'],['notes','notesText']];
     for(var i=0;i<map.length;i++){
       var val=nt[map[i][0]],el2=$(map[i][1]);

@@ -89,10 +89,15 @@
 <body>
 
 <div class="top">
-  <h1>1478 Daily Board <small>v5.11</small></h1>
+  <h1>1478 Daily Board <small>v5.12</small></h1>
   <a id="boardLink" href="daily.html" target="_blank">View board →</a>
 </div>
 <div id="lastUpdated">Loading current figures…</div>
+<div id="draftBar" style="display:none;background:rgba(255,184,77,.14);border:1px solid rgba(255,184,77,.4);border-radius:12px;padding:10px 12px;margin-bottom:14px;font-size:14px;color:var(--amber);font-weight:600;">
+  <span id="draftMsg"></span>
+  <button type="button" id="draftRestore" style="margin-top:8px;margin-right:8px;background:var(--amber);color:#04122E;border:none;border-radius:10px;padding:8px 14px;font-family:'Sora',sans-serif;font-weight:700;font-size:13px;">Restore it</button>
+  <button type="button" id="draftDiscard" style="background:rgba(147,165,214,.2);color:var(--ink);border:none;border-radius:10px;padding:8px 14px;font-family:'Archivo',sans-serif;font-weight:600;font-size:13px;">Discard</button>
+</div>
 <div id="screenStatus" style="display:none;font-size:14px;font-weight:700;padding:8px 12px;border-radius:12px;margin-bottom:16px;"></div>
 
 <section>
@@ -563,52 +568,115 @@ function ghHeaders(){
   };
 }
 function b64(str){ return btoa(unescape(encodeURIComponent(str))); }
-function publish(retrying){
+var LS_DRAFT='board_draft_1478b';
+function saveDraft(reason){
+  try{
+    localStorage.setItem(LS_DRAFT,JSON.stringify({t:Date.now(),why:reason||'auto',data:buildData()}));
+  }catch(e){}
+}
+function clearDraft(){ try{ localStorage.removeItem(LS_DRAFT); }catch(e){} }
+
+/* fetch with a timeout so a stalled shop connection fails fast instead of hanging */
+function fetchT(url,opts,ms){
+  opts=opts||{};
+  if(typeof AbortController!=='undefined'){
+    var ac=new AbortController();
+    opts.signal=ac.signal;
+    var to=setTimeout(function(){ try{ac.abort();}catch(e){} },ms||20000);
+    return fetch(url,opts).then(
+      function(r){ clearTimeout(to); return r; },
+      function(e){ clearTimeout(to); throw e; }
+    );
+  }
+  return fetch(url,opts);
+}
+function ghHeadersFresh(){
+  var h=ghHeaders();
+  h['Cache-Control']='no-cache';
+  h['Pragma']='no-cache';
+  return h;
+}
+
+/* One publish attempt: always read a FRESH sha (cache-busted), then write. */
+function publishAttempt(body,branch){
+  var getUrl=apiUrl()+'?ref='+encodeURIComponent(branch)+'&nocache='+Date.now();
+  return fetchT(getUrl,{headers:ghHeadersFresh()},20000)
+    .then(function(r){
+      if(r.status===404) return null;                      /* first ever publish */
+      if(r.status===401) throw new Error('perm_401');
+      if(r.status===403) throw new Error('perm_403');
+      if(!r.ok) throw new Error('get_'+r.status);
+      return r.json();
+    })
+    .then(function(existing){
+      var payload={
+        message:'Board update '+new Date().toLocaleString('en-GB'),
+        content:b64(body),
+        branch:branch
+      };
+      if(existing&&existing.sha) payload.sha=existing.sha;
+      return fetchT(apiUrl(),{method:'PUT',headers:ghHeadersFresh(),body:JSON.stringify(payload)},20000);
+    })
+    .then(function(r){
+      if(r.ok) return r;
+      if(r.status===401) throw new Error('perm_401');
+      if(r.status===403) throw new Error('perm_403');
+      if(r.status===404) throw new Error('perm_404');
+      throw new Error('put_'+r.status);   /* 409 / 422 / 5xx are worth retrying */
+    });
+}
+
+var PUB_DELAYS=[900,2200,4000];   /* waits before retries 2, 3 and 4 */
+function publish(){
   persistSettings();
   var token=lsGet(LS.token)||$('gh_token').value.trim();
   if(!token){ setStatus('err','Add your GitHub token in Settings first, or use Copy JSON.'); $('settings').open=true; return; }
   var btn=$('publishBtn'); btn.disabled=true;
-  setStatus('busy','Publishing…');
   var branch=$('gh_branch').value.trim()||'main';
   var hasPass=!!(lsGet(LS.pass)||$('gh_pass').value.trim());
+  var maxTries=PUB_DELAYS.length+1, tries=0, lastErr='';
+  setStatus('busy','Publishing…');
+
   makeBody().then(function(body){
-    return fetch(apiUrl()+'?ref='+encodeURIComponent(branch),{headers:ghHeaders()})
-      .then(function(r){
-        if(r.status===404) return null;
-        if(!r.ok) throw new Error('get_'+r.status);
-        return r.json();
-      })
-      .then(function(existing){
-        var payload={
-          message:'Board update '+new Date().toLocaleString('en-GB'),
-          content:b64(body),
-          branch:branch
-        };
-        if(existing&&existing.sha) payload.sha=existing.sha;
-        return fetch(apiUrl(),{method:'PUT',headers:ghHeaders(),body:JSON.stringify(payload)});
+    function go(){
+      tries++;
+      if(tries>1) setStatus('busy','Retrying… attempt '+tries+' of '+maxTries);
+      return publishAttempt(body,branch).catch(function(e){
+        var m=String((e&&e.message)||e);
+        lastErr=m;
+        var permanent=(m.indexOf('perm_')===0);
+        if(permanent||tries>=maxTries) throw e;
+        var wait=PUB_DELAYS[tries-1]||3000;
+        setStatus('busy','GitHub was busy, retrying in '+Math.round(wait/1000)+'s…');
+        return new Promise(function(res){ setTimeout(res,wait); }).then(go);
       });
+    }
+    return go();
   })
-    .then(function(r){
-      if(r.status===409&&!retrying){ btn.disabled=false; return publish(true); }
-      if(!r.ok) throw new Error('put_'+r.status);
-      setStatus('ok', hasPass
-        ? 'Published encrypted. The board updates within a couple of minutes.'
-        : 'Published UNENCRYPTED. Set a passphrase in Settings to protect the data.');
-      DIRTY=false;
-      $('dirtyNote').style.display='none';
-      btn.disabled=false;
-    })
-    .catch(function(e){
-      btn.disabled=false;
-      var m=String(e&&e.message||e);
-      if(m.indexOf('nocrypto')>-1) return;
-      if(m.indexOf('401')>-1) setStatus('err','Token rejected. Check it in Settings (Contents: read and write).');
-      else if(m.indexOf('404')>-1) setStatus('err','Repo or path not found. Check owner, repo and file path in Settings.');
-      else if(m.indexOf('403')>-1) setStatus('err','No permission. Token must cover this repo with Contents write.');
-      else setStatus('err','Could not publish. Check connection, or use Copy JSON.');
-    });
+  .then(function(){
+    setStatus('ok', hasPass
+      ? 'Published'+(tries>1?' on attempt '+tries:'')+'. The board updates within a couple of minutes.'
+      : 'Published UNENCRYPTED. Set a passphrase in Settings to protect the data.');
+    DIRTY=false;
+    $('dirtyNote').style.display='none';
+    clearDraft();
+    btn.disabled=false;
+  })
+  .catch(function(e){
+    btn.disabled=false;
+    var m=String((e&&e.message)||e);
+    if(m.indexOf('nocrypto')>-1) return;
+    saveDraft('failed');
+    var tail=' Your figures are saved on this phone, so nothing is lost.';
+    if(m.indexOf('perm_401')>-1) setStatus('err','Token rejected (401). Check it in Settings: Contents must be Read and write, and the token must not be expired.'+tail);
+    else if(m.indexOf('perm_403')>-1) setStatus('err','Permission refused (403). The token must cover this repo with Contents write.'+tail);
+    else if(m.indexOf('perm_404')>-1) setStatus('err','Repo or file path not found (404). Check owner, repo and path in Settings.'+tail);
+    else if(m.indexOf('put_409')>-1) setStatus('err','GitHub kept clashing (409) after '+maxTries+' tries, usually two publishes too close together. Wait ten seconds and tap Publish again.'+tail);
+    else if(m.indexOf('AbortError')>-1||m.indexOf('aborted')>-1) setStatus('err','Timed out, the connection is slow right now. Tap Publish again.'+tail);
+    else setStatus('err','Could not publish ('+(lastErr||m)+'). Tap Publish again, or use Copy JSON.'+tail);
+  });
 }
-$('publishBtn').addEventListener('click',function(){ publish(false); });
+$('publishBtn').addEventListener('click',function(){ publish(); });
 $('copyBtn').addEventListener('click',function(){
   makeBody().then(function(txt){
     function done(){ setStatus('ok','Copied. Paste into data.json on github.com and commit.'); }
@@ -637,6 +705,13 @@ function markDirty(ev){
 }
 document.addEventListener('input',markDirty);
 document.addEventListener('change',markDirty);
+var draftTimer=null;
+function scheduleDraft(){
+  if(draftTimer)clearTimeout(draftTimer);
+  draftTimer=setTimeout(function(){ if(DIRTY)saveDraft('auto'); },2500);
+}
+document.addEventListener('input',scheduleDraft);
+document.addEventListener('change',scheduleDraft);
 window.addEventListener('beforeunload',function(ev){
   if(DIRTY){ ev.preventDefault(); ev.returnValue=''; return ''; }
 });
@@ -678,8 +753,35 @@ function checkScreen(){
     });
 }
 
+function offerDraft(){
+  var raw=null;
+  try{ raw=localStorage.getItem(LS_DRAFT); }catch(e){}
+  if(!raw)return;
+  var d=null;
+  try{ d=JSON.parse(raw); }catch(e){ clearDraft(); return; }
+  if(!d||!d.data){ clearDraft(); return; }
+  var when=new Date(d.t);
+  var mins=Math.round((Date.now()-d.t)/60000);
+  var ago=mins<1?'just now':(mins<60?mins+' min ago':when.toLocaleString('en-GB'));
+  $('draftMsg').textContent=(d.why==='failed'
+    ? 'A publish failed '+ago+'. Those figures are still saved here.'
+    : 'Unpublished figures from '+ago+' are saved here.');
+  $('draftBar').style.display='block';
+  $('draftRestore').onclick=function(){
+    fill(d.data);
+    $('draftBar').style.display='none';
+    DIRTY=true; $('dirtyNote').style.display='block';
+    setStatus('ok','Restored. Check the figures, then Publish.');
+  };
+  $('draftDiscard').onclick=function(){
+    clearDraft();
+    $('draftBar').style.display='none';
+  };
+}
+
 loadSettings();
 prefill();
+setTimeout(offerDraft,900);
 checkScreen();
 setInterval(checkScreen,60000);
 </script>

@@ -89,7 +89,7 @@
 <body>
 
 <div class="top">
-  <h1>1478 Daily Board <small>v5.13</small></h1>
+  <h1>1478 Daily Board <small>v5.15</small></h1>
   <a id="boardLink" href="daily.html" target="_blank">View board →</a>
 </div>
 <div id="lastUpdated">Loading current figures…</div>
@@ -236,6 +236,7 @@
   <div id="status"></div>
   <button class="btn" id="publishBtn" type="button">Publish to board</button>
   <button class="btn secondary" id="copyBtn" type="button">Copy JSON (manual fallback)</button>
+  <a id="ghEditLink" href="#" target="_blank" rel="noopener" style="display:none;margin-top:10px;text-align:center;background:rgba(47,224,176,.16);border:1px solid rgba(47,224,176,.45);color:var(--teal);border-radius:14px;padding:14px;font-family:'Sora',sans-serif;font-weight:700;font-size:15px;text-decoration:none;">Open data.json on github.com →</a>
 </div></div>
 
 <script>
@@ -590,17 +591,15 @@ function fetchT(url,opts,ms){
   }
   return fetch(url,opts);
 }
-function ghHeadersFresh(){
-  var h=ghHeaders();
-  h['Cache-Control']='no-cache';
-  h['Pragma']='no-cache';
-  return h;
-}
+/* NOTE: never add Cache-Control/Pragma here. They are not CORS-safelisted,
+   GitHub's API rejects the preflight, and the browser reports it as
+   "Failed to fetch". Freshness comes from the ?nocache= URL parameter
+   and the fetch cache option below. */
 
 /* One publish attempt: always read a FRESH sha (cache-busted), then write. */
 function publishAttempt(body,branch){
   var getUrl=apiUrl()+'?ref='+encodeURIComponent(branch)+'&nocache='+Date.now();
-  return fetchT(getUrl,{headers:ghHeadersFresh()},20000)
+  return fetchT(getUrl,{headers:ghHeaders(),cache:'no-store'},20000)
     .then(function(r){
       if(r.status===404) return null;                      /* first ever publish */
       if(r.status===401) throw new Error('perm_401');
@@ -615,7 +614,7 @@ function publishAttempt(body,branch){
         branch:branch
       };
       if(existing&&existing.sha) payload.sha=existing.sha;
-      return fetchT(apiUrl(),{method:'PUT',headers:ghHeadersFresh(),body:JSON.stringify(payload)},20000);
+      return fetchT(apiUrl(),{method:'PUT',headers:ghHeaders(),body:JSON.stringify(payload)},20000);
     })
     .then(function(r){
       if(r.ok) return r;
@@ -627,6 +626,15 @@ function publishAttempt(body,branch){
 }
 
 var PUB_DELAYS=[900,2200,4000];   /* waits before retries 2, 3 and 4 */
+function editUrl(){
+  return 'https://github.com/'+$('gh_owner').value.trim()+'/'+$('gh_repo').value.trim()+
+         '/edit/'+($('gh_branch').value.trim()||'main')+'/'+$('gh_path').value.trim();
+}
+function showEditLink(){
+  var a=$('ghEditLink');
+  a.href=editUrl();
+  a.style.display='block';
+}
 function isNetworkErr(m){
   m=String(m||'');
   return m.indexOf('Failed to fetch')>-1 || m.indexOf('Load failed')>-1 ||
@@ -635,6 +643,11 @@ function isNetworkErr(m){
 }
 /* When the network layer fails, find out whether the phone is offline
    or whether only api.github.com is unreachable (typical shop WiFi block). */
+function probeApi(){
+  return fetchT('https://api.github.com/rate_limit?ping='+Date.now(),{mode:'no-cors',cache:'no-store'},8000)
+    .then(function(){ return 'reachable'; })
+    .catch(function(){ return 'unreachable'; });
+}
 function diagnoseNetwork(){
   return fetchT('data.json?ping='+Date.now(),{cache:'no-store'},8000)
     .then(function(r){ return r&&r.ok ? 'api-blocked' : 'api-blocked'; })
@@ -688,12 +701,19 @@ function publish(){
     else if(m.indexOf('AbortError')>-1||m.indexOf('aborted')>-1) setStatus('err','Timed out, the connection is slow right now. Tap Publish again.'+tail);
     else if(isNetworkErr(m)){
       setStatus('busy','Checking what is blocking it…');
-      diagnoseNetwork().then(function(verdict){
-        if(verdict==='api-blocked'){
-          setStatus('err','This network can reach the board but not github.com. That is usually the shop WiFi blocking it. Turn WiFi OFF, use mobile data, then tap Publish again.'+tail);
-        } else {
+      diagnoseNetwork().then(function(v1){
+        if(v1!=='api-blocked'){
           setStatus('err','No connection right now. Reconnect, then tap Publish again.'+tail);
+          return;
         }
+        return probeApi().then(function(v2){
+          showEditLink();
+          if(v2==='reachable'){
+            setStatus('err','github.com is reachable, but the browser blocked the request. Usually an ad blocker, privacy or antivirus extension. Try again in a private window with extensions off, or use Copy JSON and the green button below.'+tail);
+          } else {
+            setStatus('err','This network cannot reach api.github.com, so direct publishing will not work here. Use Copy JSON below, then the green button to paste it into data.json. (It normally works on a phone using mobile data.)'+tail);
+          }
+        });
       });
     }
     else setStatus('err','Could not publish ('+(lastErr||m)+'). Tap Publish again, or use Copy JSON.'+tail);
@@ -702,7 +722,10 @@ function publish(){
 $('publishBtn').addEventListener('click',function(){ publish(); });
 $('copyBtn').addEventListener('click',function(){
   makeBody().then(function(txt){
-    function done(){ setStatus('ok','Copied. Paste into data.json on github.com and commit.'); }
+    function done(){
+      showEditLink();
+      setStatus('ok','Copied. Now tap the green button below, select all in the editor, paste, then Commit changes.');
+    }
     if(navigator.clipboard&&navigator.clipboard.writeText){
       navigator.clipboard.writeText(txt).then(done,function(){ fallback(); });
     } else { fallback(); }

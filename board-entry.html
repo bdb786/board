@@ -89,7 +89,7 @@
 <body>
 
 <div class="top">
-  <h1>1478 Daily Board <small>v5.12</small></h1>
+  <h1>1478 Daily Board <small>v5.13</small></h1>
   <a id="boardLink" href="daily.html" target="_blank">View board →</a>
 </div>
 <div id="lastUpdated">Loading current figures…</div>
@@ -627,6 +627,19 @@ function publishAttempt(body,branch){
 }
 
 var PUB_DELAYS=[900,2200,4000];   /* waits before retries 2, 3 and 4 */
+function isNetworkErr(m){
+  m=String(m||'');
+  return m.indexOf('Failed to fetch')>-1 || m.indexOf('Load failed')>-1 ||
+         m.indexOf('NetworkError')>-1 || m.indexOf('cancelled')>-1 ||
+         m.indexOf('Network request failed')>-1;
+}
+/* When the network layer fails, find out whether the phone is offline
+   or whether only api.github.com is unreachable (typical shop WiFi block). */
+function diagnoseNetwork(){
+  return fetchT('data.json?ping='+Date.now(),{cache:'no-store'},8000)
+    .then(function(r){ return r&&r.ok ? 'api-blocked' : 'api-blocked'; })
+    .catch(function(){ return 'offline'; });
+}
 function publish(){
   persistSettings();
   var token=lsGet(LS.token)||$('gh_token').value.trim();
@@ -673,6 +686,16 @@ function publish(){
     else if(m.indexOf('perm_404')>-1) setStatus('err','Repo or file path not found (404). Check owner, repo and path in Settings.'+tail);
     else if(m.indexOf('put_409')>-1) setStatus('err','GitHub kept clashing (409) after '+maxTries+' tries, usually two publishes too close together. Wait ten seconds and tap Publish again.'+tail);
     else if(m.indexOf('AbortError')>-1||m.indexOf('aborted')>-1) setStatus('err','Timed out, the connection is slow right now. Tap Publish again.'+tail);
+    else if(isNetworkErr(m)){
+      setStatus('busy','Checking what is blocking it…');
+      diagnoseNetwork().then(function(verdict){
+        if(verdict==='api-blocked'){
+          setStatus('err','This network can reach the board but not github.com. That is usually the shop WiFi blocking it. Turn WiFi OFF, use mobile data, then tap Publish again.'+tail);
+        } else {
+          setStatus('err','No connection right now. Reconnect, then tap Publish again.'+tail);
+        }
+      });
+    }
     else setStatus('err','Could not publish ('+(lastErr||m)+'). Tap Publish again, or use Copy JSON.'+tail);
   });
 }
